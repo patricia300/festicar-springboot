@@ -14,11 +14,11 @@ public class Commune {
     @Column(unique = true, nullable = false)
     private String codeInsee;
 
-    private int codePostal;
+    private String codePostal;
 
     private String nom;
 
-    private String latitude;
+    private float latitude;
 
-    private String longitude;
+    private float longitude;
 }

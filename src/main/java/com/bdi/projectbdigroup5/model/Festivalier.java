@@ -14,5 +14,5 @@ public class Festivalier extends Utilisateur {
 
     private String ville;
 
-    private int codePostal;
+    private String codePostal;
 }

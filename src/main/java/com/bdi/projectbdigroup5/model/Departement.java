@@ -12,7 +12,7 @@ import lombok.Data;
 public class Departement {
     @Id
     @Column(unique = true, nullable = false)
-    private int numero;
+    private String numero;
 
     @Column(nullable = false)
     private String nom;
