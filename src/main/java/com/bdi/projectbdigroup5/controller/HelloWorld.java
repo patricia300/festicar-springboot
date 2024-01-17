@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloWorld {
     @Autowired
     private UserService userService;
+
     @GetMapping("/")
     public String hello(){
         return "Hello world!";
     }
+
     @GetMapping("/users")
-    public Iterable<User> getAllUsers(){
+    public Iterable<User> getAllUsers() {
         return userService.findAllUsers();
     }
 

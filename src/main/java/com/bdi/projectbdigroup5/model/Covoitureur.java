@@ -9,6 +9,6 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "covoitureurs")
-public class Covoitureur extends Utilisateur{
+public class Covoitureur extends Utilisateur {
     private String numeroTelephone;
 }

@@ -16,6 +16,8 @@ public class OffreCovoiturage {
 
     private int nombrePlaces;
 
+    private String modeleVoiture;
+
     private Date heureDepart;
 
     private Date heureArrive;
