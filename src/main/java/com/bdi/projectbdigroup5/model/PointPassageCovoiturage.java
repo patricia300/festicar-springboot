@@ -11,4 +11,8 @@ public class PointPassageCovoiturage {
     private int differenceHeurePassage;
 
     private float prix;
+
+    @ManyToOne
+    @JoinColumn(name = "id_lieu_covoiturage")
+    private LieuCovoiturage lieuCovoiturage;
 }

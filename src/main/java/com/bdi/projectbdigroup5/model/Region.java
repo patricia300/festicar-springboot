@@ -1,10 +1,9 @@
 package com.bdi.projectbdigroup5.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -13,4 +12,7 @@ public class Region {
     @Id
     @Column(unique = true, nullable = false)
     private String nom;
+
+    @OneToMany(mappedBy = "region", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Departement> departements;
 }

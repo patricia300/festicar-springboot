@@ -21,4 +21,8 @@ public class OffreCovoiturage {
     private Date heureDepart;
 
     private Date heureArrive;
+
+    @ManyToOne
+    @JoinColumn(name = "id_festival", nullable = false)
+    private Festival festival;
 }
