@@ -1,5 +1,7 @@
 package com.bdi.projectbdigroup5.model;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -8,6 +10,10 @@ import lombok.Data;
 @Table(name="point_passage_covoiturages")
 public class PointPassageCovoiturage {
     @Id
+    @Column(unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private int differenceHeurePassage;
 
     private float prix;
@@ -19,4 +25,7 @@ public class PointPassageCovoiturage {
     @ManyToOne
     @JoinColumn(name = "id_offre_covoiturage", nullable = false)
     private OffreCovoiturage offreCovoiturage;
+
+    @OneToMany(mappedBy = "pointPassageCovoiturage", fetch = FetchType.LAZY)
+    private List<PointPassageCovoiturage> passageCovoiturages;
 }

@@ -20,7 +20,7 @@ public class Departement {
     @JoinColumn(name = "nom_region", nullable = false)
     private Region region;
 
-    @OneToMany(mappedBy = "departement", nullable = false, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "departement", fetch = FetchType.LAZY)
     private List<Commune> communes;
 
 }

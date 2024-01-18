@@ -13,6 +13,4 @@ import java.util.List;
 @Entity
 public class DomainePrincipal extends Domaine {
 
-    @OneToMany(mappedBy = "domainePrincipal", nullable = false, fetch = FetchType.LAZY)
-    private List<Festival> festivals;
 }

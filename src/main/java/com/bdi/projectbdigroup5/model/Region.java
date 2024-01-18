@@ -13,6 +13,6 @@ public class Region {
     @Column(unique = true, nullable = false)
     private String nom;
 
-    @OneToMany(mappedBy = "region", nullable = false, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "region", fetch = FetchType.LAZY)
     private List<Departement> departements;
 }

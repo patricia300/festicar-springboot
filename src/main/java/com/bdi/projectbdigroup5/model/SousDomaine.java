@@ -9,6 +9,4 @@ import lombok.EqualsAndHashCode;
 @Entity
 public class SousDomaine extends Domaine {
 
-    @OneToMany(mappedBy = "sousDomaine", fetch = FetchType.LAZY)
-    private List<Festival> festivals;
 }

@@ -1,5 +1,6 @@
 package com.bdi.projectbdigroup5.model;
 
+import java.util.List;
 import jakarta.persistence.*;
 import lombok.Data;
 import oracle.sql.DATE;
@@ -29,4 +30,7 @@ public class Panier {
     @ManyToOne
     @JoinColumn(name = "email_festivalier", nullable = false)
     private Festivalier festivalier;
+
+    @OneToMany(mappedBy = "panier", fetch = FetchType.LAZY)
+    private List<Panier> panier;
 }

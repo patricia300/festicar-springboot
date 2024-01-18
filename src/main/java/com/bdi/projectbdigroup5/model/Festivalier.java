@@ -1,6 +1,7 @@
 package com.bdi.projectbdigroup5.model;
 
 import java.util.List;
+import jakarta.persistence.*;
 
 import lombok.Data;
 
