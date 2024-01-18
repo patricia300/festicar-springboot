@@ -10,7 +10,6 @@ import java.util.List;
 @Table(name = "communes")
 public class Commune {
     @Id
-    @Column(unique = true, nullable = false)
     private String codeInsee;
 
     private String codePostal;

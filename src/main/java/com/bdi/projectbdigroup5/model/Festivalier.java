@@ -4,8 +4,11 @@ import java.util.List;
 import jakarta.persistence.*;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
+@Entity
 public class Festivalier extends Utilisateur {
     private String adresse;
 

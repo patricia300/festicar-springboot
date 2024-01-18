@@ -10,7 +10,6 @@ import java.util.List;
 @Table(name = "departements")
 public class Departement {
     @Id
-    @Column(unique = true, nullable = false)
     private String numero;
 
     @Column(nullable = false)

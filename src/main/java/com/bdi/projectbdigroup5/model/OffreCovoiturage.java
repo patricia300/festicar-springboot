@@ -31,6 +31,6 @@ public class OffreCovoiturage {
     @JoinColumn(name = "email_covoitureur", nullable = false)
     private Covoitureur covoitureur;
 
-    @OneToMany(mappedBy = "offreCovoiturage", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "offreCovoiturage", fetch = FetchType.LAZY)
     private List<PointPassageCovoiturage> pointPassageCovoiturages;
 }

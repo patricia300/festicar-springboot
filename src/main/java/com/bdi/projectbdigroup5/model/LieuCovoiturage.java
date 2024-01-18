@@ -10,7 +10,6 @@ import java.util.List;
 @Table(name = "lieu_covoiturages")
 public class LieuCovoiturage {
     @Id
-    @Column(unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

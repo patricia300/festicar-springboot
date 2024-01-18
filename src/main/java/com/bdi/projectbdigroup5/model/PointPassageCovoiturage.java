@@ -10,7 +10,6 @@ import lombok.Data;
 @Table(name="point_passage_covoiturages")
 public class PointPassageCovoiturage {
     @Id
-    @Column(unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -27,5 +26,5 @@ public class PointPassageCovoiturage {
     private OffreCovoiturage offreCovoiturage;
 
     @OneToMany(mappedBy = "pointPassageCovoiturage", fetch = FetchType.LAZY)
-    private List<PointPassageCovoiturage> passageCovoiturages;
+    private List<Article> articles;
 }
