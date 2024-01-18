@@ -13,6 +13,10 @@ public class PointPassageCovoiturage {
     private float prix;
 
     @ManyToOne
-    @JoinColumn(name = "id_lieu_covoiturage")
+    @JoinColumn(name = "id_lieu_covoiturage", nullable = false)
     private LieuCovoiturage lieuCovoiturage;
+
+    @ManyToOne
+    @JoinColumn(name = "id_offre_covoiturage", nullable = false)
+    private OffreCovoiturage offreCovoiturage;
 }

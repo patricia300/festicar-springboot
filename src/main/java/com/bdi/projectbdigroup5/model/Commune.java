@@ -25,9 +25,9 @@ public class Commune {
     @JoinColumn(name = "numero_departement", nullable = false)
     private Departement departement;
 
-    @OneToMany(mappedBy = "commune", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "commune", nullable = false, fetch = FetchType.LAZY)
     private List<Festival> festivals;
 
-    @OneToMany(mappedBy = "commune", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "commune", nullable = false, fetch = FetchType.LAZY)
     private List<LieuCovoiturage> lieuCovoiturages;
 }

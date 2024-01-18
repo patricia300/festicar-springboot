@@ -6,6 +6,7 @@ import oracle.sql.DATE;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.beans.JavaBean;
 import java.time.Instant;
 
 @Data
@@ -24,4 +25,8 @@ public class Panier {
     private Instant dateModification;
 
     private StatutPanier statut;
+
+    @ManyToOne
+    @JoinColumn(name = "email_festivalier", nullable = false)
+    private Festivalier festivalier;
 }

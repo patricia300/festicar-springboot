@@ -3,6 +3,7 @@ package com.bdi.projectbdigroup5.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -25,4 +26,11 @@ public class OffreCovoiturage {
     @ManyToOne
     @JoinColumn(name = "id_festival", nullable = false)
     private Festival festival;
+
+    @ManyToOne
+    @JoinColumn(name = "email_covoitureur", nullable = false)
+    private Covoitureur covoitureur;
+
+    @OneToMany(mappedBy = "offreCovoiturage", nullable = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<PointPassageCovoiturage> pointPassageCovoiturages;
 }
