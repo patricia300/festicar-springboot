@@ -1,9 +1,10 @@
 package com.bdi.projectbdigroup5.repository;
 
-import com.bdi.projectbdigroup5.model.Commune;
+import com.bdi.projectbdigroup5.model.Festivalier;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CommuneRepository extends CrudRepository<Commune, String> {
+public interface FestivalierRepository extends CrudRepository <Festivalier, String> {
+
 }
