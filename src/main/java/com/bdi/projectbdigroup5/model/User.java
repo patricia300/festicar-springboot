@@ -7,9 +7,11 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "users")
+/**
+ * @IMPORTANT this class is just for our team test
+ */
 public class User {
     @Id
-    @Column(unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
