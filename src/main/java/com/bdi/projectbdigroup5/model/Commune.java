@@ -1,17 +1,15 @@
 package com.bdi.projectbdigroup5.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Entity
 @Table(name = "communes")
 public class Commune {
     @Id
-    @Column(unique = true, nullable = false)
     private String codeInsee;
 
     private String codePostal;
@@ -21,4 +19,14 @@ public class Commune {
     private float latitude;
 
     private float longitude;
+
+    @ManyToOne
+    @JoinColumn(name = "numero_departement", nullable = false)
+    private Departement departement;
+
+    @OneToMany(mappedBy = "commune", fetch = FetchType.LAZY)
+    private List<Festival> festivals;
+
+    @OneToMany(mappedBy = "commune",  fetch = FetchType.LAZY)
+    private List<LieuCovoiturage> lieuCovoiturages;
 }

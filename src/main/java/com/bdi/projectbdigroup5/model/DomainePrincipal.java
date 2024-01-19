@@ -11,7 +11,6 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-public class Organisateur extends  Utilisateur{
-    @OneToMany(mappedBy = "organisateur", fetch = FetchType.LAZY)
-    private List<Festival> festivals;
+public class DomainePrincipal extends Domaine {
+
 }

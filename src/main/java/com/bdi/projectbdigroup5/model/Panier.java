@@ -1,8 +1,8 @@
 package com.bdi.projectbdigroup5.model;
 
+import java.util.List;
 import jakarta.persistence.*;
 import lombok.Data;
-import oracle.sql.DATE;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -13,7 +13,6 @@ import java.time.Instant;
 @Table(name="paniers")
 public class Panier {
     @Id
-    @Column(unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -24,4 +23,11 @@ public class Panier {
     private Instant dateModification;
 
     private StatutPanier statut;
+
+    @ManyToOne
+    @JoinColumn(name = "email_festivalier", nullable = false)
+    private Festivalier festivalier;
+
+    @OneToMany(mappedBy = "panier", fetch = FetchType.LAZY)
+    private List<Article> articles;
 }

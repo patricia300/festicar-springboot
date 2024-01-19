@@ -8,10 +8,17 @@ import lombok.Data;
 @Entity
 @Table(name = "articles")
 public class Article {
-    /* Todo: Juste pour enlever l'erreur pour l'identifiant, à enlever plus tard */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "id_panier")
+    private Panier panier;
+
+    @ManyToOne
+    @JoinColumn(name = "id_point_passage_covoiturage")
+    private PointPassageCovoiturage pointPassageCovoiturage;
 
     private int quantite;
 

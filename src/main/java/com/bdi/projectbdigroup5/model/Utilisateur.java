@@ -14,7 +14,6 @@ import java.util.Date;
 @Table(name="utilisateurs")
 public abstract class Utilisateur {
     @Id
-    @Column(unique = true, nullable = false)
     private String email;
 
     private String nom;

@@ -1,12 +1,14 @@
 package com.bdi.projectbdigroup5.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import lombok.Data;
+import java.util.List;
+import jakarta.persistence.*;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(callSuper = true)
 @Data
 @Entity
-@Table(name = "festivaliers")
 public class Festivalier extends Utilisateur {
     private String adresse;
 
@@ -15,4 +17,7 @@ public class Festivalier extends Utilisateur {
     private String ville;
 
     private String codePostal;
+
+    @OneToMany(mappedBy = "festivalier", fetch = FetchType.LAZY)
+    private List<Panier> paniers;
 }
