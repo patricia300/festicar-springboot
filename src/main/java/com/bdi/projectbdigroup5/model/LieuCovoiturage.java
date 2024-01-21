@@ -17,9 +17,9 @@ public class LieuCovoiturage {
 
     private String adresse;
 
-    private String latitude;
+    private float latitude;
 
-    private String longitude;
+    private float longitude;
 
     private TypeLieuCovoiturage type;
 
