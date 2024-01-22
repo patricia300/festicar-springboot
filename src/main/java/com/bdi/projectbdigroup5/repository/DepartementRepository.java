@@ -7,4 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 @Repository
 public interface DepartementRepository extends CrudRepository<Departement, String>{
     
+
+    Iterable<Departement> findByNom(String nom);
 }

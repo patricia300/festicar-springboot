@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PointPassageCovoiturageRepository extends CrudRepository<PointPassageCovoiturage, Integer> {
+public interface PointPassageCovoiturageRepository extends CrudRepository<PointPassageCovoiturage, Long> {
 }
