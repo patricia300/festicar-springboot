@@ -1,11 +1,13 @@
 package com.bdi.projectbdigroup5.model;
 
 import com.poiji.annotation.ExcelCellName;
+import com.poiji.annotation.ExcelSheet;
 import lombok.Data;
 
 import java.util.Date;
 
 @Data
+@ExcelSheet("Festivals")
 public class FestivalOpenData {
     @ExcelCellName("nomManifestation")
     private String nomManifestation;

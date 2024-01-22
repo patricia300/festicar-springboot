@@ -13,6 +13,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/openData")
 public class openDataController {
+
     private List<FestivalOpenData> od = new ArrayList<>();
     private List<LieuCovoiturageOpenData> lc = new ArrayList<>();
 
@@ -82,11 +83,17 @@ public class openDataController {
             d.setCodeInsee(f.getCodeINSEE());
             d.setNom(f.getCommuneINSEE());
             d.setCodePostal(f.getCodePostal());
-            d.setLatitude(f.getLatitude());
-            d.setLongitude(f.getLongitude());
 
             data.add(d);
         });
+
+        /*lc.forEach(f -> {
+            Commune d = new Commune();
+            d.setCodeInsee(f.getCodeINSEELieu());
+            d.setNom(f.getCommuneLieu());
+            d.setLatitude(f.getLatitude());
+            d.setLongitude(f.getLongitude());
+        });*/
 
         return data;
     }
