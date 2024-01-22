@@ -6,5 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 
 @Repository
 public interface LieuCovoiturageRepository extends CrudRepository<LieuCovoiturage, Long>{
-    
+   
+    Iterable<LieuCovoiturage> findByNom(String nom);
 }
