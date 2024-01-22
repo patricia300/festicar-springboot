@@ -1,7 +1,11 @@
 package com.bdi.projectbdigroup5.controller;
 
 import com.bdi.projectbdigroup5.model.*;
+import com.bdi.projectbdigroup5.service.DepartementService;
+import com.bdi.projectbdigroup5.service.DomainePrincipalService;
+import com.bdi.projectbdigroup5.service.RegionService;
 import com.poiji.bind.Poiji;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +21,15 @@ public class openDataController {
     private List<FestivalOpenData> od = new ArrayList<>();
     private List<LieuCovoiturageOpenData> lc = new ArrayList<>();
 
+    @Autowired
+    private RegionService regionService;
+
+    @Autowired
+    private DomainePrincipalService domainePrincipalService;
+
+    @Autowired
+    private DepartementService departementService;
+
     @GetMapping("/")
     public List<FestivalOpenData> excelToList(@RequestParam String fileLocation) {
         od = Poiji.fromExcel(new File(fileLocation), FestivalOpenData.class);
@@ -26,15 +39,17 @@ public class openDataController {
     }
 
     @GetMapping("domainePrincipals")
-    public Iterable<Domaine> getDomainePrincipals() {
-        Set<Domaine> domaines = new HashSet<>();
+    public Iterable<DomainePrincipal> getDomainePrincipals() {
+        Set<DomainePrincipal> domaines = new HashSet<>();
         od.forEach(f -> {
             DomainePrincipal domaine = new DomainePrincipal();
             domaine.setNom(f.getDomaine());
             domaines.add(domaine);
         });
 
-        return domaines;
+        domainePrincipalService.createDomainePrincipals(domaines);
+
+        return domainePrincipalService.findAllDomainePrincipal();
     }
 
     @GetMapping("sousDomaines")
@@ -58,7 +73,9 @@ public class openDataController {
             data.add(r);
         });
 
-        return data;
+        regionService.createRegions(data);
+
+        return regionService.findAllRegion();
     }
 
     @GetMapping("departements")
