@@ -38,6 +38,9 @@ public class openDataController {
     @Autowired
     private LieuCovoiturageService lieuCovoiturageService;
 
+    @Autowired
+    private SousDomaineService sousDomaineService;
+
     @GetMapping("/")
     public List<FestivalOpenData> excelToList(@RequestParam String fileLocation) {
         od = Poiji.fromExcel(new File(fileLocation), FestivalOpenData.class);
@@ -66,15 +69,25 @@ public class openDataController {
     }
 
     @GetMapping("sousDomaines")
-    public Iterable<Domaine> getSousDomaines() {
-        Set<Domaine> domaines = new HashSet<>();
+    public Iterable<SousDomaine> getSousDomaines() {
+        Set<SousDomaine> domaines = new HashSet<>();
         od.forEach(f -> {
-            DomainePrincipal domaine = new DomainePrincipal();
-            domaine.setNom(f.getSousDomaine());
-            domaines.add(domaine);
+            String nom = f.getSousDomaine();
+
+            SousDomaine sd = new SousDomaine();
+            sd.setNom(nom);
+
+            Optional<DomainePrincipal> dp = domainePrincipalService.findById(f.getDomaine());
+
+            dp.ifPresent(d -> {
+                if(sd.getNom() == null || sd.getNom().isEmpty()) sd.setNom(d.getNom());
+                sd.setDomainePrincipal(d);
+            });
+
+            domaines.add(sd);
         });
 
-        return domaines;
+        return sousDomaineService.createSousdomaines(domaines);
     }
 
     @GetMapping("regions")
