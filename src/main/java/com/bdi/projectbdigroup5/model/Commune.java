@@ -1,5 +1,6 @@
 package com.bdi.projectbdigroup5.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -22,6 +23,7 @@ public class Commune {
 
     @ManyToOne
     @JoinColumn(name = "numero_departement", nullable = false)
+    @JsonIgnoreProperties("communes")
     private Departement departement;
 
     @OneToMany(mappedBy = "commune", fetch = FetchType.LAZY)
