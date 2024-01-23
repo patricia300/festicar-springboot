@@ -1,5 +1,6 @@
 package com.bdi.projectbdigroup5.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -21,10 +22,12 @@ public class LieuCovoiturage {
 
     private float longitude;
 
+    @Enumerated(EnumType.STRING)
     private TypeLieuCovoiturage type;
 
     @ManyToOne
     @JoinColumn(name = "code_insee_commune", nullable = false)
+    @JsonIgnoreProperties("lieuCovoiturages")
     private Commune commune;
 
     @OneToMany(mappedBy = "lieuCovoiturage", fetch = FetchType.LAZY)
