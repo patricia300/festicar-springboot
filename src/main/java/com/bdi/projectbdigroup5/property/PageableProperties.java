@@ -1,4 +1,4 @@
-package com.bdi.projectbdigroup5.configuration;
+package com.bdi.projectbdigroup5.property;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +13,7 @@ import org.springframework.data.domain.Sort;
 @Setter
 @Configuration
 @ConfigurationProperties("pageable.property")
-public class PageableConfiguration {
+public class PageableProperties {
     private int numeroPageParDefaut;
     private int tailleElementParDefaut;
 

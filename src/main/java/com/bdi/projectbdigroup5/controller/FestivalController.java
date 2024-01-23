@@ -1,6 +1,6 @@
 package com.bdi.projectbdigroup5.controller;
 
-import com.bdi.projectbdigroup5.configuration.PageableConfiguration;
+import com.bdi.projectbdigroup5.property.PageableProperties;
 import com.bdi.projectbdigroup5.model.Festival;
 import com.bdi.projectbdigroup5.service.FestivalService;
 import lombok.AllArgsConstructor;
@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class FestivalController {
     private FestivalService festivalService;
-    private PageableConfiguration pageableConfiguration;
+    private PageableProperties pageableProperties;
 
     @GetMapping("/festivals")
     public Iterable<Festival> getAllFestivals(@RequestParam(required = false) Integer numeroPage, @RequestParam(required = false) Integer taillePage, @RequestParam(required = false) String tri ) {
-        Pageable festivalPage =  pageableConfiguration.createPageable(numeroPage, taillePage, "tarifPass", tri);
+        Pageable festivalPage =  pageableProperties.createPageable(numeroPage, taillePage, "tarifPass", tri);
 
         return festivalService.getAllFestivalPerPage(festivalPage);
     }

@@ -1,6 +1,6 @@
 package com.bdi.projectbdigroup5.controller;
 
-import com.bdi.projectbdigroup5.configuration.PageableConfiguration;
+import com.bdi.projectbdigroup5.property.PageableProperties;
 import com.bdi.projectbdigroup5.model.OffreCovoiturage;
 import com.bdi.projectbdigroup5.service.OffreCovoiturageService;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class OffreCovoiturageController {
     private OffreCovoiturageService offreCovoiturageService;
-    private PageableConfiguration pageableConfiguration;
+    private PageableProperties pageableProperties;
 
     @GetMapping("/offre-covoiturages")
     public Iterable<OffreCovoiturage> getAllCovoiturages(
@@ -23,7 +23,7 @@ public class OffreCovoiturageController {
             @RequestParam(required = false) String tri)
     {
 
-        Pageable offreCovoituragePage =  pageableConfiguration.createPageable(numeroPage, taillePage,"dateOffre", tri);
+        Pageable offreCovoituragePage =  pageableProperties.createPageable(numeroPage, taillePage,"dateOffre", tri);
 
         return this.offreCovoiturageService.getAllOffreCovoiturages(offreCovoituragePage);
     }
