@@ -22,6 +22,7 @@ public class Panier {
     @UpdateTimestamp
     private Instant dateModification;
 
+    @Enumerated(EnumType.STRING)
     private StatutPanier statut;
 
     @ManyToOne

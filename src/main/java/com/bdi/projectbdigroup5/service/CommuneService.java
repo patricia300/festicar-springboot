@@ -18,6 +18,10 @@ public class CommuneService {
         return communeRepository.save(commune);
     }
 
+    public Iterable<Commune> createCommunes(Iterable<Commune> communes) {
+        return communeRepository.saveAll(communes);
+    }
+
     public void deleteCommune(Commune commune){
         communeRepository.delete(commune);
     }
