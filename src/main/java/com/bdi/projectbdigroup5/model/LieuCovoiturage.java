@@ -1,6 +1,5 @@
 package com.bdi.projectbdigroup5.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -25,6 +24,5 @@ public class LieuCovoiturage {
 
     @ManyToOne
     @JoinColumn(name = "code_insee_commune", nullable = false)
-    @JsonIgnoreProperties("lieuCovoiturages")
     private Commune commune;
 }
