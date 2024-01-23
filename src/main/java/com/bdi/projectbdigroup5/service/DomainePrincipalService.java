@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.bdi.projectbdigroup5.repository.DomainePrincipalRepository;
 
+import java.util.Optional;
+
 @Service
 public class DomainePrincipalService {
     
@@ -22,5 +24,9 @@ public class DomainePrincipalService {
 
     public Iterable<DomainePrincipal> findAllDomainePrincipal() {
         return domainePrincipalRepository.findAll();
+    }
+
+    public Optional<DomainePrincipal> findById(String nom) {
+        return domainePrincipalRepository.findById(nom);
     }
 }

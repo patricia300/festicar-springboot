@@ -1,12 +1,19 @@
 package com.bdi.projectbdigroup5.model;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
+import java.util.List;
+
 @Data
 @Entity
-public class DomainePrincipal extends Domaine {
+public class DomainePrincipal {
+    @Id
+    private String nom;
 
+    @OneToMany(mappedBy = "domainePrincipal", fetch = FetchType.LAZY)
+    List<SousDomaine> sousDomaines;
 }

@@ -1,4 +1,4 @@
-package com.bdi.projectbdigroup5.model;
+package com.bdi.projectbdigroup5.populating.model;
 
 import com.poiji.annotation.ExcelCellName;
 import com.poiji.annotation.ExcelSheet;

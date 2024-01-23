@@ -1,6 +1,9 @@
-package com.bdi.projectbdigroup5.controller;
+package com.bdi.projectbdigroup5.populating.controller;
 
 import com.bdi.projectbdigroup5.model.*;
+import com.bdi.projectbdigroup5.populating.model.CommuneDepartementRegionDataGouv;
+import com.bdi.projectbdigroup5.populating.model.FestivalOpenData;
+import com.bdi.projectbdigroup5.populating.model.LieuCovoiturageOpenData;
 import com.bdi.projectbdigroup5.service.*;
 import com.poiji.bind.Poiji;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +21,6 @@ public class openDataController {
 
     private List<FestivalOpenData> od = new ArrayList<>();
     private List<LieuCovoiturageOpenData> lc = new ArrayList<>();
-
     private List<CommuneDepartementRegionDataGouv> dataGouv = new ArrayList<>();
 
     @Autowired
@@ -35,6 +37,9 @@ public class openDataController {
 
     @Autowired
     private LieuCovoiturageService lieuCovoiturageService;
+
+    @Autowired
+    private SousDomaineService sousDomaineService;
 
     @GetMapping("/")
     public List<FestivalOpenData> excelToList(@RequestParam String fileLocation) {
@@ -64,15 +69,25 @@ public class openDataController {
     }
 
     @GetMapping("sousDomaines")
-    public Iterable<Domaine> getSousDomaines() {
-        Set<Domaine> domaines = new HashSet<>();
+    public Iterable<SousDomaine> getSousDomaines() {
+        Set<SousDomaine> domaines = new HashSet<>();
         od.forEach(f -> {
-            DomainePrincipal domaine = new DomainePrincipal();
-            domaine.setNom(f.getSousDomaine());
-            domaines.add(domaine);
+            String nom = f.getSousDomaine();
+
+            SousDomaine sd = new SousDomaine();
+            sd.setNom(nom);
+
+            Optional<DomainePrincipal> dp = domainePrincipalService.findById(f.getDomaine());
+
+            dp.ifPresent(d -> {
+                if(sd.getNom() == null || sd.getNom().isEmpty()) sd.setNom(d.getNom());
+                sd.setDomainePrincipal(d);
+            });
+
+            domaines.add(sd);
         });
 
-        return domaines;
+        return sousDomaineService.createSousdomaines(domaines);
     }
 
     @GetMapping("regions")

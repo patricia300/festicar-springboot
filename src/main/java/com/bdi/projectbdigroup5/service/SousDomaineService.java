@@ -18,6 +18,10 @@ public class SousDomaineService {
         return sousDomaineRepository.save(sousDomaine);
     }
 
+    public Iterable<SousDomaine> createSousdomaines(Iterable<SousDomaine> sousDomaines) {
+        return sousDomaineRepository.saveAll(sousDomaines);
+    }
+
     public Optional<SousDomaine> findById(String nom){
         return sousDomaineRepository.findById(nom);
     }
