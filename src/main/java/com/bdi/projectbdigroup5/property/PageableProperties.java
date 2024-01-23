@@ -38,4 +38,12 @@ public class PageableProperties {
     public Pageable createPageable() {
         return  PageRequest.of(this.getNumeroPageParDefaut() , this.getTailleElementParDefaut());
     }
+
+    public Pageable createPageable( Integer numeroPage, Integer taillePage )
+    {
+        return  PageRequest.of(
+                numeroPage != null ? numeroPage : this.getNumeroPageParDefaut() ,
+                taillePage != null ? taillePage : this.getTailleElementParDefaut()
+        );
+    }
 }
