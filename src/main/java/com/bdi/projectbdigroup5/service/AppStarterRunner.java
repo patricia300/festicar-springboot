@@ -13,8 +13,6 @@ public class AppStarterRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        utilisateurFaker.createFakeOrganisateurs(200);
-        utilisateurFaker.createFakeCovoitureurs(5000);
-        utilisateurFaker.createFakeFestivaliers(10000);
+
     }
 }
