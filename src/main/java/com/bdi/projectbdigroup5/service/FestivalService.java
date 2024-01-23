@@ -19,4 +19,21 @@ public class FestivalService {
     public Iterable<Festival> getAllFestivalPerPage(Pageable pageable) {
         return festivalRepository.findAll(pageable);
     }
+
+    public Iterable<Festival> getAllFestivalByCommune(String commune,Pageable pageable){
+        return festivalRepository.findAllByCommuneNom(commune, pageable);
+    }
+
+    public Iterable<Festival> getAllFestivalByDateDebutOrDateFin(String dateDebut, String dateFin, Pageable pageable )
+    {
+        if(dateFin == null && dateDebut != null)
+        {
+            return festivalRepository.findAllByDateDebut(dateDebut, pageable);
+        }
+        if(dateDebut == null && dateFin != null)
+        {
+            return  festivalRepository.findAllByDateFin(dateFin, pageable);
+        }
+        return festivalRepository.findAllByDateDebutOrDateFin(dateDebut, dateFin, pageable);
+    }
 }
