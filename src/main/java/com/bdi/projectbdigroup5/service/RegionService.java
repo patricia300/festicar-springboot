@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 
 import com.bdi.projectbdigroup5.repository.RegionRepository;
 
+import java.util.Optional;
+
 @Service
 public class RegionService {
     
@@ -18,6 +20,10 @@ public class RegionService {
 
     public Iterable<Region> createRegions(Iterable<Region> regions) {
         return regionRepository.saveAll(regions);
+    }
+
+    public Optional<Region> findById(String nom){
+        return regionRepository.findById(nom);
     }
 
     public Iterable<Region> findAllRegion() {
