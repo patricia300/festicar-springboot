@@ -1,6 +1,9 @@
-package com.bdi.projectbdigroup5.controller;
+package com.bdi.projectbdigroup5.populating.controller;
 
 import com.bdi.projectbdigroup5.model.*;
+import com.bdi.projectbdigroup5.populating.model.CommuneDepartementRegionDataGouv;
+import com.bdi.projectbdigroup5.populating.model.FestivalOpenData;
+import com.bdi.projectbdigroup5.populating.model.LieuCovoiturageOpenData;
 import com.bdi.projectbdigroup5.service.*;
 import com.poiji.bind.Poiji;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +21,6 @@ public class openDataController {
 
     private List<FestivalOpenData> od = new ArrayList<>();
     private List<LieuCovoiturageOpenData> lc = new ArrayList<>();
-
     private List<CommuneDepartementRegionDataGouv> dataGouv = new ArrayList<>();
 
     @Autowired
