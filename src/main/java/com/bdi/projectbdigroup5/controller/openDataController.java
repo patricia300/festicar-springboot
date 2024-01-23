@@ -1,9 +1,7 @@
 package com.bdi.projectbdigroup5.controller;
 
 import com.bdi.projectbdigroup5.model.*;
-import com.bdi.projectbdigroup5.service.DepartementService;
-import com.bdi.projectbdigroup5.service.DomainePrincipalService;
-import com.bdi.projectbdigroup5.service.RegionService;
+import com.bdi.projectbdigroup5.service.*;
 import com.poiji.bind.Poiji;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +19,8 @@ public class openDataController {
     private List<FestivalOpenData> od = new ArrayList<>();
     private List<LieuCovoiturageOpenData> lc = new ArrayList<>();
 
+    private List<CommuneDepartementRegionDataGouv> dataGouv = new ArrayList<>();
+
     @Autowired
     private RegionService regionService;
 
@@ -30,12 +30,25 @@ public class openDataController {
     @Autowired
     private DepartementService departementService;
 
+    @Autowired
+    private CommuneService communeService;
+
+    @Autowired
+    private LieuCovoiturageService lieuCovoiturageService;
+
     @GetMapping("/")
     public List<FestivalOpenData> excelToList(@RequestParam String fileLocation) {
         od = Poiji.fromExcel(new File(fileLocation), FestivalOpenData.class);
         lc = Poiji.fromExcel(new File(fileLocation), LieuCovoiturageOpenData.class);
 
         return od;
+    }
+
+    @GetMapping("/dataGouv")
+    public List<CommuneDepartementRegionDataGouv> dataGouvToList(@RequestParam String fileLocation) {
+        dataGouv = Poiji.fromExcel(new File(fileLocation), CommuneDepartementRegionDataGouv.class);
+
+        return dataGouv;
     }
 
     @GetMapping("domainePrincipals")
@@ -47,9 +60,7 @@ public class openDataController {
             domaines.add(domaine);
         });
 
-        domainePrincipalService.createDomainePrincipals(domaines);
-
-        return domainePrincipalService.findAllDomainePrincipal();
+        return domainePrincipalService.createDomainePrincipals(domaines);
     }
 
     @GetMapping("sousDomaines")
@@ -67,52 +78,62 @@ public class openDataController {
     @GetMapping("regions")
     public Iterable<Region> getRegions() {
         Set<Region> data = new HashSet<>();
-        od.forEach(f -> {
-            Region r = new Region();
-            r.setNom(f.getRegion());
-            data.add(r);
+
+        dataGouv.forEach(f -> {
+            if(f.getNomRegion() != null && !f.getNomRegion().isEmpty()) {
+                Region r = new Region();
+                r.setNom(f.getNomRegion());
+                data.add(r);
+                System.out.println(r.getNom() + "-> " + f.getNomRegion());
+            }
         });
 
-        regionService.createRegions(data);
-
-        return regionService.findAllRegion();
+        return regionService.createRegions(data);
     }
 
     @GetMapping("departements")
     public Iterable<Departement> getDepartements() {
         Set<Departement> data = new HashSet<>();
-        od.forEach(f -> {
-            Departement d = new Departement();
-            d.setNumero(f.getDepartement());
-            d.setNom(f.getDepartement2());
+        dataGouv.forEach(f -> {
 
-            data.add(d);
+            if(f.getCodeDepartement() != null && !f.getCodeDepartement().isEmpty() && f.getNomRegion() != null && !f.getNomRegion().isEmpty()) {
+                Departement d = new Departement();
+                d.setNumero(f.getCodeDepartement());
+                d.setNom(f.getNomDepartement());
+
+                System.out.println(f.getCodeDepartement() + "->" + d.getNumero());
+                Optional<Region> region = regionService.findById(f.getNomRegion());
+                region.ifPresent(d::setRegion);
+                data.add(d);
+            }
         });
 
-        return data;
+        return departementService.createDepartements(data);
     }
 
     @GetMapping("communes")
     public Iterable<Commune> getCommunes() {
         Set<Commune> data = new HashSet<>();
-        od.forEach(f -> {
-            Commune d = new Commune();
-            d.setCodeInsee(f.getCodeINSEE());
-            d.setNom(f.getCommuneINSEE());
-            d.setCodePostal(f.getCodePostal());
+        dataGouv.forEach(f -> {
+            if(f.getCodeCommuneINSEE() != null && !f.getCodeCommuneINSEE().isEmpty() && f.getCodeDepartement() != null && !f.getCodeDepartement().isEmpty()) {
+                Commune d = new Commune();
+                d.setCodeInsee(f.getCodeCommuneINSEE());
+                d.setNom(f.getNomCommuneComplet());
+                d.setCodePostal(f.getCodePostal());
+                d.setLatitude(f.getLatitude());
+                d.setLongitude(f.getLongitude());
 
-            data.add(d);
+                System.out.println(f.getCodeDepartement());
+                Optional<Departement> departement = departementService.findById(f.getCodeDepartement());
+                departement.ifPresent(d::setDepartement);
+
+                if(d.getDepartement() != null) {
+                    data.add(d);
+                }
+            }
         });
 
-        /*lc.forEach(f -> {
-            Commune d = new Commune();
-            d.setCodeInsee(f.getCodeINSEELieu());
-            d.setNom(f.getCommuneLieu());
-            d.setLatitude(f.getLatitude());
-            d.setLongitude(f.getLongitude());
-        });*/
-
-        return data;
+        return communeService.createCommunes(data);
     }
 
     @GetMapping("festivals")
@@ -155,10 +176,15 @@ public class openDataController {
             d.setLongitude(f.getLongitude());
             d.setType(typeLieuMap.get(f.getTypeLieu()));
 
-            data.add(d);
+            Optional<Commune> commune = communeService.findCommuneById(f.getCodeINSEELieu());
+            commune.ifPresent(d::setCommune);
+
+            if(d.getCommune() != null) {
+                data.add(d);
+            }
             typeLieu.add(f.getTypeLieu());
         });
 
-        return data;
+        return lieuCovoiturageService.createLieuCovoiturages(data);
     }
 }
