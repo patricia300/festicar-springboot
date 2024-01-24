@@ -23,7 +23,7 @@ public class Panier {
     private Instant dateModification;
 
     @Enumerated(EnumType.STRING)
-    private StatutPanier statut;
+    private StatutPanier statut = StatutPanier.EN_COURS;
 
     @ManyToOne
     @JoinColumn(name = "email_festivalier", nullable = false)
