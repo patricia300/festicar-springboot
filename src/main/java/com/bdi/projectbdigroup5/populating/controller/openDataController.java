@@ -191,8 +191,13 @@ public class openDataController {
             d.setLongitude(f.getLongitude());
             d.setType(typeLieuMap.get(f.getTypeLieu()));
 
-            Optional<Commune> commune = communeService.findCommuneById(f.getCodeINSEELieu());
-            commune.ifPresent(d::setCommune);
+            try {
+                Optional<Commune> commune = communeService.findCommuneById(f.getCodeINSEELieu());
+                commune.ifPresent(d::setCommune);  
+            } catch (IllegalArgumentException e) {
+                System.out.println(f.toString());
+            }
+
 
             if(d.getCommune() != null) {
                 data.add(d);
