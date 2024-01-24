@@ -1,5 +1,6 @@
 package com.bdi.projectbdigroup5.service;
 
+import com.bdi.projectbdigroup5.dto.FestivalResponseDto;
 import com.bdi.projectbdigroup5.model.Festival;
 import com.bdi.projectbdigroup5.repository.FestivalRepository;
 
@@ -28,8 +29,23 @@ public class FestivalService {
         return festivalPage.getContent().get(0);
     }
 
-    public Iterable<Festival> getAllFestivalPerPage(Pageable pageable) {
-        return festivalRepository.findAll(pageable);
+    public Iterable<FestivalResponseDto> getAllFestivalPerPage(Pageable pageable) {
+        return festivalRepository.findAll(pageable).map(f -> {
+            return FestivalResponseDto.builder()
+                    .id(f.getId())
+                    .nom(f.getNom())
+                    .nombrePass(f.getNombrePass())
+                    .siteWeb(f.getSiteWeb())
+                    .nomCommune(f.getCommune().getNom())
+                    .offreCovoiturages(f.getOffreCovoiturages())
+                    .tarifPass(f.getTarifPass())
+                    .nomOrganisateur(f.getOrganisateur().getNom() + " " + f.getOrganisateur().getPrenom())
+                    .nomSousDomaine(f.getSousDomaine().getNom())
+                    .nom(f.getSousDomaine().getDomainePrincipal().getNom())
+                    .dateDebut(f.getDateDebut())
+                    .dateFin(f.getDateFin())
+                    .build();
+        });
     }
 
     public Iterable<Festival> getAllFestivalByCommune(String commune, Pageable pageable) {

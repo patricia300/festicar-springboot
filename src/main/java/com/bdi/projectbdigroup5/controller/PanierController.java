@@ -6,8 +6,6 @@ import com.bdi.projectbdigroup5.service.PanierService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @AllArgsConstructor
 public class PanierController {
@@ -18,7 +16,7 @@ public class PanierController {
     }
 
     @PostMapping("/panier")
-    public Optional<Panier> createPanier(@RequestBody PanierRequestBodyDto panierRequestBodyDto)
+    public Panier createPanier(@RequestBody PanierRequestBodyDto panierRequestBodyDto)
     {
         return panierService.savePanierFestivalier(panierRequestBodyDto);
     }

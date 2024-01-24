@@ -10,4 +10,5 @@ import java.util.List;
 public class PanierRequestBodyDto {
     private String emailFestivalier;
     private List<Long> idArticles;
+    private List<ArticleRequestBodyDto>  articleRequestBodyDtos;
 }

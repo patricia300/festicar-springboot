@@ -23,32 +23,31 @@ public class PanierService {
     private PanierRepository panierRepository;
     private FestivalierRepository festivalierRepository;
     private ArticleRepository articleRepository;
+    private ArticleService articleService;
 
     public Iterable<Panier> getPanierByFestivalierEmail(String email) {
         return this.panierRepository.findAllByFestivalierEmail(email);
     }
 
-    public Optional<Panier> savePanierFestivalier(PanierRequestBodyDto panierRequestBodyDto){
-
-
+    public Panier savePanierFestivalier(PanierRequestBodyDto panierRequestBodyDto){
+        // Search festivalier owner of the panier
         Festivalier festivalier = festivalierRepository
                 .findById(panierRequestBodyDto.getEmailFestivalier())
                 .orElseThrow(() -> new RuntimeException("Festivalier non trouvé"));
 
+        // Create panier
         Panier panier = new Panier();
         panier.setFestivalier(festivalier);
         this.panierRepository.save(panier);
 
+        // create articles
+        this.articleService
+                .saveAllArticle(panierRequestBodyDto.getArticleRequestBodyDtos())
+                .forEach(article -> {
+                    article.setPanier(panier);
+                    articleRepository.save(article);
+                });
 
-       List<Article> articles = panierRequestBodyDto.getIdArticles().stream()
-                .map(id -> {
-                     return articleRepository
-                            .findById(id)
-                            .orElseThrow(() -> new RuntimeException("Article $id non trouvé"));
-
-                }).collect(Collectors.toList());
-
-       this.articleRepository.saveAll(articles);
-       return Optional.of(panier);
+       return panier;
     }
 }
