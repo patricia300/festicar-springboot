@@ -16,9 +16,4 @@ public class FestivalControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @Test
-    public void listFestival() {
-
-    }
-
 }
