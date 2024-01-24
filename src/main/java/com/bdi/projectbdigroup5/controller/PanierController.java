@@ -18,7 +18,7 @@ public class PanierController {
     }
 
     @PostMapping("/panier")
-    public Optional<Panier> createPanier(@RequestBody PanierRequestBodyDto panierRequestBodyDto)
+    public Panier createPanier(@RequestBody PanierRequestBodyDto panierRequestBodyDto)
     {
         return panierService.savePanierFestivalier(panierRequestBodyDto);
     }
