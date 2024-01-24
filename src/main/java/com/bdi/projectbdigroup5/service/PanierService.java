@@ -30,7 +30,7 @@ public class PanierService {
     }
 
     public Panier savePanierFestivalier(PanierRequestBodyDto panierRequestBodyDto){
-        // Search festivalier owner of panier
+        // Search festivalier owner of the panier
         Festivalier festivalier = festivalierRepository
                 .findById(panierRequestBodyDto.getEmailFestivalier())
                 .orElseThrow(() -> new RuntimeException("Festivalier non trouvé"));
@@ -47,17 +47,6 @@ public class PanierService {
                     article.setPanier(panier);
                     articleRepository.save(article);
                 });
-
-
-      /* List<Article> articles = panierRequestBodyDto.getIdArticles().stream()
-                .map(id -> {
-                     return articleRepository
-                            .findById(id)
-                            .orElseThrow(() -> new RuntimeException("Article $id non trouvé"));
-
-                }).collect(Collectors.toList());
-
-       this.articleRepository.saveAll(articles);*/
 
        return panier;
     }

@@ -1,5 +1,6 @@
 package com.bdi.projectbdigroup5.controller;
 
+import com.bdi.projectbdigroup5.dto.FestivalResponseDto;
 import com.bdi.projectbdigroup5.property.PageableProperties;
 import com.bdi.projectbdigroup5.model.Festival;
 import com.bdi.projectbdigroup5.service.FestivalService;
@@ -20,7 +21,7 @@ public class FestivalController {
     }
 
     @GetMapping
-    public Iterable<Festival> getAllFestivals(
+    public Iterable<FestivalResponseDto> getAllFestivals(
             @RequestParam(required = false) Integer numeroPage,
             @RequestParam(required = false) Integer taillePage,
             @RequestParam(required = false) String tri) {

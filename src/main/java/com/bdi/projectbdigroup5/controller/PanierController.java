@@ -6,8 +6,6 @@ import com.bdi.projectbdigroup5.service.PanierService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @AllArgsConstructor
 public class PanierController {

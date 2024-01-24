@@ -1,5 +1,6 @@
 package com.bdi.projectbdigroup5.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -27,6 +28,7 @@ public class OffreCovoiturage {
     @ManyToOne
     @JoinColumn(name = "id_festival", nullable = false)
     @JsonIgnoreProperties("offreCovoiturages")
+    @JsonIgnore
     private Festival festival;
 
     @ManyToOne
