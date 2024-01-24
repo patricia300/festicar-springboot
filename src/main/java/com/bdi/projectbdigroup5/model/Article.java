@@ -1,6 +1,7 @@
 package com.bdi.projectbdigroup5.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ public class Article {
 
     @ManyToOne
     @JoinColumn(name = "id_panier")
+    @JsonIgnoreProperties("articles")
     private Panier panier;
 
     @ManyToOne

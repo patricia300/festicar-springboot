@@ -1,10 +1,9 @@
 package com.bdi.projectbdigroup5.service;
 
-import com.bdi.projectbdigroup5.model.Covoitureur;
 import com.bdi.projectbdigroup5.model.Festival;
 import com.bdi.projectbdigroup5.repository.FestivalRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,9 +11,8 @@ import org.springframework.stereotype.Service;
 
 
 @Service
+@AllArgsConstructor
 public class FestivalService {
-
-    @Autowired
     private FestivalRepository festivalRepository;
 
     public Festival festivalAleatoire(){
@@ -24,5 +22,9 @@ public class FestivalService {
         Page<Festival> festivalPage = festivalRepository.findAll(pageAleatoire );
 
         return festivalPage.getContent().get(0);
+    }
+
+    public Iterable<Festival> getAllFestivalPerPage(Pageable pageable) {
+        return festivalRepository.findAll(pageable);
     }
 }

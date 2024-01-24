@@ -1,10 +1,7 @@
 package com.bdi.projectbdigroup5.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 @Entity
@@ -27,9 +24,5 @@ public class LieuCovoiturage {
 
     @ManyToOne
     @JoinColumn(name = "code_insee_commune", nullable = false)
-    @JsonIgnoreProperties("lieuCovoiturages")
     private Commune commune;
-
-    @OneToMany(mappedBy = "lieuCovoiturage", fetch = FetchType.LAZY)
-    private List<PointPassageCovoiturage> pointPassageCovoiturages;
 }

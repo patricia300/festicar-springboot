@@ -1,13 +1,12 @@
 package com.bdi.projectbdigroup5.model;
 
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
 @Entity
-@Table(name="point_passage_covoiturages")
+@Table(name = "point_passage_covoiturages")
 public class PointPassageCovoiturage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +22,6 @@ public class PointPassageCovoiturage {
 
     @ManyToOne
     @JoinColumn(name = "id_offre_covoiturage", nullable = false)
+    @JsonIgnoreProperties("pointPassageCovoiturages")
     private OffreCovoiturage offreCovoiturage;
-
-    @OneToMany(mappedBy = "pointPassageCovoiturage", fetch = FetchType.LAZY)
-    private List<Article> articles;
 }

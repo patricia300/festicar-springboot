@@ -29,9 +29,6 @@ public class Festival {
     @JoinColumn(name = "code_insee_commune", nullable = false)
     private Commune commune;
 
-    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY)
-    private List<OffreCovoiturage> offreCovoiturages;
-
     @ManyToOne
     @JoinColumn(name = "nom_domaine_principal", nullable = false)
     private DomainePrincipal domainePrincipal;
@@ -43,5 +40,8 @@ public class Festival {
     @ManyToOne
     @JoinColumn(name = "email_organisateur")
     private Organisateur organisateur;
+
+    @OneToMany(mappedBy = "festival", fetch = FetchType.LAZY)
+    private List<OffreCovoiturage> offreCovoiturages;
 
 }

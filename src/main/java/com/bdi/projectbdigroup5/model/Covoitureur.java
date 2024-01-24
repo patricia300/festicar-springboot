@@ -1,7 +1,6 @@
 package com.bdi.projectbdigroup5.model;
 
 import jakarta.persistence.*;
-import java.util.List;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,7 +11,4 @@ import lombok.EqualsAndHashCode;
 public class Covoitureur extends Utilisateur {
     @Column(nullable = false)
     private String numeroTelephone;
-
-    @OneToMany(mappedBy = "covoitureur", fetch = FetchType.LAZY)
-    private List<OffreCovoiturage> offreCovoiturages;
 }
