@@ -22,7 +22,6 @@ public class FestivalController {
             @RequestParam(required = false) Integer taillePage,
             @RequestParam(required = false) String tri ) {
         Pageable festivalPage =  pageableProperties.createPageable(numeroPage, taillePage, "tarifPass", tri);
-
         return this.festivalService.getAllFestivalPerPage(festivalPage);
     }
 
