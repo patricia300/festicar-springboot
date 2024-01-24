@@ -27,13 +27,8 @@ public class CommuneController {
     }
 
     @GetMapping("/communes/nom")
-    public Iterable<String> getAllCommuneNom(
-            @RequestParam(required = false) Integer numeroPage,
-            @RequestParam(required = false) Integer taillePage,
-            @RequestParam(required = false) String order
-    ){
-        Pageable communeNomPageable = pageableProperties.createPageable(numeroPage, taillePage, "nom", order);
-        return this.communeService.findAllCommunesNom(communeNomPageable);
+    public Iterable<String> getAllCommuneNom(){
+        return this.communeService.findAllCommunesNom();
     }
 
 }
