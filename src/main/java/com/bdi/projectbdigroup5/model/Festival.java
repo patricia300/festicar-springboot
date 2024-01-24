@@ -23,6 +23,8 @@ public class Festival {
 
     private Date dateFin;
 
+    private int nombrePass;
+
     @ManyToOne
     @JoinColumn(name = "code_insee_commune", nullable = false)
     private Commune commune;

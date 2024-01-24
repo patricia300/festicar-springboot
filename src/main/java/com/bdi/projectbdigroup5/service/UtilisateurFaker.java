@@ -71,7 +71,7 @@ public class UtilisateurFaker {
     public Covoitureur createFakeCovoitureur(){
         Covoitureur covoitureur = new Covoitureur();
 
-        Faker faker=new Faker(new Locale("fr-FR"));
+        Faker faker=new Faker(new Locale("fr"));
 
         SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE);
         covoitureur.setNom(faker.name().lastName());
@@ -90,7 +90,7 @@ public class UtilisateurFaker {
 
     public Organisateur createFakeOrganisateur(){
         Organisateur organisateur = new Organisateur();
-        Faker faker=new Faker(new Locale("fr-FR"));
+        Faker faker=new Faker(new Locale("fr"));
 
         SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE);
         organisateur.setNom(faker.name().lastName());
@@ -106,7 +106,7 @@ public class UtilisateurFaker {
     }
 
     public Festivalier createFakeFestivalier(){
-        Faker faker=new Faker(new Locale("fr-FR"));
+        Faker faker=new Faker(new Locale("fr"));
         Address address = faker.address();
 
         Festivalier festivalier = new Festivalier();
