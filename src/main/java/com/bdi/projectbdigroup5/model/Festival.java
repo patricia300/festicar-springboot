@@ -30,11 +30,7 @@ public class Festival {
     private Commune commune;
 
     @ManyToOne
-    @JoinColumn(name = "nom_domaine_principal", nullable = false)
-    private DomainePrincipal domainePrincipal;
-
-    @ManyToOne
-    @JoinColumn(name = "nom_sous_domaine")
+    @JoinColumn(name = "nom_sous_domaine", nullable = false)
     private SousDomaine sousDomaine;
 
     @ManyToOne

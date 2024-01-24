@@ -27,4 +27,8 @@ public class FestivalService {
     public Iterable<Festival> getAllFestivalPerPage(Pageable pageable) {
         return festivalRepository.findAll(pageable);
     }
+
+    public Iterable<Festival> createFestivals(Iterable<Festival> festivals){
+        return festivalRepository.saveAll(festivals);
+    }
 }
