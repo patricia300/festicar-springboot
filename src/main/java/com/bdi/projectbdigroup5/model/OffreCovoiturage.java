@@ -21,7 +21,7 @@ public class OffreCovoiturage {
     private String modeleVoiture;
 
     private Date heureDepart;
-
+    
     private Date heureArrive;
 
     @ManyToOne

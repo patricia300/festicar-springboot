@@ -41,6 +41,12 @@ public class openDataController {
     @Autowired
     private SousDomaineService sousDomaineService;
 
+    @Autowired 
+    private OrganisateurService organisateurService;
+
+    @Autowired
+    private FestivalService festivalService;
+
     @GetMapping("/")
     public List<FestivalOpenData> excelToList(@RequestParam String fileLocation) {
         od = Poiji.fromExcel(new File(fileLocation), FestivalOpenData.class);
@@ -156,16 +162,29 @@ public class openDataController {
         Set<Festival> data = new HashSet<>();
         od.forEach(f -> {
             Festival d = new Festival();
+            Optional<Commune> result = communeService.findCommuneById(f.getCodeINSEE());
+
             d.setNom(f.getNomManifestation());
             d.setDateDebut(f.getDateDebut());
             d.setDateFin(f.getDateFin());
             d.setTarifPass(f.getTarifPass());
             d.setSiteWeb(f.getSiteWEB());
-
-            data.add(d);
+            d.setOrganisateur(organisateurService.organisateurAleatoire());
+            d.setNombrePass((int)Math.floor(Math.random()*71 + 30));
+            if(f.getSousDomaine()==null | f.getSousDomaine().isEmpty()){
+                d.setSousDomaine(sousDomaineService.findById(f.getDomaine()).get());
+            }else{
+                d.setSousDomaine(sousDomaineService.findById(f.getSousDomaine()).get());
+            }
+            
+            if (result.isPresent()){
+                d.setCommune(result.get());
+                data.add(d);
+            }
+            
         });
 
-        return data;
+        return festivalService.createFestivals(data);
     }
 
     @GetMapping("lieuCovoiturages")
@@ -191,8 +210,13 @@ public class openDataController {
             d.setLongitude(f.getLongitude());
             d.setType(typeLieuMap.get(f.getTypeLieu()));
 
-            Optional<Commune> commune = communeService.findCommuneById(f.getCodeINSEELieu());
-            commune.ifPresent(d::setCommune);
+            try {
+                Optional<Commune> commune = communeService.findCommuneById(f.getCodeINSEELieu());
+                commune.ifPresent(d::setCommune);  
+            } catch (IllegalArgumentException e) {
+                System.out.println(f.toString());
+            }
+
 
             if(d.getCommune() != null) {
                 data.add(d);

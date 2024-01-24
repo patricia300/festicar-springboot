@@ -1,6 +1,7 @@
 package com.bdi.projectbdigroup5.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.Instant;
