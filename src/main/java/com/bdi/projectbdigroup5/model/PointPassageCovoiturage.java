@@ -1,5 +1,6 @@
 package com.bdi.projectbdigroup5.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -22,6 +23,6 @@ public class PointPassageCovoiturage {
 
     @ManyToOne
     @JoinColumn(name = "id_offre_covoiturage", nullable = false)
-    @JsonIgnoreProperties("pointPassageCovoiturages")
+    @JsonIgnore
     private OffreCovoiturage offreCovoiturage;
 }
