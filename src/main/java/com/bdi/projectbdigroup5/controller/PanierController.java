@@ -20,4 +20,10 @@ public class PanierController {
     {
         return panierService.savePanierFestivalier(panierRequestBodyDto);
     }
+
+    @PutMapping("/panier/payer")
+    public Panier createPanier(@RequestParam Long id)
+    {
+        return panierService.updatePanierStatusToPayed(id);
+    }
 }

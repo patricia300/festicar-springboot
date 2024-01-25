@@ -31,19 +31,10 @@ public class ArticleService {
         int nbPass = getNbPass(pointPassageCovoiturage);
 
 
-        if(nbPlace < requestBodyDto.getQuantite()) {
-            throw new NombrePlaceCovoiturageInsuffisantException(
-                    pointPassageCovoiturage.getOffreCovoiturage().getId(),
-                    nbPlace
-            );
-        }
+        verifierNombrePlace(nbPlace, requestBodyDto.getQuantite(), pointPassageCovoiturage.getOffreCovoiturage().getId());
+        verifierNombrePass(nbPass, requestBodyDto.getQuantite(), pointPassageCovoiturage.getOffreCovoiturage().getFestival().getId());
 
-        if(nbPass < requestBodyDto.getQuantite()){
-            throw new NombrePassFestivalInsuffisantException(
-                    pointPassageCovoiturage.getOffreCovoiturage().getFestival().getId(),
-                    nbPass
-            );
-        }
+
 
         Article newArticle = new Article();
         newArticle.setPointPassageCovoiturage(pointPassageCovoiturage);
@@ -56,7 +47,7 @@ public class ArticleService {
         return articleRequestBodyDtos.stream().map(this::saveArticle).toList();
     }
 
-    private static int getNbPlace(PointPassageCovoiturage pointPassageCovoiturage) {
+    public static int getNbPlace(PointPassageCovoiturage pointPassageCovoiturage) {
         int nbPlace = pointPassageCovoiturage.getOffreCovoiturage().getNombrePlaces();
         if(nbPlace == 0) {
             throw new QuantiteZeroException(
@@ -65,10 +56,9 @@ public class ArticleService {
             );
         }
         return nbPlace;
-
     }
 
-    private static int getNbPass(PointPassageCovoiturage pointPassageCovoiturage) {
+    public static int getNbPass(PointPassageCovoiturage pointPassageCovoiturage) {
         int nbPass = pointPassageCovoiturage.getOffreCovoiturage().getFestival().getNombrePass();
 
         if(nbPass == 0) {
@@ -79,5 +69,23 @@ public class ArticleService {
         }
 
         return nbPass;
+    }
+
+    public static void verifierNombrePlace(int nbPlace, int quantite, Long idCovoiturage){
+        if(nbPlace < quantite) {
+            throw new NombrePlaceCovoiturageInsuffisantException(
+                    idCovoiturage,
+                    nbPlace
+            );
+        }
+    }
+
+    public static void verifierNombrePass(int nbPass, int quantite, Long idFestival) {
+        if(nbPass < quantite){
+            throw new NombrePassFestivalInsuffisantException(
+                    idFestival,
+                    nbPass
+            );
+        }
     }
 }
