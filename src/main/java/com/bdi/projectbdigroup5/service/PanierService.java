@@ -41,12 +41,13 @@ public class PanierService {
         this.panierRepository.save(panier);
 
         // create articles
-        this.articleService
-                .saveAllArticle(panierRequestBodyDto.getArticleRequestBodyDtos())
-                .forEach(article -> {
+        List<Article> articles = (List<Article>) this.articleService.saveAllArticle(panierRequestBodyDto.getArticles());
+        articles.forEach(article -> {
                     article.setPanier(panier);
                     articleRepository.save(article);
                 });
+
+        panier.setArticles(articles);
 
        return panier;
     }
