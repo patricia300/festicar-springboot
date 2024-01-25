@@ -3,8 +3,12 @@ package com.bdi.projectbdigroup5.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.bdi.projectbdigroup5.model.Festival;
 import com.bdi.projectbdigroup5.model.LieuCovoiturage;
 import com.bdi.projectbdigroup5.repository.LieuCovoiturageRepository;
 
@@ -28,5 +32,14 @@ public class LieuCovoiturageService {
 
     public Iterable<LieuCovoiturage> findByNom(String nom) {
         return lieuCovoiturageRepository.findByNom(nom);
+    }
+
+    public LieuCovoiturage lieuCovoiturageAleatoire(){
+        Long count = lieuCovoiturageRepository.count();
+        int nombrePageAleatoire = (int)(Math.random() * count);
+        Pageable pageAleatoire = PageRequest.of(nombrePageAleatoire, 1);
+        Page<LieuCovoiturage> lieuCovoituragePage = lieuCovoiturageRepository.findAll(pageAleatoire );
+
+        return lieuCovoituragePage.getContent().get(0);
     }
 }

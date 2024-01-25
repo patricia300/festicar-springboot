@@ -1,5 +1,6 @@
 package com.bdi.projectbdigroup5.service;
 
+import com.bdi.projectbdigroup5.model.Article;
 import com.bdi.projectbdigroup5.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,4 +9,8 @@ import org.springframework.stereotype.Service;
 public class ArticleService {
     @Autowired
     private ArticleRepository articleRepository;
+
+    public Iterable<Article> createArticles(Iterable<Article> articles){
+        return articleRepository.saveAll(articles);
+    }
 }
