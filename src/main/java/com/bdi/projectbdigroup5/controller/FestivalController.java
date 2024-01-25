@@ -24,8 +24,9 @@ public class FestivalController {
     public Iterable<FestivalResponseDto> getAllFestivals(
             @RequestParam(required = false) Integer numeroPage,
             @RequestParam(required = false) Integer taillePage,
+            @RequestParam(required = false) String triPar,
             @RequestParam(required = false) String tri) {
-        Pageable festivalPage = pageableProperties.createPageable(numeroPage, taillePage, "tarifPass", tri);
+        Pageable festivalPage = pageableProperties.createPageable(numeroPage, taillePage, "dateDebut", tri);
         return this.festivalService.getAllFestivalPerPage(festivalPage);
     }
 
