@@ -56,7 +56,7 @@ public class FestivalService {
                     .tarifPass(f.getTarifPass())
                     .nomOrganisateur(f.getOrganisateur().getNom() + " " + f.getOrganisateur().getPrenom())
                     .nomSousDomaine(f.getSousDomaine().getNom())
-                    .nom(f.getSousDomaine().getDomainePrincipal().getNom())
+                    .nomDomainePrincipal(f.getSousDomaine().getDomainePrincipal().getNom())
                     .dateDebut(f.getDateDebut())
                     .dateFin(f.getDateFin())
                     .build();
