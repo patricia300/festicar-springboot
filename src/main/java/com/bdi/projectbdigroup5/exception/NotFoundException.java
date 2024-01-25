@@ -4,9 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Ressource not found")
 @AllArgsConstructor
-@ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE, reason = "Aucun place ou pass disponible")
-public class QuantiteZeroException extends RuntimeException{
-    private Long id;
-    private String classType;
+public class NotFoundException extends RuntimeException {
+    private String message;
 }
