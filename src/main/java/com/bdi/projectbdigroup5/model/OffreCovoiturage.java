@@ -27,7 +27,6 @@ public class OffreCovoiturage {
 
     @ManyToOne
     @JoinColumn(name = "id_festival", nullable = false)
-    @JsonIgnoreProperties("offreCovoiturages")
     @JsonIgnore
     private Festival festival;
 

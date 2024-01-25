@@ -41,5 +41,5 @@ public class FestivalResponseDto {
 
     private String nomOrganisateur;
 
-    private List<OffreCovoiturage> offreCovoiturages;
+    private List<OffreCovoiturageFestivalDto> offreCovoiturages;
 }

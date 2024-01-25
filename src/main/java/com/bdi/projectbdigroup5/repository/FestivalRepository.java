@@ -11,7 +11,6 @@ import org.springframework.data.repository.CrudRepository;
 @Repository
 public interface FestivalRepository extends CrudRepository<Festival, Long>, PagingAndSortingRepository<Festival, Long> {
 
-    //@Query("select f.id , f.nom, f.commune.nom, f.dateDebut, f.dateFin,f.siteWeb,f.organisateur.nom,f.nombrePass, f.tarifPass,f.sousDomaine.nom, f.sousDomaine.domainePrincipal.nom, f.offreCovoiturages from Festival f")
     public Page<Festival> findAll(Pageable pageable);
 
     public Page<Festival> findAllByCommuneNom(String commune, Pageable pageable);
