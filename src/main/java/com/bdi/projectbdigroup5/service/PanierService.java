@@ -1,13 +1,9 @@
 package com.bdi.projectbdigroup5.service;
 
 import com.bdi.projectbdigroup5.dto.PanierRequestBodyDto;
-import com.bdi.projectbdigroup5.model.Article;
-import com.bdi.projectbdigroup5.model.Festival;
-import com.bdi.projectbdigroup5.model.Festivalier;
-import com.bdi.projectbdigroup5.model.Panier;
-import com.bdi.projectbdigroup5.repository.ArticleRepository;
-import com.bdi.projectbdigroup5.repository.FestivalierRepository;
-import com.bdi.projectbdigroup5.repository.PanierRepository;
+import com.bdi.projectbdigroup5.exception.NotFoundException;
+import com.bdi.projectbdigroup5.model.*;
+import com.bdi.projectbdigroup5.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -17,12 +13,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.bdi.projectbdigroup5.service.ArticleService.*;
+
 @Service
 @AllArgsConstructor
 public class PanierService {
     private PanierRepository panierRepository;
     private FestivalierRepository festivalierRepository;
     private ArticleRepository articleRepository;
+    private FestivalRepository festivalRepository;
+    private OffreCovoiturageRepository offreCovoiturageRepository;
     private ArticleService articleService;
 
     public Iterable<Panier> getPanierByFestivalierEmail(String email) {
@@ -41,13 +41,42 @@ public class PanierService {
         this.panierRepository.save(panier);
 
         // create articles
-        this.articleService
-                .saveAllArticle(panierRequestBodyDto.getArticleRequestBodyDtos())
-                .forEach(article -> {
+        List<Article> articles = (List<Article>) this.articleService.saveAllArticle(panierRequestBodyDto.getArticles());
+        articles.forEach(article -> {
                     article.setPanier(panier);
                     articleRepository.save(article);
                 });
 
+        panier.setArticles(articles);
+
        return panier;
+    }
+
+    public Panier updatePanierStatusToPayed(Long id){
+        //Chercher panier
+        Panier panier = panierRepository.findById(id).orElseThrow(() -> new NotFoundException("Panier non trouvé"));
+        // Verifier element panier
+        panier.getArticles().forEach(article -> {
+            int nbPlace = getNbPlace(article.getPointPassageCovoiturage());
+            int nbPass = getNbPass(article.getPointPassageCovoiturage());
+
+            Festival festival =   article.getPointPassageCovoiturage().getOffreCovoiturage().getFestival();
+            OffreCovoiturage offreCovoiturage =  article.getPointPassageCovoiturage().getOffreCovoiturage();
+
+            verifierNombrePlace(nbPlace, article.getQuantite(),offreCovoiturage.getId());
+            verifierNombrePass(nbPass, article.getQuantite(), festival.getId());
+
+            // Réduire nb de place et pass
+            offreCovoiturage.setNombrePlaces((nbPlace - article.getQuantite()));
+            festival.setNombrePass((nbPass - article.getQuantite()));
+
+            offreCovoiturageRepository.save(offreCovoiturage);
+            festivalRepository.save(festival);
+        });
+
+        // Modifier status panier
+        panier.setStatut(StatutPanier.PAYER);
+        panierRepository.save(panier);
+        return panier;
     }
 }

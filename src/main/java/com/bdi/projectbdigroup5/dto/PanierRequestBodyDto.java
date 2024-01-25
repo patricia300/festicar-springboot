@@ -9,6 +9,5 @@ import java.util.List;
 @Getter
 public class PanierRequestBodyDto {
     private String emailFestivalier;
-    private List<Long> idArticles;
-    private List<ArticleRequestBodyDto>  articleRequestBodyDtos;
+    private List<ArticleRequestBodyDto>  articles;
 }
