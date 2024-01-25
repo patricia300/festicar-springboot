@@ -1,6 +1,9 @@
 package com.bdi.projectbdigroup5.service;
 
 import com.bdi.projectbdigroup5.dto.ArticleRequestBodyDto;
+import com.bdi.projectbdigroup5.exception.NombrePassFestivalInsuffisantException;
+import com.bdi.projectbdigroup5.exception.NombrePlaceCovoiturageInsuffisantException;
+import com.bdi.projectbdigroup5.exception.QuantiteZeroException;
 import com.bdi.projectbdigroup5.model.Article;
 import com.bdi.projectbdigroup5.model.PointPassageCovoiturage;
 import com.bdi.projectbdigroup5.repository.ArticleRepository;
@@ -23,6 +26,27 @@ public class ArticleService {
                 .findById(requestBodyDto
                         .getIdPointPassage())
                 .orElseThrow(() -> new RuntimeException("Point passage covoiturage non trouvé"));
+
+        int nbPlace = pointPassageCovoiturage.getOffreCovoiturage().getNombrePlaces();
+        int nbPass = pointPassageCovoiturage.getOffreCovoiturage().getFestival().getNombrePass();
+
+        if(nbPlace == 0 || nbPass == 0) {
+            throw new QuantiteZeroException(pointPassageCovoiturage.getId());
+        }
+
+        if(nbPlace < requestBodyDto.getQuantite()) {
+            throw new NombrePlaceCovoiturageInsuffisantException(
+                    pointPassageCovoiturage.getOffreCovoiturage().getId(),
+                    nbPlace
+            );
+        }
+
+        if(nbPass < requestBodyDto.getQuantite()){
+            throw new NombrePassFestivalInsuffisantException(
+                    pointPassageCovoiturage.getOffreCovoiturage().getFestival().getId(),
+                    nbPass
+            );
+        }
 
         Article newArticle = new Article();
         newArticle.setPointPassageCovoiturage(pointPassageCovoiturage);
