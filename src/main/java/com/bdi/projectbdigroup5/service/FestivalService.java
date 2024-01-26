@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +25,21 @@ public class FestivalService {
 
     public Festival createFestival(Festival festival) {
         return festivalRepository.save(festival);
+    }
+
+    public Iterable<Festival> getAllFestivalByFilter(
+            String dateDebut,
+            String communeCodeInsee,
+            String sousDomaine,
+            Pageable pageable )
+    {
+        Date date = new Date(dateDebut);
+        return this.festivalRepository.findAllByDateDebutAndCommuneCodeInseeAndSousDomaineNom(
+                date,
+                communeCodeInsee,
+                sousDomaine,
+                pageable
+        );
     }
 
     public Festival festivalAleatoire() {
