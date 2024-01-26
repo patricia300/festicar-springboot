@@ -5,13 +5,9 @@ import com.bdi.projectbdigroup5.exception.NotFoundException;
 import com.bdi.projectbdigroup5.model.*;
 import com.bdi.projectbdigroup5.repository.*;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.bdi.projectbdigroup5.service.ArticleService.*;
 

@@ -8,11 +8,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-
 @RestController
 @AllArgsConstructor
 @RequestMapping("/festivals")

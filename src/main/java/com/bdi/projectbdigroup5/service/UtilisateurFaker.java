@@ -4,7 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.github.javafaker.Address;
@@ -17,18 +17,16 @@ import com.bdi.projectbdigroup5.model.Organisateur;
 
 
 @Service
+@AllArgsConstructor
 public class UtilisateurFaker {
 
-    @Autowired
     FestivalierService festivalierService;
-    @Autowired
     OrganisateurService organisateurService;
-    @Autowired
     CovoitureurService covoitureurService;
 
     
     public Iterable<Festivalier> createFakeFestivaliers(int nombreFestivaliers){
-        ArrayList<Festivalier> festivaliers=new ArrayList<Festivalier>();
+        ArrayList<Festivalier> festivaliers = new ArrayList<>();
         
         int compteur = nombreFestivaliers;
         while(compteur>0){
@@ -41,7 +39,7 @@ public class UtilisateurFaker {
     }
 
     public Iterable<Organisateur> createFakeOrganisateurs(int nombreOrganisateur){
-        ArrayList<Organisateur> organisateurs=new ArrayList<Organisateur>();
+        ArrayList<Organisateur> organisateurs=new ArrayList<>();
 
         int compteur = nombreOrganisateur;
         while (compteur>=0) {
@@ -55,7 +53,7 @@ public class UtilisateurFaker {
     }
 
     public Iterable<Covoitureur> createFakeCovoitureurs(int nombreCovoitureur){
-        ArrayList<Covoitureur> covoitureurs= new ArrayList<Covoitureur>();
+        ArrayList<Covoitureur> covoitureurs= new ArrayList<>();
 
         int compteur = nombreCovoitureur;
         while (compteur>=0) {
@@ -71,7 +69,7 @@ public class UtilisateurFaker {
     public Covoitureur createFakeCovoitureur(){
         Covoitureur covoitureur = new Covoitureur();
 
-        Faker faker=new Faker(new Locale("fr"));
+        Faker faker = new Faker(new Locale("fr"));
 
         SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE);
         covoitureur.setNom(faker.name().lastName());
@@ -90,7 +88,7 @@ public class UtilisateurFaker {
 
     public Organisateur createFakeOrganisateur(){
         Organisateur organisateur = new Organisateur();
-        Faker faker=new Faker(new Locale("fr"));
+        Faker faker = new Faker(new Locale("fr"));
 
         SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE);
         organisateur.setNom(faker.name().lastName());

@@ -1,6 +1,7 @@
 package com.bdi.projectbdigroup5.populating.controller;
 
 
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bdi.projectbdigroup5.model.Covoitureur;
@@ -19,36 +20,33 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
 @RequestMapping("/fakedata")
+@AllArgsConstructor
 public class Fakedata {
 
-    @Autowired 
     private FestivalService festivalService;
     
-    @Autowired
     private CovoitureurService covoitureurService;
 
-    @Autowired
     private OffreCovoiturageService offreCovoiturageService;
 
     @GetMapping("/offreCovoiturage")
     public Iterable<OffreCovoiturage> getOffreCovoiturage(@RequestParam int nombreOffreCovoiturage) {
 
         
-        List<OffreCovoiturage> offreCovoiturages = new ArrayList<OffreCovoiturage>();
+        List<OffreCovoiturage> offreCovoiturages = new ArrayList<>();
         
         for( int i=1; i<=nombreOffreCovoiturage; i++ ){
             Festival festival  = festivalService.festivalAleatoire();
             Covoitureur covoitureur = covoitureurService.covoitureurAleatoir();
             LocalDate festivalLocalDate = festival.getDateDebut().toInstant().atZone(ZoneId.systemDefault()).toLocalDate(); 
             Date offreCovoiturageDate = Date.from(festivalLocalDate.minusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
-            Calendar calendar =Calendar.getInstance();
+            Calendar calendar = Calendar.getInstance();
             calendar.setTime(offreCovoiturageDate);
             calendar.add(calendar.HOUR_OF_DAY,(int)Math.floor(Math.random() * 13 + 8));
             Date offreCovoiturageHeureDepart= calendar.getTime();

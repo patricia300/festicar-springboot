@@ -7,5 +7,5 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Ressource not found")
 @AllArgsConstructor
 public class NotFoundException extends RuntimeException {
-    private String message;
+    private final String message;
 }

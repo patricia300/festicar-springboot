@@ -6,7 +6,7 @@ import com.bdi.projectbdigroup5.populating.model.FestivalOpenData;
 import com.bdi.projectbdigroup5.populating.model.LieuCovoiturageOpenData;
 import com.bdi.projectbdigroup5.service.*;
 import com.poiji.bind.Poiji;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,34 +17,27 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/openData")
-public class openDataController {
+@AllArgsConstructor
+public class OpenDataController {
 
     private List<FestivalOpenData> od = new ArrayList<>();
     private List<LieuCovoiturageOpenData> lc = new ArrayList<>();
     private List<CommuneDepartementRegionDataGouv> dataGouv = new ArrayList<>();
 
-    @Autowired
     private RegionService regionService;
 
-    @Autowired
     private DomainePrincipalService domainePrincipalService;
 
-    @Autowired
     private DepartementService departementService;
 
-    @Autowired
     private CommuneService communeService;
 
-    @Autowired
     private LieuCovoiturageService lieuCovoiturageService;
 
-    @Autowired
     private SousDomaineService sousDomaineService;
 
-    @Autowired 
     private OrganisateurService organisateurService;
 
-    @Autowired
     private FestivalService festivalService;
 
     @GetMapping("/")
@@ -171,7 +164,7 @@ public class openDataController {
             d.setSiteWeb(f.getSiteWEB());
             d.setOrganisateur(organisateurService.organisateurAleatoire());
             d.setNombrePass((int)Math.floor(Math.random()*71 + 30));
-            if(f.getSousDomaine()==null | f.getSousDomaine().isEmpty()){
+            if(f.getSousDomaine()==null || f.getSousDomaine().isEmpty()){
                 d.setSousDomaine(sousDomaineService.findById(f.getDomaine()).get());
             }else{
                 d.setSousDomaine(sousDomaineService.findById(f.getSousDomaine()).get());
