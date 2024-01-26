@@ -51,33 +51,20 @@ public class FestivalService {
     }
 
     public Iterable<FestivalResponseDto> getAllFestivalPerPage(Pageable pageable) {
-        return festivalRepository.findAll(pageable).map(f -> {
-            List<OffreCovoiturageFestivalDto> offreCovoiturageFestivalDtos =  f.getOffreCovoiturages().stream().map(o -> OffreCovoiturageFestivalDto.builder()
-                    .id(o.getId())
-                    .dateOffre(o.getDateOffre())
-                    .heureArrive(o.getHeureArrive())
-                    .heureDepart(o.getHeureDepart())
-                    .pointPassageCovoiturages(o.getPointPassageCovoiturages())
-                    .covoitureur(o.getCovoitureur())
-                    .modeleVoiture(o.getModeleVoiture())
-                    .nombrePlaces(o.getNombrePlaces())
-                    .build()).collect(Collectors.toList());
-
-            return FestivalResponseDto.builder()
+        return festivalRepository.findAll(pageable).map(f -> FestivalResponseDto.builder()
                     .id(f.getId())
                     .nom(f.getNom())
                     .nombrePass(f.getNombrePass())
                     .siteWeb(f.getSiteWeb())
                     .nomCommune(f.getCommune().getNom())
-                    .offreCovoiturages(offreCovoiturageFestivalDtos)
                     .tarifPass(f.getTarifPass())
                     .nomOrganisateur(f.getOrganisateur().getNom() + " " + f.getOrganisateur().getPrenom())
                     .nomSousDomaine(f.getSousDomaine().getNom())
                     .nomDomainePrincipal(f.getSousDomaine().getDomainePrincipal().getNom())
                     .dateDebut(f.getDateDebut())
                     .dateFin(f.getDateFin())
-                    .build();
-        });
+                    .build()
+        );
     }
 
     public Iterable<Festival> getAllFestivalByCommune(String commune, Pageable pageable) {
