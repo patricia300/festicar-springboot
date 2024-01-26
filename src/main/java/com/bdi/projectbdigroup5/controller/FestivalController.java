@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/festivals")
@@ -58,8 +60,13 @@ public class FestivalController {
             @RequestParam(required = false) String dateDebut,
             @RequestParam String communeCodeInsee,
             @RequestParam String sousDomaine
-    ) {
+    ) throws ParseException {
         Pageable festivalPage = pageableProperties.createPageable(numeroPage, taillePage,triPar, tri);
         return this.festivalService.getAllFestivalByFilter( dateDebut, communeCodeInsee, sousDomaine,festivalPage);
+    }
+
+    @GetMapping("/{id}")
+    public FestivalResponseDto getOneFestival(@PathVariable String id) {
+        return this.festivalService.getOneFestivalById(Long.parseLong(id));
     }
 }

@@ -2,6 +2,7 @@ package com.bdi.projectbdigroup5.service;
 
 import com.bdi.projectbdigroup5.dto.FestivalResponseDto;
 import com.bdi.projectbdigroup5.dto.OffreCovoiturageFestivalDto;
+import com.bdi.projectbdigroup5.exception.NotFoundException;
 import com.bdi.projectbdigroup5.model.Festival;
 import com.bdi.projectbdigroup5.repository.FestivalRepository;
 
@@ -13,9 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -30,9 +32,8 @@ public class FestivalService {
             String dateDebut,
             String communeCodeInsee,
             String sousDomaine,
-            Pageable pageable )
-    {
-        Date date = new Date(dateDebut);
+            Pageable pageable ) throws ParseException {
+        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateDebut);
         return this.festivalRepository.findAllByDateDebutAndCommuneCodeInseeAndSousDomaineNom(
                 date,
                 communeCodeInsee,
@@ -83,5 +84,37 @@ public class FestivalService {
 
     public Iterable<Festival> createFestivals(Iterable<Festival> festivals) {
         return festivalRepository.saveAll(festivals);
+    }
+
+    public FestivalResponseDto getOneFestivalById(Long id)
+    {
+        Festival festival =  festivalRepository.findById(id).orElseThrow(() -> new NotFoundException("Festival not found"));
+        List<OffreCovoiturageFestivalDto> offreCovoiturageFestivalDtos = festival.getOffreCovoiturages().stream()
+                .map(o -> OffreCovoiturageFestivalDto.builder()
+                    .id(o.getId())
+                    .dateOffre(o.getDateOffre())
+                    .heureArrive(o.getHeureArrive())
+                    .heureDepart(o.getHeureDepart())
+                    .pointPassageCovoiturages(o.getPointPassageCovoiturages())
+                    .covoitureur(o.getCovoitureur())
+                    .modeleVoiture(o.getModeleVoiture())
+                    .nombrePlaces(o.getNombrePlaces())
+                    .build()
+                ).toList();
+
+        return FestivalResponseDto.builder()
+                .id(festival.getId())
+                .nom(festival.getNom())
+                .nombrePass(festival.getNombrePass())
+                .siteWeb(festival.getSiteWeb())
+                .nomCommune(festival.getCommune().getNom())
+                .offreCovoiturages(offreCovoiturageFestivalDtos)
+                .tarifPass(festival.getTarifPass())
+                .nomOrganisateur(festival.getOrganisateur().getNomComplet())
+                .nomSousDomaine(festival.getSousDomaine().getNom())
+                .nomDomainePrincipal(festival.getSousDomaine().getDomainePrincipal().getNom())
+                .dateDebut(festival.getDateDebut())
+                .dateFin(festival.getDateFin())
+                .build();
     }
 }
