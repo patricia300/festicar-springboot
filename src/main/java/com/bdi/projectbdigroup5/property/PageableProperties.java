@@ -22,7 +22,8 @@ public class PageableProperties {
             Integer numeroPage,
             Integer taillePage,
             String triPar,
-            String tri) {
+            String tri)
+    {
         String ordreTri = tri != null ? tri : "asc";
 
         return  PageRequest.of(
@@ -31,6 +32,18 @@ public class PageableProperties {
                 ordreTri.equalsIgnoreCase("asc") ?
                         Sort.by(triPar).ascending() :
                         Sort.by(triPar).descending()
+        );
+    }
+
+    public Pageable createPageable() {
+        return  PageRequest.of(this.getNumeroPageParDefaut() , this.getTailleElementParDefaut());
+    }
+
+    public Pageable createPageable( Integer numeroPage, Integer taillePage )
+    {
+        return  PageRequest.of(
+                numeroPage != null ? numeroPage : this.getNumeroPageParDefaut() ,
+                taillePage != null ? taillePage : this.getTailleElementParDefaut()
         );
     }
 }
