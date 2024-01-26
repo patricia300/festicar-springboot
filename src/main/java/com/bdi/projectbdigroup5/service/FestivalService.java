@@ -32,12 +32,14 @@ public class FestivalService {
             String dateDebut,
             String communeCodeInsee,
             String sousDomaine,
+            String domainePrincipal,
             Pageable pageable ) throws ParseException {
         Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateDebut);
-        return this.festivalRepository.findAllByDateDebutAndCommuneCodeInseeAndSousDomaineNom(
+        return this.festivalRepository.findAllByDateDebutAfterAndCommuneCodeInseeOrSousDomaineNomLikeOrSousDomaineDomainePrincipalNomLike(
                 date,
                 communeCodeInsee,
                 sousDomaine,
+                domainePrincipal,
                 pageable
         );
     }
