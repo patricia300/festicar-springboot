@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PanierRepository extends CrudRepository<Panier,Long> {
+    Iterable<Panier> findAllByFestivalierEmail(String email);
 }

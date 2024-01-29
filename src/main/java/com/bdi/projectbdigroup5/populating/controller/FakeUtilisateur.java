@@ -22,7 +22,7 @@ public class FakeUtilisateur {
     
     @GetMapping("/Festivalier")
     public List<Festivalier> getfestivaliersList(@RequestParam int nombreFestivaliers) {
-        List<Festivalier> festivaliers = new ArrayList<Festivalier>();
+        List<Festivalier> festivaliers = new ArrayList<>();
         Iterable<Festivalier> iterableFestivalier = utilisateurFaker.createFakeFestivaliers(nombreFestivaliers); 
         for(Festivalier festivalier : iterableFestivalier){
             festivaliers.add(festivalier);
@@ -32,7 +32,7 @@ public class FakeUtilisateur {
 
     @GetMapping("/Covoitureur")
     public List<Covoitureur> getCovoitureurList(@RequestParam int nombreCovoitureurs) {
-        List<Covoitureur> covoitureurs = new ArrayList<Covoitureur>();
+        List<Covoitureur> covoitureurs = new ArrayList<>();
         Iterable<Covoitureur> iterableCovoitureur = utilisateurFaker.createFakeCovoitureurs(nombreCovoitureurs); 
         for(Covoitureur covoitureur : iterableCovoitureur){
             covoitureurs.add(covoitureur);
@@ -42,7 +42,7 @@ public class FakeUtilisateur {
 
     @GetMapping("/Organisateur")
     public List<Organisateur> getMethodName(@RequestParam int nombreOrganisateurs) {
-        List<Organisateur> organisateurs = new ArrayList<Organisateur>();
+        List<Organisateur> organisateurs = new ArrayList<>();
         Iterable<Organisateur> iterableOrganisateur = utilisateurFaker.createFakeOrganisateurs(nombreOrganisateurs); 
         for(Organisateur organisateur : iterableOrganisateur){
             organisateurs.add(organisateur);
