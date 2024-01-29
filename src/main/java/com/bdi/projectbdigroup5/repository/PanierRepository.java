@@ -5,9 +5,11 @@ import com.bdi.projectbdigroup5.model.StatutPanier;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface PanierRepository extends CrudRepository<Panier,Long> {
-    Iterable<Panier> findAllByFestivalierEmail(String email);
+    List<Panier> findAllByFestivalierEmail(String email);
 
     Panier findFirstByFestivalierEmailAndStatut(String email, StatutPanier statutPanier);
 }
