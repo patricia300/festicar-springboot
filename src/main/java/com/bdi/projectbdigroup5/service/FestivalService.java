@@ -2,7 +2,6 @@ package com.bdi.projectbdigroup5.service;
 
 import com.bdi.projectbdigroup5.dto.FestivalResponseDto;
 import com.bdi.projectbdigroup5.dto.OffreCovoiturageFestivalDto;
-import com.bdi.projectbdigroup5.exception.NotFoundException;
 import com.bdi.projectbdigroup5.model.Festival;
 import com.bdi.projectbdigroup5.repository.FestivalRepository;
 
@@ -14,10 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -28,33 +26,18 @@ public class FestivalService {
         return festivalRepository.save(festival);
     }
 
-    public Iterable<FestivalResponseDto> getAllFestivalByFilter(
+    public Iterable<Festival> getAllFestivalByFilter(
             String dateDebut,
             String communeCodeInsee,
             String sousDomaine,
-            String domainePrincipal,
-            Pageable pageable ) throws ParseException {
-        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateDebut);
-        return this.festivalRepository
-                .findAllByDateDebutAfterAndCommuneCodeInseeAndSousDomaineNomContainingOrSousDomaineDomainePrincipalNomContaining(
+            Pageable pageable )
+    {
+        Date date = new Date(dateDebut);
+        return this.festivalRepository.findAllByDateDebutAndCommuneCodeInseeAndSousDomaineNom(
                 date,
                 communeCodeInsee,
                 sousDomaine,
-                domainePrincipal,
                 pageable
-        ).map(f -> FestivalResponseDto.builder()
-                .id(f.getId())
-                .nom(f.getNom())
-                .nombrePass(f.getNombrePass())
-                .siteWeb(f.getSiteWeb())
-                .nomCommune(f.getCommune().getNom())
-                .tarifPass(f.getTarifPass())
-                .nomOrganisateur(f.getOrganisateur().getNom() + " " + f.getOrganisateur().getPrenom())
-                .nomSousDomaine(f.getSousDomaine().getNom())
-                .nomDomainePrincipal(f.getSousDomaine().getDomainePrincipal().getNom())
-                .dateDebut(f.getDateDebut())
-                .dateFin(f.getDateFin())
-                .build()
         );
     }
 
@@ -68,20 +51,33 @@ public class FestivalService {
     }
 
     public Iterable<FestivalResponseDto> getAllFestivalPerPage(Pageable pageable) {
-        return festivalRepository.findAll(pageable).map(f -> FestivalResponseDto.builder()
+        return festivalRepository.findAll(pageable).map(f -> {
+            List<OffreCovoiturageFestivalDto> offreCovoiturageFestivalDtos =  f.getOffreCovoiturages().stream().map(o -> OffreCovoiturageFestivalDto.builder()
+                    .id(o.getId())
+                    .dateOffre(o.getDateOffre())
+                    .heureArrive(o.getHeureArrive())
+                    .heureDepart(o.getHeureDepart())
+                    .pointPassageCovoiturages(o.getPointPassageCovoiturages())
+                    .covoitureur(o.getCovoitureur())
+                    .modeleVoiture(o.getModeleVoiture())
+                    .nombrePlaces(o.getNombrePlaces())
+                    .build()).collect(Collectors.toList());
+
+            return FestivalResponseDto.builder()
                     .id(f.getId())
                     .nom(f.getNom())
                     .nombrePass(f.getNombrePass())
                     .siteWeb(f.getSiteWeb())
                     .nomCommune(f.getCommune().getNom())
+                    .offreCovoiturages(offreCovoiturageFestivalDtos)
                     .tarifPass(f.getTarifPass())
                     .nomOrganisateur(f.getOrganisateur().getNom() + " " + f.getOrganisateur().getPrenom())
                     .nomSousDomaine(f.getSousDomaine().getNom())
                     .nomDomainePrincipal(f.getSousDomaine().getDomainePrincipal().getNom())
                     .dateDebut(f.getDateDebut())
                     .dateFin(f.getDateFin())
-                    .build()
-        );
+                    .build();
+        });
     }
 
     public Iterable<Festival> getAllFestivalByCommune(String commune, Pageable pageable) {
@@ -100,55 +96,5 @@ public class FestivalService {
 
     public Iterable<Festival> createFestivals(Iterable<Festival> festivals) {
         return festivalRepository.saveAll(festivals);
-    }
-
-    public FestivalResponseDto getOneFestivalById(Long id)
-    {
-        Festival festival =  festivalRepository.findById(id).orElseThrow(() -> new NotFoundException("Festival not found"));
-        List<OffreCovoiturageFestivalDto> offreCovoiturageFestivalDtos = festival.getOffreCovoiturages().stream()
-                .map(o -> OffreCovoiturageFestivalDto.builder()
-                    .id(o.getId())
-                    .dateOffre(o.getDateOffre())
-                    .heureArrive(o.getHeureArrive())
-                    .heureDepart(o.getHeureDepart())
-                    .pointPassageCovoiturages(o.getPointPassageCovoiturages())
-                    .covoitureur(o.getCovoitureur())
-                    .modeleVoiture(o.getModeleVoiture())
-                    .nombrePlaces(o.getNombrePlaces())
-                    .build()
-                ).toList();
-
-        return FestivalResponseDto.builder()
-                .id(festival.getId())
-                .nom(festival.getNom())
-                .nombrePass(festival.getNombrePass())
-                .siteWeb(festival.getSiteWeb())
-                .nomCommune(festival.getCommune().getNom())
-                .offreCovoiturages(offreCovoiturageFestivalDtos)
-                .tarifPass(festival.getTarifPass())
-                .nomOrganisateur(festival.getOrganisateur().getNomComplet())
-                .nomSousDomaine(festival.getSousDomaine().getNom())
-                .nomDomainePrincipal(festival.getSousDomaine().getDomainePrincipal().getNom())
-                .dateDebut(festival.getDateDebut())
-                .dateFin(festival.getDateFin())
-                .build();
-    }
-
-    public Iterable<FestivalResponseDto> getAllFestivalsByName(String nom, Pageable pageable) {
-        return this.festivalRepository.findAllByNomContaining(nom, pageable)
-                .stream().map(festival -> FestivalResponseDto.builder()
-                    .id(festival.getId())
-                    .nom(festival.getNom())
-                    .nombrePass(festival.getNombrePass())
-                    .siteWeb(festival.getSiteWeb())
-                    .nomCommune(festival.getCommune().getNom())
-                    .tarifPass(festival.getTarifPass())
-                    .nomOrganisateur(festival.getOrganisateur().getNomComplet())
-                    .nomSousDomaine(festival.getSousDomaine().getNom())
-                    .nomDomainePrincipal(festival.getSousDomaine().getDomainePrincipal().getNom())
-                    .dateDebut(festival.getDateDebut())
-                    .dateFin(festival.getDateFin())
-                    .build())
-                .toList();
     }
 }

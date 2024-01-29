@@ -1,7 +1,6 @@
 package com.bdi.projectbdigroup5.controller;
 
 import com.bdi.projectbdigroup5.dto.PanierRequestBodyDto;
-import com.bdi.projectbdigroup5.dto.PanierResponseDto;
 import com.bdi.projectbdigroup5.model.Panier;
 import com.bdi.projectbdigroup5.service.PanierService;
 import lombok.AllArgsConstructor;
@@ -29,7 +28,8 @@ public class PanierController {
     }
 
     @GetMapping("/panier")
-    public Panier getCurrentPanier(@RequestParam String email){
-        return panierService.findCurrentPanier(email);
+    public Panier getCurrentPanier(@RequestParam String email)
+    {
+        return this.panierService.getCurrentPanier(email);
     }
 }

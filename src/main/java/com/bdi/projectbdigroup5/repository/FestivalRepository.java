@@ -22,8 +22,6 @@ public interface FestivalRepository extends CrudRepository<Festival, Long>, Pagi
 
     Page<Festival> findAllByDateFin(String dateFin, Pageable pageable);
 
-    Page<Festival> findAllByDateDebutAfterAndCommuneCodeInseeAndSousDomaineNomContainingOrSousDomaineDomainePrincipalNomContaining(
-            Date dateDebut, String communeCodeInsee, String sousDomaineNom, String sousDomaineDomainePrincipalNom, Pageable pageable);
-
-    Page<Festival> findAllByNomContaining(String nom, Pageable pageable);
+    Page<Festival> findAllByDateDebutAndCommuneCodeInseeAndSousDomaineNom(
+            Date dateDebut, String communeCodeInsee, String sousDomaineNom, Pageable pageable);
 }
