@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/festivals")
@@ -50,16 +52,30 @@ public class FestivalController {
     }
 
     @GetMapping("/filtre")
-    public Iterable<Festival> getAllFestivalByFiltre(
+    public Iterable<FestivalResponseDto> getAllFestivalByFiltre(
             @RequestParam(required = false) Integer numeroPage,
             @RequestParam(required = false) Integer taillePage,
             @RequestParam(required = false) String tri,
             @RequestParam String triPar,
             @RequestParam(required = false) String dateDebut,
             @RequestParam String communeCodeInsee,
-            @RequestParam String sousDomaine
-    ) {
+            @RequestParam String sousDomaine,
+            @RequestParam String domainePrincipal
+    ) throws ParseException {
         Pageable festivalPage = pageableProperties.createPageable(numeroPage, taillePage,triPar, tri);
-        return this.festivalService.getAllFestivalByFilter( dateDebut, communeCodeInsee, sousDomaine,festivalPage);
+        return this.festivalService.getAllFestivalByFilter( dateDebut, communeCodeInsee, sousDomaine,domainePrincipal,festivalPage);
+    }
+
+    @GetMapping("/{id}")
+    public FestivalResponseDto getOneFestival(@PathVariable String id) {
+        return this.festivalService.getOneFestivalById(Long.parseLong(id));
+    }
+
+    @GetMapping("/nom/{nom}")
+    public Iterable<FestivalResponseDto> getAllFestivalsByName(
+            @PathVariable String nom
+    ){
+        Pageable festivalPageable = pageableProperties.createPageable();
+        return this.festivalService.getAllFestivalsByName(nom, festivalPageable);
     }
 }

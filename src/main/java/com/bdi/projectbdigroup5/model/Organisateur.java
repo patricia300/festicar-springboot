@@ -8,4 +8,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @Entity
 public class Organisateur extends Utilisateur {
+    public String getNomComplet()
+    {
+        return this.getNom() + " " + this.getPrenom();
+    }
 }
