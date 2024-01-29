@@ -26,4 +26,10 @@ public class PanierController {
     {
         return panierService.updatePanierStatusToPayed(id);
     }
+
+    @GetMapping("/panier")
+    public Panier getCurrentPanier(@RequestParam String email)
+    {
+        return this.panierService.getCurrentPanier(email);
+    }
 }

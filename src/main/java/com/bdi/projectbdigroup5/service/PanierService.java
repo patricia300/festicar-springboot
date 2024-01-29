@@ -75,4 +75,9 @@ public class PanierService {
         panierRepository.save(panier);
         return panier;
     }
+
+    public Panier getCurrentPanier(String email)
+    {
+        return this.panierRepository.findFirstByFestivalierEmailAndStatut(email, StatutPanier.EN_COURS);
+    }
 }
