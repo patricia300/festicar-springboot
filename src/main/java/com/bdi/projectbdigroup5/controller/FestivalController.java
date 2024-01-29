@@ -52,7 +52,7 @@ public class FestivalController {
     }
 
     @GetMapping("/filtre")
-    public Iterable<Festival> getAllFestivalByFiltre(
+    public Iterable<FestivalResponseDto> getAllFestivalByFiltre(
             @RequestParam(required = false) Integer numeroPage,
             @RequestParam(required = false) Integer taillePage,
             @RequestParam(required = false) String tri,
@@ -69,5 +69,13 @@ public class FestivalController {
     @GetMapping("/{id}")
     public FestivalResponseDto getOneFestival(@PathVariable String id) {
         return this.festivalService.getOneFestivalById(Long.parseLong(id));
+    }
+
+    @GetMapping("/nom/{nom}")
+    public Iterable<FestivalResponseDto> getAllFestivalsByName(
+            @PathVariable String nom
+    ){
+        Pageable festivalPageable = pageableProperties.createPageable();
+        return this.festivalService.getAllFestivalsByName(nom, festivalPageable);
     }
 }

@@ -1,12 +1,16 @@
 package com.bdi.projectbdigroup5.service;
 
+import com.bdi.projectbdigroup5.dto.ArticleReponseDto;
+import com.bdi.projectbdigroup5.dto.ArticleRequestBodyDto;
 import com.bdi.projectbdigroup5.dto.PanierRequestBodyDto;
+import com.bdi.projectbdigroup5.dto.PanierResponseDto;
 import com.bdi.projectbdigroup5.exception.NotFoundException;
 import com.bdi.projectbdigroup5.model.*;
 import com.bdi.projectbdigroup5.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.bdi.projectbdigroup5.service.ArticleService.*;
@@ -26,9 +30,11 @@ public class PanierService {
     }
 
     public Panier savePanierFestivalier(PanierRequestBodyDto panierRequestBodyDto){
+        String emailFestivalier = panierRequestBodyDto.getEmailFestivalier();
+
         // Search festivalier owner of the panier
         Festivalier festivalier = festivalierRepository
-                .findById(panierRequestBodyDto.getEmailFestivalier())
+                .findById(emailFestivalier)
                 .orElseThrow(() -> new RuntimeException("Festivalier non trouvé"));
 
         // Create panier
@@ -44,7 +50,6 @@ public class PanierService {
                 });
 
         panier.setArticles(articles);
-
        return panier;
     }
 
@@ -74,5 +79,10 @@ public class PanierService {
         panier.setStatut(StatutPanier.PAYER);
         panierRepository.save(panier);
         return panier;
+    }
+
+    public Panier findCurrentPanier(String emailFestivalier)
+    {
+        return panierRepository.findFirstByFestivalierEmailAndStatut(emailFestivalier, StatutPanier.EN_COURS);
     }
 }

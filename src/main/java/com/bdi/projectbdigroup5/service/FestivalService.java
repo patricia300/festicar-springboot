@@ -28,19 +28,33 @@ public class FestivalService {
         return festivalRepository.save(festival);
     }
 
-    public Iterable<Festival> getAllFestivalByFilter(
+    public Iterable<FestivalResponseDto> getAllFestivalByFilter(
             String dateDebut,
             String communeCodeInsee,
             String sousDomaine,
             String domainePrincipal,
             Pageable pageable ) throws ParseException {
         Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateDebut);
-        return this.festivalRepository.findAllByDateDebutAfterAndCommuneCodeInseeOrSousDomaineNomLikeOrSousDomaineDomainePrincipalNomLike(
+        return this.festivalRepository
+                .findAllByDateDebutAfterAndCommuneCodeInseeAndSousDomaineNomContainingOrSousDomaineDomainePrincipalNomContaining(
                 date,
                 communeCodeInsee,
                 sousDomaine,
                 domainePrincipal,
                 pageable
+        ).map(f -> FestivalResponseDto.builder()
+                .id(f.getId())
+                .nom(f.getNom())
+                .nombrePass(f.getNombrePass())
+                .siteWeb(f.getSiteWeb())
+                .nomCommune(f.getCommune().getNom())
+                .tarifPass(f.getTarifPass())
+                .nomOrganisateur(f.getOrganisateur().getNom() + " " + f.getOrganisateur().getPrenom())
+                .nomSousDomaine(f.getSousDomaine().getNom())
+                .nomDomainePrincipal(f.getSousDomaine().getDomainePrincipal().getNom())
+                .dateDebut(f.getDateDebut())
+                .dateFin(f.getDateFin())
+                .build()
         );
     }
 
@@ -118,5 +132,23 @@ public class FestivalService {
                 .dateDebut(festival.getDateDebut())
                 .dateFin(festival.getDateFin())
                 .build();
+    }
+
+    public Iterable<FestivalResponseDto> getAllFestivalsByName(String nom, Pageable pageable) {
+        return this.festivalRepository.findAllByNomContaining(nom, pageable)
+                .stream().map(festival -> FestivalResponseDto.builder()
+                    .id(festival.getId())
+                    .nom(festival.getNom())
+                    .nombrePass(festival.getNombrePass())
+                    .siteWeb(festival.getSiteWeb())
+                    .nomCommune(festival.getCommune().getNom())
+                    .tarifPass(festival.getTarifPass())
+                    .nomOrganisateur(festival.getOrganisateur().getNomComplet())
+                    .nomSousDomaine(festival.getSousDomaine().getNom())
+                    .nomDomainePrincipal(festival.getSousDomaine().getDomainePrincipal().getNom())
+                    .dateDebut(festival.getDateDebut())
+                    .dateFin(festival.getDateFin())
+                    .build())
+                .toList();
     }
 }
