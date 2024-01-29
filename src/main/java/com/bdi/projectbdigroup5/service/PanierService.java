@@ -1,14 +1,16 @@
 package com.bdi.projectbdigroup5.service;
 
-import com.bdi.projectbdigroup5.dto.PanierRequestBodyDto;
+import com.bdi.projectbdigroup5.dto.*;
 import com.bdi.projectbdigroup5.exception.NotFoundException;
 import com.bdi.projectbdigroup5.model.*;
 import com.bdi.projectbdigroup5.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.bdi.projectbdigroup5.dto.FestivalResponseDto.createFestivalResponseDto;
 import static com.bdi.projectbdigroup5.service.ArticleService.*;
 
 @Service
@@ -21,31 +23,53 @@ public class PanierService {
     private OffreCovoiturageRepository offreCovoiturageRepository;
     private ArticleService articleService;
 
-    public Iterable<Panier> getPanierByFestivalierEmail(String email) {
-        return this.panierRepository.findAllByFestivalierEmail(email);
+    public Iterable<PanierResponseDto> getPanierByFestivalierEmail(String email) {
+        return this.panierRepository.findAllByFestivalierEmail(email).stream().map(panier -> {
+            List<ArticleResponseDto> articleResponseDtos = panier.getArticles().stream()
+                    .map(article -> ArticleResponseDto.builder()
+                            .id(article.getId())
+                            .festival(createFestivalResponseDto(article))
+                            .quantite(article.getQuantite())
+                            .build()
+                    ).toList();
+
+            return PanierResponseDto.builder()
+                    .articles(articleResponseDtos)
+                    .panier(panier)
+                    .build();
+        }).toList();
     }
 
-    public Panier savePanierFestivalier(PanierRequestBodyDto panierRequestBodyDto){
+    public PanierResponseDto savePanierFestivalier(PanierRequestBodyDto panierRequestBodyDto){
         // Search festivalier owner of the panier
         Festivalier festivalier = festivalierRepository
                 .findById(panierRequestBodyDto.getEmailFestivalier())
-                .orElseThrow(() -> new RuntimeException("Festivalier non trouvé"));
+                .orElseThrow(() -> new NotFoundException("Festivalier non trouvé"));
 
         // Create panier
         Panier panier = new Panier();
         panier.setFestivalier(festivalier);
         this.panierRepository.save(panier);
 
+        List<ArticleResponseDto> articlesDtos = new ArrayList<>();
+
         // create articles
         List<Article> articles = (List<Article>) this.articleService.saveAllArticle(panierRequestBodyDto.getArticles());
         articles.forEach(article -> {
                     article.setPanier(panier);
                     articleRepository.save(article);
+
+                    articlesDtos.add(new ArticleResponseDto(
+                            article.getId(),
+                            createFestivalResponseDto(article),
+                            article.getQuantite()));
                 });
 
-        panier.setArticles(articles);
 
-       return panier;
+       return PanierResponseDto.builder()
+               .panier(panier)
+               .articles(articlesDtos)
+               .build();
     }
 
     public Panier updatePanierStatusToPayed(Long id){
@@ -76,8 +100,21 @@ public class PanierService {
         return panier;
     }
 
-    public Panier getCurrentPanier(String email)
+    public PanierResponseDto getCurrentPanier(String email)
     {
-        return this.panierRepository.findFirstByFestivalierEmailAndStatut(email, StatutPanier.EN_COURS);
+        Panier panier = this.panierRepository.findFirstByFestivalierEmailAndStatut(email, StatutPanier.EN_COURS);
+        List<ArticleResponseDto> articleResponseDtos = panier.getArticles().stream()
+                .map(article -> ArticleResponseDto.builder()
+                        .id(article.getId())
+                        .festival(createFestivalResponseDto(article))
+                        .quantite(article.getQuantite())
+                        .build()
+                ).toList();
+
+        return PanierResponseDto.builder()
+                .panier(panier)
+                .articles(articleResponseDtos)
+                .build();
+
     }
 }

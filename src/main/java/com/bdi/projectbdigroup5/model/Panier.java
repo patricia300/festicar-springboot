@@ -1,6 +1,8 @@
 package com.bdi.projectbdigroup5.model;
 
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,8 +29,10 @@ public class Panier {
 
     @ManyToOne
     @JoinColumn(name = "email_festivalier", nullable = false)
+    @JsonIgnore
     private Festivalier festivalier;
 
     @OneToMany(mappedBy = "panier", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Article> articles;
 }
