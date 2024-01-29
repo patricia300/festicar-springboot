@@ -60,6 +60,7 @@ public class OpenDataController {
         Set<DomainePrincipal> domaines = new HashSet<>();
         od.forEach(f -> {
             DomainePrincipal domaine = new DomainePrincipal();
+            System.out.println(f.getDomaine());
             domaine.setNom(f.getDomaine());
             domaines.add(domaine);
         });

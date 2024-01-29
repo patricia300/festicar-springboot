@@ -1,5 +1,6 @@
 package com.bdi.projectbdigroup5.service;
 
+import com.bdi.projectbdigroup5.model.Commune;
 import com.bdi.projectbdigroup5.model.OffreCovoiturage;
 import com.bdi.projectbdigroup5.repository.OffreCovoiturageRepository;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,20 @@ public class OffreCovoiturageService {
         return offreCovoiturageRepository.save(offreCovoiturage);
     }
 
+    public Iterable<OffreCovoiturage> updateOffreCovoiturages(Iterable<OffreCovoiturage> offreCovoiturages){
+        return offreCovoiturageRepository.saveAll(offreCovoiturages);
+    }
+
     public Iterable<OffreCovoiturage> getAllOffreCovoiturages(Pageable pageable){
         return offreCovoiturageRepository.findAll(pageable);
     }
+
+    public Iterable<OffreCovoiturage> getAllOffreCovoiturage(){
+        return offreCovoiturageRepository.findAll();
+    }
+
+    public OffreCovoiturage updateOffreCovoiturage(OffreCovoiturage offreCovoiturage){
+        return offreCovoiturageRepository.save(offreCovoiturage);
+    } 
+
 }
