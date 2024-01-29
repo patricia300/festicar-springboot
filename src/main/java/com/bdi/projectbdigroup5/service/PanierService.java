@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.bdi.projectbdigroup5.dto.FestivalResponseDto.createFestivalResponseDto;
+import static com.bdi.projectbdigroup5.dto.FestivalResponseDto.createFestivalResponseDtoFromArticle;
 import static com.bdi.projectbdigroup5.service.ArticleService.*;
 
 @Service
@@ -28,7 +28,7 @@ public class PanierService {
             List<ArticleResponseDto> articleResponseDtos = panier.getArticles().stream()
                     .map(article -> ArticleResponseDto.builder()
                             .id(article.getId())
-                            .festival(createFestivalResponseDto(article))
+                            .festival(createFestivalResponseDtoFromArticle(article))
                             .quantite(article.getQuantite())
                             .build()
                     ).toList();
@@ -63,7 +63,7 @@ public class PanierService {
 
                     articlesDtos.add(new ArticleResponseDto(
                             article.getId(),
-                            createFestivalResponseDto(article),
+                            createFestivalResponseDtoFromArticle(article),
                             article.getQuantite()));
                 });
 
@@ -108,7 +108,7 @@ public class PanierService {
         List<ArticleResponseDto> articleResponseDtos = panier.getArticles().stream()
                 .map(article -> ArticleResponseDto.builder()
                         .id(article.getId())
-                        .festival(createFestivalResponseDto(article))
+                        .festival(createFestivalResponseDtoFromArticle(article))
                         .quantite(article.getQuantite())
                         .build()
                 ).toList();

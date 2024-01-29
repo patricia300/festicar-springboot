@@ -8,6 +8,7 @@ import lombok.Getter;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Builder
@@ -26,6 +27,8 @@ public class FestivalResponseDto {
 
     private int nombrePass;
 
+    private String codePostalCommune;
+
     private String nomCommune;
 
     private String nomSousDomaine;
@@ -36,7 +39,7 @@ public class FestivalResponseDto {
 
     private List<OffreCovoiturageFestivalDto> offreCovoiturages;
 
-    public static FestivalResponseDto createFestivalResponseDto(Article article)
+    public static FestivalResponseDto createFestivalResponseDtoFromArticle(Article article)
     {
         Festival f = article.getPointPassageCovoiturage().getOffreCovoiturage().getFestival();
         OffreCovoiturage o = article.getPointPassageCovoiturage().getOffreCovoiturage();
@@ -56,6 +59,7 @@ public class FestivalResponseDto {
                 .nom(f.getNom())
                 .nombrePass(f.getNombrePass())
                 .siteWeb(f.getSiteWeb())
+                .codePostalCommune(f.getCommune().getCodePostal())
                 .nomCommune(f.getCommune().getNom())
                 .offreCovoiturages(List.of(offreCovoiturageFestivalDto))
                 .tarifPass(f.getTarifPass())
@@ -67,6 +71,35 @@ public class FestivalResponseDto {
                 .build();
     }
 
+    public static FestivalResponseDto createFestivalResponseDtoFromFestival(Festival f) {
+        List<OffreCovoiturageFestivalDto> offreCovoiturageFestivalDtos =  f.getOffreCovoiturages().stream().map(o -> OffreCovoiturageFestivalDto.builder()
+                .id(o.getId())
+                .dateOffre(o.getDateOffre())
+                .heureArrive(o.getHeureArrive())
+                .heureDepart(o.getHeureDepart())
+                .pointPassageCovoiturages(o.getPointPassageCovoiturages())
+                .covoitureur(o.getCovoitureur())
+                .modeleVoiture(o.getModeleVoiture())
+                .nombrePlaces(o.getNombrePlaces())
+                .build())
+                .toList();
+
+        return FestivalResponseDto.builder()
+                .id(f.getId())
+                .nom(f.getNom())
+                .nombrePass(f.getNombrePass())
+                .siteWeb(f.getSiteWeb())
+                .codePostalCommune(f.getCommune().getCodePostal())
+                .nomCommune(f.getCommune().getNom())
+                .offreCovoiturages(offreCovoiturageFestivalDtos)
+                .tarifPass(f.getTarifPass())
+                .nomOrganisateur(f.getOrganisateur().getNom() + " " + f.getOrganisateur().getPrenom())
+                .nomSousDomaine(f.getSousDomaine().getNom())
+                .nomDomainePrincipal(f.getSousDomaine().getDomainePrincipal().getNom())
+                .dateDebut(f.getDateDebut())
+                .dateFin(f.getDateFin())
+                .build();
+    }
 
 
 }
