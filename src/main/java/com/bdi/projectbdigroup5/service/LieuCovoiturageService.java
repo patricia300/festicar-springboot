@@ -35,11 +35,14 @@ public class LieuCovoiturageService {
     }
 
     public LieuCovoiturage lieuCovoiturageAleatoire(){
+        Page<LieuCovoiturage> lieuCovoituragePage;
         Long count = lieuCovoiturageRepository.count();
         int nombrePageAleatoire = (int)(Math.random() * count);
         Pageable pageAleatoire = PageRequest.of(nombrePageAleatoire, 1);
-        Page<LieuCovoiturage> lieuCovoituragePage = lieuCovoiturageRepository.findAll(pageAleatoire );
-
+        lieuCovoituragePage = lieuCovoiturageRepository.findAll(pageAleatoire );
+        while (!lieuCovoituragePage.hasContent()) {
+            lieuCovoituragePage = lieuCovoiturageRepository.findAll(pageAleatoire );  
+        }
         return lieuCovoituragePage.getContent().get(0);
     }
 }

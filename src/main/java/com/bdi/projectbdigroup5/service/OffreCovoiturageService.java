@@ -17,6 +17,10 @@ public class OffreCovoiturageService {
         return offreCovoiturageRepository.save(offreCovoiturage);
     }
 
+    public Iterable<OffreCovoiturage> updateOffreCovoiturages(Iterable<OffreCovoiturage> offreCovoiturages){
+        return offreCovoiturageRepository.saveAll(offreCovoiturages);
+    }
+
     public Iterable<OffreCovoiturage> getAllOffreCovoiturages(Pageable pageable){
         return offreCovoiturageRepository.findAll(pageable);
     }

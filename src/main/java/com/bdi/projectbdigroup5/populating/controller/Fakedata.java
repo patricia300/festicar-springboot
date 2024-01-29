@@ -188,8 +188,7 @@ public class Fakedata {
         
         List<PointPassageCovoiturage> pointPassageCovoiturages=new ArrayList<PointPassageCovoiturage>();
 
-        Iterable<OffreCovoiturage> offreCovoiturages = offreCovoiturageService.getAllOffreCovoiturage();
-        Iterator<OffreCovoiturage> iterator = offreCovoiturages.iterator();
+        Iterator<OffreCovoiturage> iterator = offreCovoiturageService.getAllOffreCovoiturage().iterator();
 
         int nombreStopMax= 5;
         int nombreStopMin=2;
@@ -216,17 +215,18 @@ public class Fakedata {
             
             for(int i=0; i<=nombreStop;i++){
 
-                calendar.add(Calendar.HOUR_OF_DAY, diffHeurePassage);
                 pointPassageCovoiturage = new PointPassageCovoiturage();
                 pointPassageCovoiturage.setLieuCovoiturage(lieuCovoiturageService.lieuCovoiturageAleatoire());
                 pointPassageCovoiturage.setDifferenceHeurePassage(diffHeurePassage);
                 pointPassageCovoiturage.setOffreCovoiturage(offreCovoiturage);
                 pointPassageCovoiturage.setPrix(prixPassage);
     
+                pointPassageCovoiturages.add(pointPassageCovoiturage);
+
+                calendar.add(Calendar.HOUR_OF_DAY, diffHeurePassage);
                 diffHeurePassage =diffHeurePassage+(int) Math.floor(Math.random()*5);
                 prixPassage=(float) Math.floor(Math.random()*(prixPassage-prixPassageMin+1)+prixPassageMin);
 
-                pointPassageCovoiturages.add(pointPassageCovoiturage);
             }
 
             calendar.add(Calendar.HOUR_OF_DAY, diffHeurePassage);
@@ -243,14 +243,16 @@ public class Fakedata {
     public Iterable<Panier> getPanier(@RequestParam int nombrePanier) {
         List<Panier> paniers = new ArrayList<Panier>();
         List<Article> articlesPaniers = new ArrayList<Article>();
-        StatutPanier statutPaniers [] = StatutPanier.values();
+        List<OffreCovoiturage> offreCovoiturages=new ArrayList<OffreCovoiturage>();
+
+        StatutPanier statutPaniers [] = {StatutPanier.PAYER, StatutPanier.VALIDE};
         int nombreArticles;
         int nombreArticlesMax=2;
         int nombreArticleMin=1;
         int i =0;
-        int nombrePlacesRestantes;
         Panier panier;
         Article article;
+        OffreCovoiturage offreCovoiturage;
         PointPassageCovoiturage pointPassageCovoiturage;
         Random prng = new Random();
 
@@ -265,17 +267,15 @@ public class Fakedata {
                 article.setPanier(panier);
                 article.setQuantite((int) Math.floor(Math.random() *  (nombreArticlesMax-nombreArticleMin+1) +nombreArticleMin));
 
-                pointPassageCovoiturage = pointPassageCovoiturageService.pointPassageCovoiturageAleatoire();
+                pointPassageCovoiturage = pointPassageCovoiturageService.pointPassageCovoiturageAleatoire(article.getQuantite());
 
-                while (pointPassageCovoiturage.getOffreCovoiturage().getNombrePlaces()< article.getQuantite()) {
-                    pointPassageCovoiturage = pointPassageCovoiturageService.pointPassageCovoiturageAleatoire();
-                }
+                offreCovoiturage = pointPassageCovoiturage.getOffreCovoiturage();
+                offreCovoiturage.setNombrePlaces(offreCovoiturage.getNombrePlaces()-article.getQuantite());
 
-                nombrePlacesRestantes = pointPassageCovoiturage.getOffreCovoiturage().getNombrePlaces();
-                pointPassageCovoiturage.getOffreCovoiturage().setNombrePlaces(nombrePlacesRestantes-article.getQuantite());
 
                 article.setPointPassageCovoiturage(pointPassageCovoiturage);
                 articlesPaniers.add(article);
+                offreCovoiturages.add(offreCovoiturage);
             }
 
             panier.setArticles(articlesPaniers);
@@ -287,6 +287,7 @@ public class Fakedata {
         
         panierservice.createPaniers(paniers);
         articleService.createArticles(articlesPaniers);
+        offreCovoiturageService.updateOffreCovoiturages(offreCovoiturages);
 
         return  panierservice.findAll();
 

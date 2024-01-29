@@ -15,7 +15,7 @@ public class PointPassageCovoiturageService {
     @Autowired
     private PointPassageCovoiturageRepository pointPassageCovoiturageRepository;
 
-    public PointPassageCovoiturage pointPassageCovoiturageAleatoire(){
+    public PointPassageCovoiturage pointPassageCovoiturageAleatoire(int nombrePlaces){
         Long count = pointPassageCovoiturageRepository.count();
         int nombrePageAleatoire = (int)(Math.random() * count);
         Pageable pageAleatoire = PageRequest.of(nombrePageAleatoire, 1);
