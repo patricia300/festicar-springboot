@@ -1,5 +1,6 @@
 package com.bdi.projectbdigroup5.repository;
 
+import com.bdi.projectbdigroup5.dto.FestivalResponseDto;
 import com.bdi.projectbdigroup5.model.Festival;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,11 +17,11 @@ public interface FestivalRepository extends CrudRepository<Festival, Long>, Pagi
 
     Page<Festival> findAllByCommuneNom(String commune, Pageable pageable);
 
-    Page<Festival> findAllByDateDebutOrDateFin(String dateDebut, String dateFin, Pageable pageable);
+    Page<Festival> findAllByDateDebutOrDateFin(Date dateDebut, Date dateFin, Pageable pageable);
 
-    Page<Festival> findAllByDateDebut(String dateDebut, Pageable pageable);
+    Page<Festival> findAllByDateDebut(Date dateDebut, Pageable pageable);
 
-    Page<Festival> findAllByDateFin(String dateFin, Pageable pageable);
+    Page<Festival> findAllByDateFin(Date dateFin, Pageable pageable);
 
     Page<Festival> findAllByDateDebutAndCommuneCodeInseeAndSousDomaineNom(
             Date dateDebut, String communeCodeInsee, String sousDomaineNom, Pageable pageable);
