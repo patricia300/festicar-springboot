@@ -46,7 +46,9 @@ public class PanierService {
                 .findById(panierRequestBodyDto.getEmailFestivalier())
                 .orElseThrow(() -> new NotFoundException("Festivalier non trouvé"));
 
-        // Create panier
+        // Todo: Verifier s'il y a déjà un panier en cours
+
+        // Todo: Créer un panier seulement s'il n'y a pas de panier en cours
         Panier panier = new Panier();
         panier.setFestivalier(festivalier);
         this.panierRepository.save(panier);

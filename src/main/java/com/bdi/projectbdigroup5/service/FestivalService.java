@@ -86,12 +86,12 @@ public class FestivalService {
 
     public Iterable<Festival> getAllFestivalByDateDebutOrDateFin(String dateDebut, String dateFin, Pageable pageable) {
         if (dateFin == null && dateDebut != null) {
-            return festivalRepository.findAllByDateDebut(dateDebut, pageable);
+            return festivalRepository.findAllByDateDebut(new Date(dateDebut), pageable);
         }
         if (dateDebut == null && dateFin != null) {
-            return festivalRepository.findAllByDateFin(dateFin, pageable);
+            return festivalRepository.findAllByDateFin(new Date(dateFin), pageable);
         }
-        return festivalRepository.findAllByDateDebutOrDateFin(dateDebut, dateFin, pageable);
+        return festivalRepository.findAllByDateDebutOrDateFin(new Date(dateDebut), new Date(dateFin), pageable);
     }
 
     public Iterable<Festival> createFestivals(Iterable<Festival> festivals) {
