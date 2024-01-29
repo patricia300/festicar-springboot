@@ -1,6 +1,7 @@
 package com.bdi.projectbdigroup5.service;
 
 import com.bdi.projectbdigroup5.dto.FestivalResponseDto;
+import com.bdi.projectbdigroup5.exception.NotFoundException;
 import com.bdi.projectbdigroup5.model.Festival;
 import com.bdi.projectbdigroup5.repository.FestivalRepository;
 
@@ -13,6 +14,10 @@ import org.springframework.data.domain.PageRequest;
 
 
 import java.util.Date;
+import java.util.List;
+
+import static com.bdi.projectbdigroup5.dto.FestivalResponseDto.createFestivalResponseDtoFromFestival;
+import static com.bdi.projectbdigroup5.dto.FestivalResponseDto.createOffreCovoiturageFestivalDtos;
 
 @Service
 @AllArgsConstructor
@@ -48,7 +53,7 @@ public class FestivalService {
     }
 
     public Iterable<FestivalResponseDto> getAllFestivalPerPage(Pageable pageable) {
-        return festivalRepository.findAll(pageable).map(FestivalResponseDto::createFestivalResponseDtoFromFestival);
+        return festivalRepository.findAll(pageable).map(festival -> createFestivalResponseDtoFromFestival(festival, List.of()));
     }
 
     public Iterable<Festival> getAllFestivalByCommune(String commune, Pageable pageable) {
@@ -67,5 +72,12 @@ public class FestivalService {
 
     public Iterable<Festival> createFestivals(Iterable<Festival> festivals) {
         return festivalRepository.saveAll(festivals);
+    }
+
+    public FestivalResponseDto getOneFestival(Long id){
+        Festival festival = this.festivalRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Festival not found"));
+
+        return  createFestivalResponseDtoFromFestival(festival,createOffreCovoiturageFestivalDtos(festival.getOffreCovoiturages()) );
     }
 }

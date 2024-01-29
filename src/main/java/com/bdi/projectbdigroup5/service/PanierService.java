@@ -7,7 +7,6 @@ import com.bdi.projectbdigroup5.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.bdi.projectbdigroup5.dto.FestivalResponseDto.createFestivalResponseDtoFromArticle;
@@ -46,27 +45,24 @@ public class PanierService {
                 .findById(panierRequestBodyDto.getEmailFestivalier())
                 .orElseThrow(() -> new NotFoundException("Festivalier non trouvé"));
 
-        // Todo: Verifier s'il y a déjà un panier en cours
+        List<Article> articles = (List<Article>) this.articleService.saveAllArticle(panierRequestBodyDto.getArticles());
 
-        // Todo: Créer un panier seulement s'il n'y a pas de panier en cours
+        Panier existingPanier = this.panierRepository.findFirstByFestivalierEmailAndStatut(festivalier.getEmail(), StatutPanier.EN_COURS);
+        if (existingPanier != null )
+        {
+            List<ArticleResponseDto> articlesDtos = createListArticle(existingPanier, articles, articleRepository);
+            return PanierResponseDto.builder()
+                    .panier(existingPanier)
+                    .articles(articlesDtos)
+                    .build();
+
+        }
+
         Panier panier = new Panier();
         panier.setFestivalier(festivalier);
         this.panierRepository.save(panier);
 
-        List<ArticleResponseDto> articlesDtos = new ArrayList<>();
-
-        // create articles
-        List<Article> articles = (List<Article>) this.articleService.saveAllArticle(panierRequestBodyDto.getArticles());
-        articles.forEach(article -> {
-                    article.setPanier(panier);
-                    articleRepository.save(article);
-
-                    articlesDtos.add(new ArticleResponseDto(
-                            article.getId(),
-                            createFestivalResponseDtoFromArticle(article),
-                            article.getQuantite()));
-                });
-
+        List<ArticleResponseDto> articlesDtos = createListArticle(panier, articles, articleRepository);
 
        return PanierResponseDto.builder()
                .panier(panier)
@@ -118,5 +114,17 @@ public class PanierService {
                 .articles(articleResponseDtos)
                 .build();
 
+    }
+
+    public static List<ArticleResponseDto> createListArticle(Panier panier, List<Article> articles, ArticleRepository articleRepository){
+        return articles.stream().map(article -> {
+            article.setPanier(panier);
+            articleRepository.save(article);
+            return ArticleResponseDto.builder()
+                    .id(article.getId())
+                    .festival(createFestivalResponseDtoFromArticle(article))
+                    .quantite(article.getQuantite())
+                    .build();
+        }).toList();
     }
 }

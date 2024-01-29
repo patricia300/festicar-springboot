@@ -71,18 +71,7 @@ public class FestivalResponseDto {
                 .build();
     }
 
-    public static FestivalResponseDto createFestivalResponseDtoFromFestival(Festival f) {
-        List<OffreCovoiturageFestivalDto> offreCovoiturageFestivalDtos =  f.getOffreCovoiturages().stream().map(o -> OffreCovoiturageFestivalDto.builder()
-                .id(o.getId())
-                .dateOffre(o.getDateOffre())
-                .heureArrive(o.getHeureArrive())
-                .heureDepart(o.getHeureDepart())
-                .pointPassageCovoiturages(o.getPointPassageCovoiturages())
-                .covoitureur(o.getCovoitureur())
-                .modeleVoiture(o.getModeleVoiture())
-                .nombrePlaces(o.getNombrePlaces())
-                .build())
-                .toList();
+    public static FestivalResponseDto createFestivalResponseDtoFromFestival(Festival f, List<OffreCovoiturageFestivalDto> offreCovoiturageFestivalDtos) {
 
         return FestivalResponseDto.builder()
                 .id(f.getId())
@@ -101,5 +90,17 @@ public class FestivalResponseDto {
                 .build();
     }
 
-
+    public static List<OffreCovoiturageFestivalDto> createOffreCovoiturageFestivalDtos(List<OffreCovoiturage> offreCovoiturages){
+        return offreCovoiturages.stream().map(o -> OffreCovoiturageFestivalDto.builder()
+                        .id(o.getId())
+                        .dateOffre(o.getDateOffre())
+                        .heureArrive(o.getHeureArrive())
+                        .heureDepart(o.getHeureDepart())
+                        .pointPassageCovoiturages(o.getPointPassageCovoiturages())
+                        .covoitureur(o.getCovoitureur())
+                        .modeleVoiture(o.getModeleVoiture())
+                        .nombrePlaces(o.getNombrePlaces())
+                        .build())
+                .toList();
+    }
 }

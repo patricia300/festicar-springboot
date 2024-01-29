@@ -62,4 +62,9 @@ public class FestivalController {
         Pageable festivalPage = pageableProperties.createPageable(numeroPage, taillePage,triPar, tri);
         return this.festivalService.getAllFestivalByFilter( dateDebut, communeCodeInsee, sousDomaine,festivalPage);
     }
+
+    @GetMapping("/{id}")
+    public FestivalResponseDto getOneFestival(@PathVariable Long id){
+        return this.festivalService.getOneFestival(id);
+    }
 }
