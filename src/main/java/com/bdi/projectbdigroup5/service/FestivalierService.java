@@ -18,6 +18,10 @@ public class FestivalierService {
         return festivalierRepository.save(festivalier);
     }
 
+    public Festivalier updateFestivalier(Festivalier festivalier){
+        return festivalierRepository.save(festivalier);
+    }
+
     public Iterable<Festivalier> createFestivaliers(Iterable<Festivalier> festivaliers){
         return festivalierRepository.saveAll(festivaliers);
     }
