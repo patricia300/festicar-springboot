@@ -43,7 +43,9 @@ public class PanierService {
         // Search festivalier owner of the panier
         Festivalier festivalier = festivalierRepository
                 .findById(panierRequestBodyDto.getEmailFestivalier())
-                .orElseThrow(() -> new NotFoundException("Festivalier non trouvé"));
+                .orElseThrow(() -> new NotFoundException(
+                        "Festivalier avec l'email '" + panierRequestBodyDto.getEmailFestivalier() + "' non trouvé")
+                );
 
         List<Article> articles = (List<Article>) this.articleService.saveAllArticle(panierRequestBodyDto.getArticles());
 

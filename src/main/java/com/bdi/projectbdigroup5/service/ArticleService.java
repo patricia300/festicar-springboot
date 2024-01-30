@@ -6,6 +6,7 @@ import com.bdi.projectbdigroup5.exception.NombrePlaceCovoiturageInsuffisantExcep
 import com.bdi.projectbdigroup5.exception.NotFoundException;
 import com.bdi.projectbdigroup5.exception.QuantiteZeroException;
 import com.bdi.projectbdigroup5.model.Article;
+import com.bdi.projectbdigroup5.model.ErreurPaiementClass;
 import com.bdi.projectbdigroup5.model.PointPassageCovoiturage;
 import com.bdi.projectbdigroup5.repository.ArticleRepository;
 import com.bdi.projectbdigroup5.repository.PointPassageCovoiturageRepository;
@@ -52,7 +53,7 @@ public class ArticleService {
         if(nbPlace == 0) {
             throw new QuantiteZeroException(
                     pointPassageCovoiturage.getOffreCovoiturage().getId(),
-                    "OffreCovoiturage"
+                    ErreurPaiementClass.OFFRE_COVOITURAGE
             );
         }
         return nbPlace;
@@ -64,7 +65,7 @@ public class ArticleService {
         if(nbPass == 0) {
             throw new QuantiteZeroException(
                     pointPassageCovoiturage.getOffreCovoiturage().getFestival().getId(),
-                    "Festival"
+                    ErreurPaiementClass.FESTIVAL
             );
         }
 
