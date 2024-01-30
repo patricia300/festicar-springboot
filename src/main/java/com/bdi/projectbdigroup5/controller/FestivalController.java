@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @RequestMapping("/festivals")
@@ -30,7 +32,7 @@ public class FestivalController {
     }
 
     @GetMapping("/by-commune")
-    public Iterable<Festival> getAllFestivalsByCommune(
+    public Iterable<FestivalResponseDto> getAllFestivalsByCommune(
             @RequestParam(required = false) Integer numeroPage,
             @RequestParam(required = false) Integer taillePage,
             @RequestParam String commune) {
@@ -39,7 +41,7 @@ public class FestivalController {
     }
 
     @GetMapping("/by-date")
-    public Iterable<Festival> getAllFestivalsByDate(
+    public Iterable<FestivalResponseDto> getAllFestivalsByDate(
             @RequestParam(required = false) Integer numeroPage,
             @RequestParam(required = false) Integer taillePage,
             @RequestParam(required = false) String dateDebut,
@@ -50,7 +52,7 @@ public class FestivalController {
     }
 
     @GetMapping("/filtre")
-    public Iterable<Festival> getAllFestivalByFiltre(
+    public Iterable<FestivalResponseDto> getAllFestivalByFiltre(
             @RequestParam(required = false) Integer numeroPage,
             @RequestParam(required = false) Integer taillePage,
             @RequestParam(required = false) String tri,
@@ -66,5 +68,14 @@ public class FestivalController {
     @GetMapping("/{id}")
     public FestivalResponseDto getOneFestival(@PathVariable Long id){
         return this.festivalService.getOneFestival(id);
+    }
+
+    @GetMapping("/by-nom")
+    public List<FestivalResponseDto> getAllFestivalsByName(
+            @RequestParam(required = false) Integer numeroPage,
+            @RequestParam(required = false) Integer taillePage,
+            @RequestParam String nom){
+        Pageable pageable = pageableProperties.createPageable(numeroPage, taillePage);
+        return this.festivalService.getAllFestivalsByName(nom, pageable);
     }
 }
