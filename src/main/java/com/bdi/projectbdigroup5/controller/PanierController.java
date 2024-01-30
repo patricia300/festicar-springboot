@@ -20,8 +20,15 @@ import org.springframework.web.bind.annotation.*;
 public class PanierController {
     private PanierService panierService;
     @GetMapping("/paniers")
-    public Iterable<PanierResponseDto> getAllFestivalierPanier(@RequestParam String email) {
-        return this.panierService.getPanierByFestivalierEmail(email);
+    public ResponseEntity<?> getAllFestivalierPanier(@RequestParam String email) {
+        try {
+            return ResponseEntity.ok(this.panierService.getPanierByFestivalierEmail(email));
+        }
+        catch (NotFoundException notFoundException) {
+            return ResponseEntity
+                    .of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, notFoundException.getMessage()))
+                    .build();
+        }
     }
 
     @PostMapping("/panier")
@@ -91,8 +98,16 @@ public class PanierController {
     }
 
     @GetMapping("/panier")
-    public PanierResponseDto getCurrentPanier(@RequestParam String email)
+    public ResponseEntity getCurrentPanier(@RequestParam String email)
     {
-        return this.panierService.getCurrentPanier(email);
+        try {
+            return ResponseEntity.ok(this.panierService.getCurrentPanier(email));
+        }
+        catch (NotFoundException notFoundException) {
+            return ResponseEntity
+                    .of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, notFoundException.getMessage()))
+                    .build();
+        }
+
     }
 }

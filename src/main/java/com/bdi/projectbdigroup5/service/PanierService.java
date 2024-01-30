@@ -23,7 +23,8 @@ public class PanierService {
     private ArticleService articleService;
 
     public Iterable<PanierResponseDto> getPanierByFestivalierEmail(String email) {
-        return this.panierRepository.findAllByFestivalierEmail(email).stream().map(panier -> {
+        Festivalier festivalier = getFestivalier(email);
+        return this.panierRepository.findAllByFestivalierEmail(festivalier.getEmail()).stream().map(panier -> {
             List<ArticleResponseDto> articleResponseDtos = panier.getArticles().stream()
                     .map(article -> ArticleResponseDto.builder()
                             .id(article.getId())
@@ -41,11 +42,7 @@ public class PanierService {
 
     public PanierResponseDto savePanierFestivalier(PanierRequestBodyDto panierRequestBodyDto){
         // Search festivalier owner of the panier
-        Festivalier festivalier = festivalierRepository
-                .findById(panierRequestBodyDto.getEmailFestivalier())
-                .orElseThrow(() -> new NotFoundException(
-                        "Festivalier avec l'email '" + panierRequestBodyDto.getEmailFestivalier() + "' non trouvé")
-                );
+        Festivalier festivalier = getFestivalier(panierRequestBodyDto.getEmailFestivalier());
 
         List<Article> articles = (List<Article>) this.articleService.saveAllArticle(panierRequestBodyDto.getArticles());
 
@@ -102,7 +99,8 @@ public class PanierService {
 
     public PanierResponseDto getCurrentPanier(String email)
     {
-        Panier panier = this.panierRepository.findFirstByFestivalierEmailAndStatut(email, StatutPanier.EN_COURS);
+        Festivalier festivalier = getFestivalier(email);
+        Panier panier = this.panierRepository.findFirstByFestivalierEmailAndStatut(festivalier.getEmail(), StatutPanier.EN_COURS);
         List<ArticleResponseDto> articleResponseDtos = panier.getArticles().stream()
                 .map(article -> ArticleResponseDto.builder()
                         .id(article.getId())
@@ -128,5 +126,13 @@ public class PanierService {
                     .quantite(article.getQuantite())
                     .build();
         }).toList();
+    }
+
+    private Festivalier getFestivalier(String email) {
+        return festivalierRepository
+                .findById(email)
+                .orElseThrow(() -> new NotFoundException(
+                        "Festivalier avec l'email '" + email + "' non trouvé")
+                );
     }
 }
