@@ -1,7 +1,6 @@
 package com.bdi.projectbdigroup5.dto;
 
 import com.bdi.projectbdigroup5.model.ErreurPaiementClass;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
