@@ -28,19 +28,22 @@ public class FestivalService {
         return festivalRepository.save(festival);
     }
 
-    public Iterable<Festival> getAllFestivalByFilter(
+    public Iterable<FestivalResponseDto> getAllFestivalByFilter(
             String dateDebut,
             String communeCodeInsee,
             String sousDomaine,
+            String domainePrincipal,
             Pageable pageable )
     {
         Date date = new Date(dateDebut);
-        return this.festivalRepository.findAllByDateDebutAndCommuneCodeInseeAndSousDomaineNom(
+        return this.festivalRepository.findAllByDateDebutAfterAndCommuneCodeInseeAndSousDomaineNomContainingOrSousDomaineDomainePrincipalNomContaining(
                 date,
                 communeCodeInsee,
                 sousDomaine,
-                pageable
-        );
+                domainePrincipal,
+                pageable)
+                .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
+                .toList();
     }
 
     public Festival festivalAleatoire() {
@@ -56,18 +59,26 @@ public class FestivalService {
         return festivalRepository.findAll(pageable).map(festival -> createFestivalResponseDtoFromFestival(festival, List.of()));
     }
 
-    public Iterable<Festival> getAllFestivalByCommune(String commune, Pageable pageable) {
-        return festivalRepository.findAllByCommuneNom(commune, pageable);
+    public Iterable<FestivalResponseDto> getAllFestivalByCommune(String commune, Pageable pageable) {
+        return festivalRepository.findAllByCommuneNom(commune, pageable)
+                .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
+                .toList();
     }
 
-    public Iterable<Festival> getAllFestivalByDateDebutOrDateFin(String dateDebut, String dateFin, Pageable pageable) {
+    public Iterable<FestivalResponseDto> getAllFestivalByDateDebutOrDateFin(String dateDebut, String dateFin, Pageable pageable) {
         if (dateFin == null && dateDebut != null) {
-            return festivalRepository.findAllByDateDebut(new Date(dateDebut), pageable);
+            return festivalRepository.findAllByDateDebut(new Date(dateDebut), pageable)
+                    .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
+                    .toList();
         }
         if (dateDebut == null && dateFin != null) {
-            return festivalRepository.findAllByDateFin(new Date(dateFin), pageable);
+            return festivalRepository.findAllByDateFin(new Date(dateFin), pageable)
+                    .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
+                    .toList();
         }
-        return festivalRepository.findAllByDateDebutOrDateFin(new Date(dateDebut), new Date(dateFin), pageable);
+        return festivalRepository.findAllByDateDebutOrDateFin(new Date(dateDebut), new Date(dateFin), pageable)
+                .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
+                .toList();
     }
 
     public Iterable<Festival> createFestivals(Iterable<Festival> festivals) {
@@ -78,6 +89,12 @@ public class FestivalService {
         Festival festival = this.festivalRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Festival not found"));
 
-        return  createFestivalResponseDtoFromFestival(festival,createOffreCovoiturageFestivalDtos(festival.getOffreCovoiturages()) );
+        return  createFestivalResponseDtoFromFestival(festival, createOffreCovoiturageFestivalDtos(festival.getOffreCovoiturages()) );
+    }
+
+    public List<FestivalResponseDto> getAllFestivalsByName(String nom, Pageable pageable){
+        return this.festivalRepository.findAllByNomContainingIgnoreCase(nom, pageable)
+                .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
+                .toList();
     }
 }
