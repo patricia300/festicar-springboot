@@ -32,13 +32,15 @@ public class FestivalService {
             String dateDebut,
             String communeCodeInsee,
             String sousDomaine,
+            String domainePrincipal,
             Pageable pageable )
     {
         Date date = new Date(dateDebut);
-        return this.festivalRepository.findAllByDateDebutAndCommuneCodeInseeAndSousDomaineNom(
+        return this.festivalRepository.findAllByDateDebutAfterAndCommuneCodeInseeAndSousDomaineNomContainingOrSousDomaineDomainePrincipalNomContaining(
                 date,
                 communeCodeInsee,
                 sousDomaine,
+                domainePrincipal,
                 pageable)
                 .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
                 .toList();

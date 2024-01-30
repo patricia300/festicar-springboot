@@ -59,10 +59,11 @@ public class FestivalController {
             @RequestParam String triPar,
             @RequestParam(required = false) String dateDebut,
             @RequestParam String communeCodeInsee,
-            @RequestParam String sousDomaine
+            @RequestParam String sousDomaine,
+            @RequestParam String domainePrincipal
     ) {
         Pageable festivalPage = pageableProperties.createPageable(numeroPage, taillePage,triPar, tri);
-        return this.festivalService.getAllFestivalByFilter( dateDebut, communeCodeInsee, sousDomaine,festivalPage);
+        return this.festivalService.getAllFestivalByFilter( dateDebut, communeCodeInsee, sousDomaine,domainePrincipal,festivalPage);
     }
 
     @GetMapping("/{id}")
