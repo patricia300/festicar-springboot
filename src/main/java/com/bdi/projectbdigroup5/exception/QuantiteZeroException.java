@@ -1,5 +1,6 @@
 package com.bdi.projectbdigroup5.exception;
 
+import com.bdi.projectbdigroup5.model.ErreurPaiementClass;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -10,5 +11,5 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.NOT_ACCEPTABLE, reason = "Aucun place ou pass disponible")
 public class QuantiteZeroException extends RuntimeException{
     private final Long id;
-    private final String classType;
+    private final ErreurPaiementClass classType;
 }
