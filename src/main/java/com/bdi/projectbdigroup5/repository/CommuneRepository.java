@@ -1,6 +1,9 @@
 package com.bdi.projectbdigroup5.repository;
 
 import com.bdi.projectbdigroup5.model.Commune;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
