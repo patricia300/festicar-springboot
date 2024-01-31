@@ -36,7 +36,7 @@ public class FestivalierController {
 
     @GetMapping("/by-token")
     public Festivalier getFestivalierByToken(@RequestParam String token){
-        return festivalierService.findByToken(token).orElseThrow(() -> new NotFoundException("Festivalier non trouvé"));
+        return festivalierService.findByToken(token).orElseThrow(() -> new FestivalierNotFoundException("Festivalier non trouvé"));
     }
     
     
