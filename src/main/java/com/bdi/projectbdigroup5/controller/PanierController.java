@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class PanierController {
     private PanierService panierService;
     @GetMapping("/paniers")
-    public ResponseEntity<?> getAllFestivalierPanier(@RequestParam String email) {
+    public ResponseEntity<Iterable<PanierResponseDto>> getAllFestivalierPanier(@RequestParam String email) {
         try {
             return ResponseEntity.ok(this.panierService.getPanierByFestivalierEmail(email));
         }
@@ -32,7 +32,7 @@ public class PanierController {
     }
 
     @PostMapping("/panier")
-    public ResponseEntity<? extends Object> createPanier(@RequestBody PanierRequestBodyDto panierRequestBodyDto)
+    public ResponseEntity<?> createPanier(@RequestBody PanierRequestBodyDto panierRequestBodyDto)
     {
         try {
             return ResponseEntity.ok(panierService.savePanierFestivalier(panierRequestBodyDto));
