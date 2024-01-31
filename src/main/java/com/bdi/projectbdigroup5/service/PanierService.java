@@ -71,7 +71,7 @@ public class PanierService {
 
     public Panier updatePanierStatusToPayed(Long id){
         //Chercher panier
-        Panier panier = panierRepository.findById(id).orElseThrow(() -> new NotFoundException("Panier non trouvé"));
+        Panier panier = panierRepository.findById(id).orElseThrow(() -> new NotFoundException("Panier avec l'ID "+ id +" non trouvé"));
         // Verifier element panier
         panier.getArticles().forEach(article -> {
             int nbPlace = getNbPlace(article.getPointPassageCovoiturage());

@@ -32,7 +32,7 @@ public class PanierController {
     }
 
     @PostMapping("/panier")
-    public ResponseEntity createPanier(@RequestBody PanierRequestBodyDto panierRequestBodyDto)
+    public ResponseEntity<? extends Object> createPanier(@RequestBody PanierRequestBodyDto panierRequestBodyDto)
     {
         try {
             return ResponseEntity.ok(panierService.savePanierFestivalier(panierRequestBodyDto));
@@ -68,7 +68,7 @@ public class PanierController {
     }
 
     @PutMapping("/panier/payer")
-    public ResponseEntity payerPanier(@RequestParam Long id)
+    public ResponseEntity<? extends Object> payerPanier(@RequestParam Long id)
     {
         try {
             return ResponseEntity.ok(this.panierService.updatePanierStatusToPayed(id));

@@ -1,11 +1,15 @@
 package com.bdi.projectbdigroup5.controller;
 
 import com.bdi.projectbdigroup5.dto.FestivalResponseDto;
+import com.bdi.projectbdigroup5.exception.NotFoundException;
 import com.bdi.projectbdigroup5.property.PageableProperties;
 import com.bdi.projectbdigroup5.model.Festival;
 import com.bdi.projectbdigroup5.service.FestivalService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -67,8 +71,15 @@ public class FestivalController {
     }
 
     @GetMapping("/{id}")
-    public FestivalResponseDto getOneFestival(@PathVariable Long id){
-        return this.festivalService.getOneFestival(id);
+    public ResponseEntity<FestivalResponseDto> getOneFestival(@PathVariable Long id){
+        try {
+            return ResponseEntity.ok(this.festivalService.getOneFestival(id));
+        }
+        catch (NotFoundException notFoundException) {
+            return ResponseEntity
+                    .of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, notFoundException.getMessage()))
+                    .build();
+        }
     }
 
     @GetMapping("/by-nom")
