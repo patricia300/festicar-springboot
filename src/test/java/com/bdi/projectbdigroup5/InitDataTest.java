@@ -5,14 +5,9 @@ import com.bdi.projectbdigroup5.repository.*;
 import com.github.javafaker.Faker;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 
@@ -31,6 +26,8 @@ public class InitDataTest {
     DomainePrincipalRepository domainePrincipalRepository;
     SousDomaineRepository sousDomaineRepository;
     FestivalRepository festivalRepository;
+    ArticleRepository articleRepository;
+    PanierRepository panierRepository;
 
     public Festivalier createFestivalierTest(String email){
         Faker faker = initFaker();
@@ -111,7 +108,6 @@ public class InitDataTest {
     public PointPassageCovoiturage createPointPassageCovoiturageTest(Long id){
         Faker faker = initFaker();
         PointPassageCovoiturage pointPassageCovoiturage = new PointPassageCovoiturage();
-        LieuCovoiturage lieuCovoiturage = createLieuCovoiturageTest();
         pointPassageCovoiturage.setId(id);
         pointPassageCovoiturage.setDifferenceHeurePassage(faker.number().numberBetween(1,4));
         pointPassageCovoiturage.setLieuCovoiturage(createLieuCovoiturageTest());
@@ -130,7 +126,6 @@ public class InitDataTest {
         offreCovoiturage.setHeureDepart(new Date("2024/06/05 10:00"));
         offreCovoiturage.setHeureArrive(new Date("2024/06/05 20:00"));
         offreCovoiturage.setCovoitureur(createCovoitureurTest());
-        //offreCovoiturage.setPointPassageCovoiturages(pointPassageCovoiturages);
         offreCovoiturage.setFestival(createFestivalTest());
         return offreCovoiturageRepository.save(offreCovoiturage);
     }
@@ -163,6 +158,22 @@ public class InitDataTest {
         festival.setDateDebut(new Date("2024/07/08"));
         festival.setDateFin(new Date("2024/08/01"));
         return festivalRepository.save(festival);
+    }
+
+    public Article createArticleTest(int qte, Panier panier, Long idPointPassage){
+        Article article = new Article();
+        article.setPanier(panier);
+        article.setQuantite(qte);
+        article.setPointPassageCovoiturage(createPointPassageCovoiturageTest(idPointPassage));
+        return articleRepository.save(article);
+    }
+
+    public Panier createPanierTest(Long id,String email, StatutPanier statutPanier){
+        Panier panier = new Panier();
+        panier.setId(id);
+        panier.setFestivalier(createFestivalierTest(email));
+        panier.setStatut(statutPanier);
+        return  panierRepository.save(panier);
     }
 
     public static Faker initFaker() {
