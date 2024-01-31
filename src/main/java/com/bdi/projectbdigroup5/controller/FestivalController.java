@@ -27,47 +27,79 @@ public class FestivalController {
     }
 
     @GetMapping
-    public Iterable<FestivalResponseDto> getAllFestivals(
+    public ResponseEntity<Iterable<FestivalResponseDto>> getAllFestivals(
             @RequestParam(required = false) Integer numeroPage,
             @RequestParam(required = false) Integer taillePage,
-            @RequestParam(required = false) String tri) {
-        Pageable festivalPage = pageableProperties.createPageable(numeroPage, taillePage, "dateDebut", tri);
-        return this.festivalService.getAllFestivalPerPage(festivalPage);
+            @RequestParam(required = false) String tri)
+    {
+        try {
+            Pageable festivalPage = pageableProperties.createPageable(numeroPage, taillePage, "dateDebut", tri);
+            return ResponseEntity.ok(this.festivalService.getAllFestivalPerPage(festivalPage));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .of(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage()))
+                    .build();
+        }
     }
 
     @GetMapping("/by-commune")
-    public Iterable<FestivalResponseDto> getAllFestivalsByCommune(
+    public ResponseEntity<Iterable<FestivalResponseDto>> getAllFestivalsByCommune(
             @RequestParam(required = false) Integer numeroPage,
             @RequestParam(required = false) Integer taillePage,
             @RequestParam String commune) {
-        Pageable festivalByCommunePage = pageableProperties.createPageable(numeroPage, taillePage);
-        return this.festivalService.getAllFestivalByCommune(commune, festivalByCommunePage);
+        try {
+            Pageable festivalByCommunePage = pageableProperties.createPageable(numeroPage, taillePage);
+            return ResponseEntity.ok(this.festivalService.getAllFestivalByCommune(commune, festivalByCommunePage));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .of(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage()))
+                    .build();
+        }
     }
 
     @GetMapping("/by-date")
-    public Iterable<FestivalResponseDto> getAllFestivalsByDate(
+    public ResponseEntity<Iterable<FestivalResponseDto>> getAllFestivalsByDate(
             @RequestParam(required = false) Integer numeroPage,
             @RequestParam(required = false) Integer taillePage,
             @RequestParam(required = false) String dateDebut,
             @RequestParam(required = false) String dateFin
     ) {
-        Pageable festivalByDatePage = pageableProperties.createPageable(numeroPage, taillePage);
-        return this.festivalService.getAllFestivalByDateDebutOrDateFin(dateDebut, dateFin, festivalByDatePage);
+        try {
+            Pageable festivalByDatePage = pageableProperties.createPageable(numeroPage, taillePage);
+            return ResponseEntity.ok(this.festivalService.getAllFestivalByDateDebutOrDateFin(dateDebut, dateFin, festivalByDatePage));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .of(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage()))
+                    .build();
+        }
     }
 
     @GetMapping("/filtre")
-    public Iterable<FestivalResponseDto> getAllFestivalByFiltre(
+    public  ResponseEntity<Iterable<FestivalResponseDto>> getAllFestivalByFiltre(
             @RequestParam(required = false) Integer numeroPage,
             @RequestParam(required = false) Integer taillePage,
             @RequestParam(required = false) String tri,
-            @RequestParam String triPar,
+            @RequestParam(required = false) String triPar,
             @RequestParam(required = false) String dateDebut,
             @RequestParam String communeCodeInsee,
             @RequestParam String sousDomaine,
             @RequestParam String domainePrincipal
     ) {
-        Pageable festivalPage = pageableProperties.createPageable(numeroPage, taillePage,triPar, tri);
-        return this.festivalService.getAllFestivalByFilter( dateDebut, communeCodeInsee, sousDomaine,domainePrincipal,festivalPage);
+        try {
+            String sortBy = triPar != null ? triPar : "dateDebut";
+            Pageable festivalPage = pageableProperties.createPageable(numeroPage, taillePage, sortBy, tri);
+            return ResponseEntity.ok(this.festivalService.getAllFestivalByFilter(
+                    dateDebut,
+                    communeCodeInsee,
+                    sousDomaine,
+                    domainePrincipal,
+                    festivalPage)
+            );
+        } catch (Exception e) {
+            return ResponseEntity
+                    .of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage()))
+                    .build();
+        }
     }
 
     @GetMapping("/{id}")
@@ -83,11 +115,17 @@ public class FestivalController {
     }
 
     @GetMapping("/by-nom")
-    public List<FestivalResponseDto> getAllFestivalsByName(
+    public ResponseEntity<List<FestivalResponseDto>> getAllFestivalsByName(
             @RequestParam(required = false) Integer numeroPage,
             @RequestParam(required = false) Integer taillePage,
             @RequestParam String nom){
-        Pageable pageable = pageableProperties.createPageable(numeroPage, taillePage);
-        return this.festivalService.getAllFestivalsByName(nom, pageable);
+        try {
+            Pageable pageable = pageableProperties.createPageable(numeroPage, taillePage);
+            return ResponseEntity.ok(this.festivalService.getAllFestivalsByName(nom, pageable));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .of(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage()))
+                    .build();
+        }
     }
 }

@@ -22,7 +22,6 @@ import static com.bdi.projectbdigroup5.dto.FestivalResponseDto.createOffreCovoit
 
 @Service
 @AllArgsConstructor
-@NoArgsConstructor
 public class FestivalService {
     private FestivalRepository festivalRepository;
 
