@@ -1,6 +1,6 @@
 package com.bdi.projectbdigroup5.service;
 
-import com.bdi.projectbdigroup5.InitDataTest;
+import com.bdi.projectbdigroup5.InitData;
 import com.bdi.projectbdigroup5.dto.ArticleRequestBodyDto;
 import com.bdi.projectbdigroup5.dto.PanierRequestBodyDto;
 import com.bdi.projectbdigroup5.dto.PanierResponseDto;
@@ -28,18 +28,18 @@ class PanierServiceTest {
     private PanierService panierService;
 
     @Autowired
-    private InitDataTest initDataTest;
+    private InitData initData;
 
     private final String EMAIL_FESTIVALIER = "mohamed.rey@gmail.com";
 
     @BeforeEach
     public void init()
     {
-        initDataTest.createFestivalierTest(EMAIL_FESTIVALIER);
-        initDataTest.createPointPassageCovoiturageTest(1L);
-        initDataTest.createPointPassageCovoiturageTest(2L);
-        initDataTest.createPointPassageCovoiturageTest(3L);
-        initDataTest.createPointPassageCovoiturageTest(4L);
+        initData.createFestivalierTest(EMAIL_FESTIVALIER);
+        initData.createPointPassageCovoiturageTest(1L);
+        initData.createPointPassageCovoiturageTest(2L);
+        initData.createPointPassageCovoiturageTest(3L);
+        initData.createPointPassageCovoiturageTest(4L);
     }
 
     @Test
@@ -69,7 +69,7 @@ class PanierServiceTest {
     }
 
     @Test
-    public void PanierService_GetCurrentPanier_ReturnsPanierResponseDto(){
+    void PanierService_GetCurrentPanier_ReturnsPanierResponseDto(){
         ArticleRequestBodyDto a1 = ArticleRequestBodyDto.builder()
                 .idPointPassage(1L)
                 .quantite(1)
@@ -93,7 +93,7 @@ class PanierServiceTest {
     }
 
     @Test
-    public void PanierService_GetPanierByFestivalierEmail_ReturnsIterablePanierResponseDto(){
+    void PanierService_GetPanierByFestivalierEmail_ReturnsIterablePanierResponseDto(){
         ArticleRequestBodyDto a1 = ArticleRequestBodyDto.builder()
                 .idPointPassage(1L)
                 .quantite(1)
@@ -118,10 +118,10 @@ class PanierServiceTest {
     }
 
     @Test
-    public void PanierService_UpdatePanierStatusToPayed_ReturnsIterablePanierResponseDto(){
-        Panier panier = initDataTest.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
-        Article article = initDataTest.createArticleTest(1, panier, 1L);
-        Article article1 = initDataTest.createArticleTest(1, panier, 2L);
+    void PanierService_UpdatePanierStatusToPayed_ReturnsIterablePanierResponseDto(){
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        Article article = initData.createArticleTest(1, panier, 1L);
+        Article article1 = initData.createArticleTest(1, panier, 2L);
 
         Panier panierPayed = this.panierService.updatePanierStatusToPayed(panier.getId());
 

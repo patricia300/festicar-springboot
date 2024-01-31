@@ -2,8 +2,6 @@ package com.bdi.projectbdigroup5.repository;
 
 import com.bdi.projectbdigroup5.model.Festivalier;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.repository.CrudRepository;

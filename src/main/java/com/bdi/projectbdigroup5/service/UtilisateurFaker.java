@@ -20,6 +20,9 @@ import com.bdi.projectbdigroup5.model.Organisateur;
 @AllArgsConstructor
 public class UtilisateurFaker {
 
+    public static final String DATE_PATTERN = "dd-MM-yyyy";
+    public static final String DATE_SOURCE_MIN = "01-01-1970";
+    public static final String DATE_SOURCE_MAX = "01-01-2010";
     FestivalierService festivalierService;
     OrganisateurService organisateurService;
     CovoitureurService covoitureurService;
@@ -71,14 +74,15 @@ public class UtilisateurFaker {
 
         Faker faker = new Faker(new Locale("fr"));
 
-        SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE);
+        SimpleDateFormat formater = new SimpleDateFormat(DATE_PATTERN, Locale.FRANCE);
         covoitureur.setNom(faker.name().lastName());
         covoitureur.setPrenom(faker.name().firstName());
         covoitureur.setEmail(faker.internet().emailAddress());
         covoitureur.setUrlPhoto(faker.avatar().image());
         covoitureur.setNumeroTelephone(faker.phoneNumber().cellPhone());
         try{
-            covoitureur.setDateNaissance(faker.date().between(formater.parse("01-01-1970"), formater.parse("01-01-2010")));
+            covoitureur.setDateNaissance(faker.date().between(formater.parse(
+                    DATE_SOURCE_MIN), formater.parse(DATE_SOURCE_MAX)));
         }catch(ParseException e){
             System.out.println(e.getMessage());
         }
@@ -90,13 +94,13 @@ public class UtilisateurFaker {
         Organisateur organisateur = new Organisateur();
         Faker faker = new Faker(new Locale("fr"));
 
-        SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE);
+        SimpleDateFormat formater = new SimpleDateFormat(DATE_PATTERN, Locale.FRANCE);
         organisateur.setNom(faker.name().lastName());
         organisateur.setPrenom(faker.name().firstName());
         organisateur.setEmail(faker.internet().emailAddress());
         organisateur.setUrlPhoto(faker.avatar().image());
         try{
-            organisateur.setDateNaissance(faker.date().between(formater.parse("01-01-1970"), formater.parse("01-01-2010")));
+            organisateur.setDateNaissance(faker.date().between(formater.parse(DATE_SOURCE_MIN), formater.parse(DATE_SOURCE_MAX)));
         }catch(ParseException e){
             System.out.println(e.getMessage());
         }
@@ -108,7 +112,7 @@ public class UtilisateurFaker {
         Address address = faker.address();
 
         Festivalier festivalier = new Festivalier();
-        SimpleDateFormat formater = new SimpleDateFormat("dd-MM-yyyy", Locale.FRANCE);
+        SimpleDateFormat formater = new SimpleDateFormat(DATE_PATTERN, Locale.FRANCE);
         festivalier.setNom(faker.name().lastName());
         festivalier.setPrenom(faker.name().firstName());
         festivalier.setEmail(faker.internet().emailAddress());
@@ -117,7 +121,7 @@ public class UtilisateurFaker {
         festivalier.setCodePostal(address.zipCode());
         festivalier.setVille(address.city());
         try{
-            festivalier.setDateNaissance(faker.date().between(formater.parse("01-01-1970"), formater.parse("01-01-2010")));
+            festivalier.setDateNaissance(faker.date().between(formater.parse(DATE_SOURCE_MIN), formater.parse(DATE_SOURCE_MAX)));
         }catch(ParseException e){
             System.out.println(e.getMessage());
         }

@@ -13,7 +13,7 @@ import java.util.Locale;
 
 @Service
 @AllArgsConstructor
-public class InitDataTest {
+public class InitData {
     private FestivalierRepository festivalierRepository;
     private PointPassageCovoiturageRepository pointPassageCovoiturageRepository;
     LieuCovoiturageRepository lieuCovoiturageRepository;
