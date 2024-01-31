@@ -6,7 +6,10 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "point_passage_covoiturages")
+@Table(name = "point_passage_covoiturages", indexes = {
+    @Index(name = "pointPassageCovoiturageOffreCovoiturageIndex", columnList = "id_offre_covoiturage"),
+    @Index(name = "pointPassageCovoiturageLieuCovoiturageIndex", columnList = "id_lieu_covoiturage")
+})
 public class PointPassageCovoiturage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -22,7 +22,6 @@ public class OffreCovoiturageController {
             @RequestParam(required = false) Integer taillePage ,
             @RequestParam(required = false) String tri)
     {
-
         Pageable offreCovoituragePage =  pageableProperties.createPageable(numeroPage, taillePage,"dateOffre", tri);
 
         return this.offreCovoiturageService.getAllOffreCovoiturages(offreCovoituragePage);

@@ -12,7 +12,9 @@ import java.time.Instant;
 
 @Data
 @Entity
-@Table(name="paniers")
+@Table(name="paniers", indexes = {
+    @Index(name = "paniersFestivalierIndex", columnList = "email_festivalier" )   
+})
 public class Panier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

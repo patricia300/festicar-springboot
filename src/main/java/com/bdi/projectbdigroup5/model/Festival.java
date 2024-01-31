@@ -7,7 +7,11 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "festivals")
+@Table(name = "festivals", indexes ={
+    @Index(name="festivalsDateIndex", columnList="dateDebut"),
+    @Index(name="festivalsCommuneIndex", columnList="code_insee_commune"),
+    @Index(name="festivalsSousDomaineIndex", columnList="nom_sous_domaine")
+})
 public class Festival {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
