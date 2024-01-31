@@ -33,7 +33,7 @@ public class PanierController {
     }
 
     @PostMapping("/panier")
-    public ResponseEntity<?> createPanier(@RequestBody PanierRequestBodyDto panierRequestBodyDto)
+    public ResponseEntity<? extends Object> createPanier(@RequestBody PanierRequestBodyDto panierRequestBodyDto)
     {
         try {
             return ResponseEntity.ok(panierService.savePanierFestivalier(panierRequestBodyDto));
@@ -99,7 +99,7 @@ public class PanierController {
     }
 
     @GetMapping("/panier")
-    public ResponseEntity getCurrentPanier(@RequestParam String email)
+    public ResponseEntity<? extends Object> getCurrentPanier(@RequestParam String email)
     {
         try {
             return ResponseEntity.ok(this.panierService.getCurrentPanier(email));
