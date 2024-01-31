@@ -26,6 +26,10 @@ public class FestivalierService {
         return festivalierRepository.findById(email);
     }
 
+    public Optional<Festivalier> findByToken(String token){
+        return festivalierRepository.findByToken(token);
+    }
+
     public Festivalier festivalierAleatoire(){
         Long count = festivalierRepository.count();
         int nombrePageAleatoire = (int)(Math.random() * count);
