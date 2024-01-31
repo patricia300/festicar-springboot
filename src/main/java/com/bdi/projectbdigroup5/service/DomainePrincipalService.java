@@ -1,6 +1,7 @@
 package com.bdi.projectbdigroup5.service;
 
 import com.bdi.projectbdigroup5.model.DomainePrincipal;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +10,9 @@ import com.bdi.projectbdigroup5.repository.DomainePrincipalRepository;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class DomainePrincipalService {
-    
-    @Autowired
+
     private DomainePrincipalRepository domainePrincipalRepository;
 
     public DomainePrincipal createDomainePrincipal(DomainePrincipal domaine) {

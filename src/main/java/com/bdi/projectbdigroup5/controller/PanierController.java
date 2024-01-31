@@ -15,17 +15,25 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
 @AllArgsConstructor
 public class PanierController {
     private PanierService panierService;
     @GetMapping("/paniers")
-    public Iterable<PanierResponseDto> getAllFestivalierPanier(@RequestParam String email) {
-        return this.panierService.getPanierByFestivalierEmail(email);
+    public ResponseEntity<Iterable<PanierResponseDto>> getAllFestivalierPanier(@RequestParam String email) {
+        try {
+            return ResponseEntity.ok(this.panierService.getPanierByFestivalierEmail(email));
+        }
+        catch (NotFoundException notFoundException) {
+            return ResponseEntity
+                    .of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, notFoundException.getMessage()))
+                    .build();
+        }
     }
 
     @PostMapping("/panier")
-    public ResponseEntity createPanier(@RequestBody PanierRequestBodyDto panierRequestBodyDto)
+    public ResponseEntity<?> createPanier(@RequestBody PanierRequestBodyDto panierRequestBodyDto)
     {
         try {
             return ResponseEntity.ok(panierService.savePanierFestivalier(panierRequestBodyDto));
@@ -61,7 +69,7 @@ public class PanierController {
     }
 
     @PutMapping("/panier/payer")
-    public ResponseEntity payerPanier(@RequestParam Long id)
+    public ResponseEntity<? extends Object> payerPanier(@RequestParam Long id)
     {
         try {
             return ResponseEntity.ok(this.panierService.updatePanierStatusToPayed(id));
@@ -91,8 +99,16 @@ public class PanierController {
     }
 
     @GetMapping("/panier")
-    public PanierResponseDto getCurrentPanier(@RequestParam String email)
+    public ResponseEntity getCurrentPanier(@RequestParam String email)
     {
-        return this.panierService.getCurrentPanier(email);
+        try {
+            return ResponseEntity.ok(this.panierService.getCurrentPanier(email));
+        }
+        catch (NotFoundException notFoundException) {
+            return ResponseEntity
+                    .of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, notFoundException.getMessage()))
+                    .build();
+        }
+
     }
 }

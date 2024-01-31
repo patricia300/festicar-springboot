@@ -1,6 +1,7 @@
 package com.bdi.projectbdigroup5.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.bdi.projectbdigroup5.model.SousDomaine;
@@ -9,9 +10,9 @@ import com.bdi.projectbdigroup5.repository.SousDomaineRepository;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
+@NoArgsConstructor
 public class SousDomaineService {
-    
-    @Autowired
     private SousDomaineRepository sousDomaineRepository;
 
     public SousDomaine createSousDomaine(SousDomaine sousDomaine){
