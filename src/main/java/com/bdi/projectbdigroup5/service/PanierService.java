@@ -4,6 +4,7 @@ import com.bdi.projectbdigroup5.dto.*;
 import com.bdi.projectbdigroup5.exception.NotFoundException;
 import com.bdi.projectbdigroup5.model.*;
 import com.bdi.projectbdigroup5.repository.*;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,23 +14,18 @@ import static com.bdi.projectbdigroup5.dto.FestivalResponseDto.createFestivalRes
 import static com.bdi.projectbdigroup5.service.ArticleService.*;
 
 @Service
+@AllArgsConstructor
 public class PanierService {
-    @Autowired
     private PanierRepository panierRepository;
 
-    @Autowired
     private FestivalierRepository festivalierRepository;
 
-    @Autowired
     private ArticleRepository articleRepository;
 
-    @Autowired
     private FestivalRepository festivalRepository;
 
-    @Autowired
     private OffreCovoiturageRepository offreCovoiturageRepository;
 
-    @Autowired
     private ArticleService articleService;
 
     public Iterable<PanierResponseDto> getPanierByFestivalierEmail(String email) {

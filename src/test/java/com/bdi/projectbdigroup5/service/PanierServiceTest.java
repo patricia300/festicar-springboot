@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@AutoConfigureDataJpa
 class PanierServiceTest {
     @Autowired
     private PanierService panierService;
@@ -46,7 +45,7 @@ class PanierServiceTest {
     }
 
     @Test
-    public void getCurrentPanier() {
+    void  getCurrentPanier() {
         ArticleRequestBodyDto a1 = ArticleRequestBodyDto.builder()
                 .idPointPassage(1L)
                 .quantite(1)
