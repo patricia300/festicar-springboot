@@ -18,12 +18,20 @@ public class FestivalierService {
         return festivalierRepository.save(festivalier);
     }
 
+    public Festivalier updateFestivalier(Festivalier festivalier){
+        return festivalierRepository.save(festivalier);
+    }
+
     public Iterable<Festivalier> createFestivaliers(Iterable<Festivalier> festivaliers){
         return festivalierRepository.saveAll(festivaliers);
     }
 
     public Optional<Festivalier> findById(String email){
         return festivalierRepository.findById(email);
+    }
+
+    public Optional<Festivalier> findByToken(String token){
+        return festivalierRepository.findByToken(token);
     }
 
     public Festivalier festivalierAleatoire(){

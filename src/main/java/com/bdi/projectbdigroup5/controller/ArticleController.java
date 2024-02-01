@@ -23,7 +23,7 @@ import java.util.List;
 public class ArticleController {
     private ArticleService articleService;
     @PostMapping("/article")
-    public ResponseEntity createArticle(@RequestBody ArticleRequestBodyDto requestBodyDto){
+    public ResponseEntity<? extends Object> createArticle(@RequestBody ArticleRequestBodyDto requestBodyDto){
         try {
             return ResponseEntity.ok(this.articleService.saveArticle(requestBodyDto));
         }
