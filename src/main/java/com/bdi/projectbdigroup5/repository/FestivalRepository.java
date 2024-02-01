@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Date;
+import java.util.List;
 
 @Repository
 public interface FestivalRepository extends CrudRepository<Festival, Long>, PagingAndSortingRepository<Festival, Long> {
@@ -16,14 +17,21 @@ public interface FestivalRepository extends CrudRepository<Festival, Long>, Pagi
 
     Page<Festival> findAllByCommuneNom(String commune, Pageable pageable);
 
+    List<Festival> findAllByCommuneCodeInsee(String commune);
+
     Page<Festival> findAllByDateDebutOrDateFin(Date dateDebut, Date dateFin, Pageable pageable);
+
 
     Page<Festival> findAllByDateDebut(Date dateDebut, Pageable pageable);
 
+    List<Festival> findAllByDateDebut(Date dateDebut);
+
     Page<Festival> findAllByDateFin(Date dateFin, Pageable pageable);
+
+    List<Festival> findAllBySousDomaineDomainePrincipalNomContainingIgnoreCase(String domaine);
 
     Page<Festival> findAllByDateDebutAfterAndCommuneCodeInseeAndSousDomaineNomContainingOrSousDomaineDomainePrincipalNomContaining(
             Date dateDebut, String communeCodeInsee, String sousDomaineNom, String domainePrincipal, Pageable pageable);
 
-    Page<Festival> findAllByNomContainingIgnoreCase(String nom, Pageable pageable);
+    List<Festival> findAllByNomContainingIgnoreCase(String nom);
 }

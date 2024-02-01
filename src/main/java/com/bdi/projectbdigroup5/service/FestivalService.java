@@ -59,26 +59,17 @@ public class FestivalService {
         return festivalRepository.findAll(pageable).map(festival -> createFestivalResponseDtoFromFestival(festival, List.of()));
     }
 
-    public Iterable<FestivalResponseDto> getAllFestivalByCommune(String commune, Pageable pageable) {
-        return festivalRepository.findAllByCommuneNom(commune, pageable)
-                .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
+    public Iterable<FestivalResponseDto> getAllFestivalByCommune(String communecodeInsee) {
+        return festivalRepository.findAllByCommuneCodeInsee(communecodeInsee)
+                .stream().map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
                 .toList();
     }
 
-    public Iterable<FestivalResponseDto> getAllFestivalByDateDebutOrDateFin(String dateDebut, String dateFin, Pageable pageable) {
-        if (dateFin == null && dateDebut != null) {
-            return festivalRepository.findAllByDateDebut(new Date(dateDebut), pageable)
-                    .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
+    public Iterable<FestivalResponseDto> getAllFestivalByDateDebut(String dateDebut) {
+
+            return festivalRepository.findAllByDateDebut(new Date(dateDebut))
+                    .stream().map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
                     .toList();
-        }
-        if (dateDebut == null && dateFin != null) {
-            return festivalRepository.findAllByDateFin(new Date(dateFin), pageable)
-                    .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
-                    .toList();
-        }
-        return festivalRepository.findAllByDateDebutOrDateFin(new Date(dateDebut), new Date(dateFin), pageable)
-                .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
-                .toList();
     }
 
     public Iterable<Festival> createFestivals(Iterable<Festival> festivals) {
@@ -92,8 +83,16 @@ public class FestivalService {
         return  createFestivalResponseDtoFromFestival(festival, createOffreCovoiturageFestivalDtos(festival.getOffreCovoiturages()) );
     }
 
-    public List<FestivalResponseDto> getAllFestivalsByName(String nom, Pageable pageable){
-        return this.festivalRepository.findAllByNomContainingIgnoreCase(nom, pageable)
+    public List<FestivalResponseDto> getAllFestivalsByName(String nom){
+        return this.festivalRepository.findAllByNomContainingIgnoreCase(nom)
+                .stream()
+                .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
+                .toList();
+    }
+
+    public List<FestivalResponseDto> getAllFestivalsByDomaine(String domaine){
+        return this.festivalRepository.findAllBySousDomaineDomainePrincipalNomContainingIgnoreCase(domaine)
+                .stream()
                 .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
                 .toList();
     }
