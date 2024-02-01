@@ -21,6 +21,8 @@ public abstract class Utilisateur {
 
     private String urlPhoto;
 
+    private String token;
+
     @CreationTimestamp
     private Instant dateCreation;
 
