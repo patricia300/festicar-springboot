@@ -126,7 +126,7 @@ public class PanierService {
                 .orElseThrow(() -> new NotFoundException("Festivalier avec l'email " + panierRequestPaimentPartielDto.getEmailFestivalier() + " non trouvé"));
         //copier panier
         Panier panierPayed = new Panier();
-        panierPayed.setStatut(StatutPanier.PAYER);
+        panierPayed.setStatut(StatutPanier.VALIDE);
         panierPayed.setFestivalier(festivalier);
         this.panierRepository.save(panierPayed);
 
@@ -145,6 +145,9 @@ public class PanierService {
                     .festival(createFestivalResponseDtoFromArticle(article))
                     .build();
         }).toList();
+
+        panierPayed.setStatut(StatutPanier.PAYER);
+        this.panierRepository.save(panierPayed);
 
         return PanierResponseDto.builder()
                 .articles(articles)
