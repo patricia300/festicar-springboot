@@ -134,7 +134,7 @@ public class FakeDataUtility {
 
         offreCovoiturage.setCovoitureur(covoitureur);
         offreCovoiturage.setDateOffre(new Date("13/06/2024"));
-        offreCovoiturage.setModeleVoiture("null");
+        offreCovoiturage.setModeleVoiture("2020,Land Rover,Range Rover Velar");
         offreCovoiturage.setNombrePlaces(3);
 
         return offreCovoiturage;
