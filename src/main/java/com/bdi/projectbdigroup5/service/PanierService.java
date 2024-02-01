@@ -225,11 +225,8 @@ public class PanierService {
         int nbPass = getNbPass(article.getPointPassageCovoiturage());
 
 
-        Festival festival =   article.getPointPassageCovoiturage().getOffreCovoiturage().getFestival();
-        OffreCovoiturage offreCovoiturage =  article.getPointPassageCovoiturage().getOffreCovoiturage();
-
-        Optional<ErreurPaiementPanierResponseDto> erreurPaiementPanierResponseDtoOffreCovoiturage = verifierNombrePlaceOffreCovoiturage(nbPlace, article.getQuantite(),offreCovoiturage.getId());
-        Optional<ErreurPaiementPanierResponseDto> erreurPaiementPanierResponseDtoFestival = verifierNombrePassFestival(nbPass, article.getQuantite(), festival.getId());
+        Optional<ErreurPaiementPanierResponseDto> erreurPaiementPanierResponseDtoOffreCovoiturage = verifierNombrePlaceOffreCovoiturage(nbPlace, article.getQuantite(),article.getId());
+        Optional<ErreurPaiementPanierResponseDto> erreurPaiementPanierResponseDtoFestival = verifierNombrePassFestival(nbPass, article.getQuantite(), article.getId());
 
         if (erreurPaiementPanierResponseDtoFestival.isPresent()) {
             erreurPaiementPanierResponseDtosList.add(erreurPaiementPanierResponseDtoFestival);

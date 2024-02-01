@@ -57,16 +57,16 @@ public class ArticleService {
         return pointPassageCovoiturage.getOffreCovoiturage().getFestival().getNombrePass();
     }
 
-    public static Optional<ErreurPaiementPanierResponseDto> verifierNombrePlaceOffreCovoiturage(int nbPlace, int quantite, Long idCovoiturage){
+    public static Optional<ErreurPaiementPanierResponseDto> verifierNombrePlaceOffreCovoiturage(int nbPlace, int quantite, Long idArticle){
         if(nbPlace < quantite) {
-            return Optional.of(new ErreurPaiementPanierResponseDto(idCovoiturage, nbPlace, ErreurPaiementClass.OFFRE_COVOITURAGE));
+            return Optional.of(new ErreurPaiementPanierResponseDto(idArticle, nbPlace, ErreurPaiementClass.OFFRE_COVOITURAGE));
         }
         return Optional.empty();
     }
 
-    public static Optional<ErreurPaiementPanierResponseDto> verifierNombrePassFestival(int nbPass, int quantite, Long idFestival) {
+    public static Optional<ErreurPaiementPanierResponseDto> verifierNombrePassFestival(int nbPass, int quantite, Long idArticle) {
         if(nbPass < quantite){
-            return Optional.of(new ErreurPaiementPanierResponseDto(idFestival, nbPass, ErreurPaiementClass.FESTIVAL));
+            return Optional.of(new ErreurPaiementPanierResponseDto(idArticle, nbPass, ErreurPaiementClass.FESTIVAL));
         }
         return Optional.empty();
     }
