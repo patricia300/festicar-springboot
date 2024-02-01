@@ -5,7 +5,9 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "communes")
+@Table(name = "communes", indexes = {
+    @Index(name = "communeNomIndex" , columnList = "nom")
+})
 public class Commune {
     @Id
     private String codeInsee;

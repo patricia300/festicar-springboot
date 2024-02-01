@@ -11,10 +11,11 @@ import java.util.List;
 
 import static com.bdi.projectbdigroup5.dto.FestivalResponseDto.createFestivalResponseDtoFromArticle;
 import static com.bdi.projectbdigroup5.service.ArticleService.*;
+import com.bdi.projectbdigroup5.service.ServiceInterface.PanierServiceInterface;
 
 @Service
 @AllArgsConstructor
-public class PanierService {
+public class PanierService implements PanierServiceInterface {
     private PanierRepository panierRepository;
     private FestivalierRepository festivalierRepository;
     private ArticleRepository articleRepository;
@@ -69,6 +70,7 @@ public class PanierService {
                .build();
     }
 
+    @Override
     public Panier updatePanierStatusToPayed(Long id){
         //Chercher panier
         Panier panier = panierRepository.findById(id).orElseThrow(() -> new NotFoundException("Panier avec l'ID "+ id +" non trouvé"));
