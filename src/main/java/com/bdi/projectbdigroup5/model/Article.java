@@ -4,6 +4,7 @@ package com.bdi.projectbdigroup5.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 @Data
 @Entity
@@ -16,6 +17,7 @@ public class Article {
     @ManyToOne
     @JoinColumn(name = "id_panier")
     @JsonIgnore
+    @ToString.Exclude
     private Panier panier;
 
     @ManyToOne

@@ -2,6 +2,7 @@ package com.bdi.projectbdigroup5.service;
 
 import com.bdi.projectbdigroup5.InitData;
 import com.bdi.projectbdigroup5.dto.ArticleRequestBodyDto;
+import com.bdi.projectbdigroup5.dto.PanierPartielPaiementRequestDto;
 import com.bdi.projectbdigroup5.dto.PanierRequestBodyDto;
 import com.bdi.projectbdigroup5.dto.PanierResponseDto;
 
@@ -118,14 +119,37 @@ class PanierServiceTest {
     }
 
     @Test
-    void PanierService_UpdatePanierStatusToPayed_ReturnsIterablePanierResponseDto(){
+    void PanierService_UpdatePanierStatusToPayed_ReturnsIterablePanierResponseDtoWithError(){
         Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
-        Article article = initData.createArticleTest(1, panier, 1L);
-        Article article1 = initData.createArticleTest(1, panier, 2L);
+        initData.createArticleTest(1, panier, 1L, 0);
+        initData.createArticleTest(1, panier, 2L);
 
         PanierResponseDto panierPayed = this.panierService.updatePanierStatusToPayed(panier.getId());
 
         assertNotNull(panierPayed);
-        assertEquals(StatutPanier.PAYER, panierPayed.getPanier().getStatut());
+        assertNotNull(panierPayed.getArticlesNonDisponible());
+        assertNull(panierPayed.getArticles());
+        assertNull(panierPayed.getPanier());
+    }
+
+
+    @Test
+    void PanierService_UpdatePanierStatutPatchPaid_ReturnsIterablePanierResponseDtoSucces(){
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        Article a1 = initData.createArticleTest(1, panier, 1L, 2);
+        Article a2 = initData.createArticleTest(1, panier, 2L,2);
+
+        PanierPartielPaiementRequestDto p =  PanierPartielPaiementRequestDto
+                .builder()
+                .emailFestivalier(EMAIL_FESTIVALIER).articles(List.of(a1.getId(), a2.getId()))
+                .build();
+
+        PanierResponseDto panierPayed = this.panierService.updatePanierStatutPatchPaid(p);
+
+        assertNotNull(panierPayed);
+        assertNull(panierPayed.getArticlesNonDisponible());
+        assertNotNull(panierPayed.getArticles());
+        assertNotNull(panierPayed.getPanier());
+        assertEquals(2, panierPayed.getArticles().size());
     }
 }

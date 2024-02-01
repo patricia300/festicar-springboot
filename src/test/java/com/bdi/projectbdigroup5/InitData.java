@@ -116,6 +116,18 @@ public class InitData {
         return  pointPassageCovoiturageRepository.save(pointPassageCovoiturage);
     }
 
+    public PointPassageCovoiturage createPointPassageCovoiturageTest(Long id, int qteOffreCovoiturage){
+        Faker faker = initFaker();
+        PointPassageCovoiturage pointPassageCovoiturage = new PointPassageCovoiturage();
+        pointPassageCovoiturage.setId(id);
+        pointPassageCovoiturage.setDifferenceHeurePassage(faker.number().numberBetween(1,4));
+        pointPassageCovoiturage.setLieuCovoiturage(createLieuCovoiturageTest());
+        pointPassageCovoiturage.setPrix(Float.parseFloat(String.valueOf(faker.number().numberBetween(10, 30))));
+        pointPassageCovoiturage.setOffreCovoiturage(createOffreCovoiturageTest(qteOffreCovoiturage));
+        return  pointPassageCovoiturageRepository.save(pointPassageCovoiturage);
+    }
+
+
     public OffreCovoiturage createOffreCovoiturageTest() {
         Faker faker = initFaker();
         OffreCovoiturage offreCovoiturage = new OffreCovoiturage();
@@ -123,6 +135,20 @@ public class InitData {
         offreCovoiturage.setModeleVoiture(faker.cat().breed());
         offreCovoiturage.setDateOffre(new Date("2024/06/05"));
         offreCovoiturage.setNombrePlaces(faker.number().numberBetween(1, 3));
+        offreCovoiturage.setHeureDepart(new Date("2024/06/05 10:00"));
+        offreCovoiturage.setHeureArrive(new Date("2024/06/05 20:00"));
+        offreCovoiturage.setCovoitureur(createCovoitureurTest());
+        offreCovoiturage.setFestival(createFestivalTest());
+        return offreCovoiturageRepository.save(offreCovoiturage);
+    }
+
+    public OffreCovoiturage createOffreCovoiturageTest(int qte) {
+        Faker faker = initFaker();
+        OffreCovoiturage offreCovoiturage = new OffreCovoiturage();
+        offreCovoiturage.setId(faker.random().nextLong());
+        offreCovoiturage.setModeleVoiture(faker.cat().breed());
+        offreCovoiturage.setDateOffre(new Date("2024/06/05"));
+        offreCovoiturage.setNombrePlaces(qte);
         offreCovoiturage.setHeureDepart(new Date("2024/06/05 10:00"));
         offreCovoiturage.setHeureArrive(new Date("2024/06/05 20:00"));
         offreCovoiturage.setCovoitureur(createCovoitureurTest());
@@ -165,6 +191,14 @@ public class InitData {
         article.setPanier(panier);
         article.setQuantite(qte);
         article.setPointPassageCovoiturage(createPointPassageCovoiturageTest(idPointPassage));
+        return articleRepository.save(article);
+    }
+
+    public Article createArticleTest(int qte, Panier panier, Long idPointPassage, int qteOffreCovoiturage){
+        Article article = new Article();
+        article.setPanier(panier);
+        article.setQuantite(qte);
+        article.setPointPassageCovoiturage(createPointPassageCovoiturageTest(idPointPassage,qteOffreCovoiturage));
         return articleRepository.save(article);
     }
 
