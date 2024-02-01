@@ -123,9 +123,9 @@ class PanierServiceTest {
         Article article = initData.createArticleTest(1, panier, 1L);
         Article article1 = initData.createArticleTest(1, panier, 2L);
 
-        Panier panierPayed = this.panierService.updatePanierStatusToPayed(panier.getId());
+        PanierResponseDto panierPayed = this.panierService.updatePanierStatusToPayed(panier.getId());
 
         assertNotNull(panierPayed);
-        assertEquals(StatutPanier.PAYER, panierPayed.getStatut());
+        assertEquals(StatutPanier.PAYER, panierPayed.getPanier().getStatut());
     }
 }

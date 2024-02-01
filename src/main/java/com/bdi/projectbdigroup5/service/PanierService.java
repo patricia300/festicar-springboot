@@ -8,7 +8,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.bdi.projectbdigroup5.dto.FestivalResponseDto.createFestivalResponseDtoFromArticle;
 import static com.bdi.projectbdigroup5.service.ArticleService.*;
@@ -53,7 +55,7 @@ public class PanierService {
     }
 
     public PanierResponseDto savePanierFestivalier(PanierRequestBodyDto panierRequestBodyDto){
-        // Search festivalier owner of the panier
+
         Festivalier festivalier = getFestivalier(panierRequestBodyDto.getEmailFestivalier());
 
         List<Article> articles = (List<Article>) this.articleService.saveAllArticle(panierRequestBodyDto.getArticles());
@@ -82,17 +84,38 @@ public class PanierService {
     }
 
     @Transactional
-    public Panier updatePanierStatusToPayed(Long id){
-        //Chercher panier
+    public PanierResponseDto updatePanierStatusToPayed(Long id){
         Panier panier = panierRepository.findById(id).orElseThrow(() -> new NotFoundException("Panier avec l'ID "+ id +" non trouvé"));
 
-        // Verifier element panier et
-        panier.getArticles().forEach(this::verifierEtReduireNombrePlace);
+        List<Optional<ErreurPaiementPanierResponseDto>> erreurPaiementPanierResponseDtosList = new ArrayList<>();
 
-        // Modifier status panier
-        panier.setStatut(StatutPanier.PAYER);
-        panierRepository.save(panier);
-        return panier;
+        panier.getArticles().forEach( article -> {
+            verifierArticle(article, erreurPaiementPanierResponseDtosList);
+        });
+
+        if (erreurPaiementPanierResponseDtosList.isEmpty()) {
+            List<ArticleResponseDto> articles = panier.getArticles().stream().map(article -> {
+                reduireNombrePlaceFestivalEtOffreCovoiturage(article);
+
+                panier.setStatut(StatutPanier.PAYER);
+                this.panierRepository.save(panier);
+
+                return ArticleResponseDto.builder()
+                        .id(article.getId())
+                        .quantite(article.getQuantite())
+                        .festival(createFestivalResponseDtoFromArticle(article))
+                        .build();
+            }).toList();
+
+            return PanierResponseDto.builder()
+                    .articles(articles)
+                    .panier(panier)
+                    .build();
+        }
+
+        return PanierResponseDto.builder()
+                .articlesNonDisponible(erreurPaiementPanierResponseDtosList)
+                .build();
     }
 
     @Transactional
@@ -136,58 +159,84 @@ public class PanierService {
     }
 
     public PanierResponseDto updatePanierStatutPatchPaid(PanierPartielPaiementRequestDto panierRequestPaimentPartielDto) {
-        Festivalier festivalier = this.festivalierRepository.findById(panierRequestPaimentPartielDto.getEmailFestivalier())
-                .orElseThrow(() -> new NotFoundException("Festivalier avec l'email " + panierRequestPaimentPartielDto.getEmailFestivalier() + " non trouvé"));
-        //copier panier
-        Panier panierPayed = new Panier();
-        panierPayed.setStatut(StatutPanier.VALIDE);
-        panierPayed.setFestivalier(festivalier);
-        this.panierRepository.save(panierPayed);
 
-        // Verifier element panier
-        List<ArticleResponseDto> articles = panierRequestPaimentPartielDto.getArticles().stream().map(id -> {
+        List<Optional<ErreurPaiementPanierResponseDto>> erreurPaiementPanierResponseDtosList = new ArrayList<>();
+
+        panierRequestPaimentPartielDto.getArticles().forEach(id -> {
             Article article = this.articleRepository.findById(id).orElseThrow(
                     () -> new NotFoundException("Article avec l'ID " + id+ " non trouvé"));
 
-           verifierEtReduireNombrePlace(article);
+            verifierArticle(article, erreurPaiementPanierResponseDtosList);
+        });
 
-            article.setPanier(panierPayed);
-            this.articleRepository.save(article);
-            return ArticleResponseDto.builder()
-                    .id(article.getId())
-                    .quantite(article.getQuantite())
-                    .festival(createFestivalResponseDtoFromArticle(article))
+        if (erreurPaiementPanierResponseDtosList.isEmpty()) {
+            Festivalier festivalier = this.festivalierRepository.findById(panierRequestPaimentPartielDto.getEmailFestivalier())
+                    .orElseThrow(() -> new NotFoundException("Festivalier avec l'email " + panierRequestPaimentPartielDto.getEmailFestivalier() + " non trouvé"));
+
+            Panier panierPayed = new Panier();
+            panierPayed.setFestivalier(festivalier);
+            panierPayed.setStatut(StatutPanier.PAYER);
+            this.panierRepository.save(panierPayed);
+
+            List<ArticleResponseDto> articles = panierRequestPaimentPartielDto.getArticles().stream().map(id -> {
+                Article article = this.articleRepository.findById(id).orElseThrow(
+                        () -> new NotFoundException("Article avec l'ID " + id+ " non trouvé"));
+
+                reduireNombrePlaceFestivalEtOffreCovoiturage(article);
+
+                article.setPanier(panierPayed);
+                this.articleRepository.save(article);
+                return ArticleResponseDto.builder()
+                        .id(article.getId())
+                        .quantite(article.getQuantite())
+                        .festival(createFestivalResponseDtoFromArticle(article))
+                        .build();
+            }).toList();
+
+
+            return PanierResponseDto.builder()
+                    .articles(articles)
+                    .panier(panierPayed)
                     .build();
-        }).toList();
-
-        panierPayed.setStatut(StatutPanier.PAYER);
-        this.panierRepository.save(panierPayed);
+        }
 
         return PanierResponseDto.builder()
-                .articles(articles)
-                .panier(panierPayed)
+                .articlesNonDisponible(erreurPaiementPanierResponseDtosList)
                 .build();
+
     }
 
-    public void verifierEtReduireNombrePlace(Article article) {
+    public void reduireNombrePlaceFestivalEtOffreCovoiturage(Article article) {
         int nbPlace = getNbPlace(article.getPointPassageCovoiturage());
         int nbPass = getNbPass(article.getPointPassageCovoiturage());
 
         Festival festival =   article.getPointPassageCovoiturage().getOffreCovoiturage().getFestival();
         OffreCovoiturage offreCovoiturage =  article.getPointPassageCovoiturage().getOffreCovoiturage();
 
-        verifierNombrePlace(nbPlace, article.getQuantite(),offreCovoiturage.getId());
-        verifierNombrePass(nbPass, article.getQuantite(), festival.getId());
-
-        reduireNombrePlace(offreCovoiturage, festival, article, nbPlace, nbPass);
-
-    }
-
-    public void reduireNombrePlace(OffreCovoiturage offreCovoiturage, Festival festival, Article article, int nbPlace, int nbPass) {
         offreCovoiturage.setNombrePlaces((nbPlace - article.getQuantite()));
         festival.setNombrePass((nbPass - article.getQuantite()));
 
-        offreCovoiturageRepository.save(offreCovoiturage);
-        festivalRepository.save(festival);
+        this.offreCovoiturageRepository.save(offreCovoiturage);
+        this.festivalRepository.save(festival);
+    }
+
+    public void verifierArticle(Article article, List<Optional<ErreurPaiementPanierResponseDto>> erreurPaiementPanierResponseDtosList){
+        int nbPlace = getNbPlace(article.getPointPassageCovoiturage());
+        int nbPass = getNbPass(article.getPointPassageCovoiturage());
+
+
+        Festival festival =   article.getPointPassageCovoiturage().getOffreCovoiturage().getFestival();
+        OffreCovoiturage offreCovoiturage =  article.getPointPassageCovoiturage().getOffreCovoiturage();
+
+        Optional<ErreurPaiementPanierResponseDto> erreurPaiementPanierResponseDtoOffreCovoiturage = verifierNombrePlaceOffreCovoiturage(nbPlace, article.getQuantite(),offreCovoiturage.getId());
+        Optional<ErreurPaiementPanierResponseDto> erreurPaiementPanierResponseDtoFestival = verifierNombrePassFestival(nbPass, article.getQuantite(), festival.getId());
+
+        if (erreurPaiementPanierResponseDtoFestival.isPresent()) {
+            erreurPaiementPanierResponseDtosList.add(erreurPaiementPanierResponseDtoFestival);
+        }
+
+        if (erreurPaiementPanierResponseDtoOffreCovoiturage.isPresent()){
+            erreurPaiementPanierResponseDtosList.add(erreurPaiementPanierResponseDtoOffreCovoiturage);
+        }
     }
 }

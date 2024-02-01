@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -13,4 +14,5 @@ import java.util.List;
 public class PanierResponseDto {
     private Panier panier;
     private List<ArticleResponseDto> articles;
+    private List<Optional<ErreurPaiementPanierResponseDto>> articlesNonDisponible;
 }
