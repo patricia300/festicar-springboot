@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface PanierRepository extends CrudRepository<Panier,Long> {
-    List<Panier> findAllByFestivalierEmail(String email);
+    List<Panier> findAllByFestivalierEmailAndStatutNot(String email, StatutPanier statutPanier);
 
     Panier findFirstByFestivalierEmailAndStatut(String email, StatutPanier statutPanier);
 }

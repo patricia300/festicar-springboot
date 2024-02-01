@@ -38,7 +38,7 @@ public class PanierService {
     @Transactional
     public Iterable<PanierResponseDto> getPanierByFestivalierEmail(String email) {
         Festivalier festivalier = getFestivalier(email);
-        return this.panierRepository.findAllByFestivalierEmail(festivalier.getEmail()).stream().map(panier -> {
+        return this.panierRepository.findAllByFestivalierEmailAndStatutNot(festivalier.getEmail(),StatutPanier.EN_COURS).stream().map(panier -> {
             List<ArticleResponseDto> articleResponseDtos = panier.getArticles().stream()
                     .map(article -> ArticleResponseDto.builder()
                             .id(article.getId())
