@@ -98,4 +98,9 @@ public class FestivalService {
                 .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
                 .toList();
     }
+
+    public Festival findById(Long id){
+        return this.festivalRepository.findById(id)
+        .orElseThrow(() -> new NotFoundException("Festival not found"));
+    }
 }

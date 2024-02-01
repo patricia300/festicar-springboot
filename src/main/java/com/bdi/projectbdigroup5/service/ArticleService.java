@@ -21,6 +21,13 @@ public class ArticleService {
     private ArticleRepository articleRepository;
     private PointPassageCovoiturageRepository pointPassageCovoiturageRepository;
 
+    public Article findByID(Long id){
+        return articleRepository
+                .findById(id)
+                .orElseThrow(() -> new NotFoundException(
+                        "Article non trouvé")
+                );    }
+
     public Article saveArticle(ArticleRequestBodyDto requestBodyDto)
     {
         PointPassageCovoiturage pointPassageCovoiturage = pointPassageCovoiturageRepository
