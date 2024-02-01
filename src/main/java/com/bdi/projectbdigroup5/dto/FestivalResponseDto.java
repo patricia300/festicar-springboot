@@ -37,12 +37,15 @@ public class FestivalResponseDto {
 
     private String nomOrganisateur;
 
+    private int NombrePlaceOffreCovoiturage;
+
     private List<OffreCovoiturageFestivalDto> offreCovoiturages;
 
     public static FestivalResponseDto createFestivalResponseDtoFromArticle(Article article)
     {
         Festival f = article.getPointPassageCovoiturage().getOffreCovoiturage().getFestival();
         OffreCovoiturage o = article.getPointPassageCovoiturage().getOffreCovoiturage();
+        int nbPlaceOffreCovoiturage = f.getOffreCovoiturages().stream().reduce(0,(totalPlaces, element ) -> totalPlaces + element.getNombrePlaces(), Integer::sum);
         OffreCovoiturageFestivalDto offreCovoiturageFestivalDto = OffreCovoiturageFestivalDto.builder()
                 .id(o.getId())
                 .dateOffre(o.getDateOffre())
@@ -66,12 +69,13 @@ public class FestivalResponseDto {
                 .nomOrganisateur(f.getOrganisateur().getNom() + " " + f.getOrganisateur().getPrenom())
                 .nomSousDomaine(f.getSousDomaine().getNom())
                 .nomDomainePrincipal(f.getSousDomaine().getDomainePrincipal().getNom())
+                .NombrePlaceOffreCovoiturage(nbPlaceOffreCovoiturage)
                 .dateDebut(f.getDateDebut())
                 .dateFin(f.getDateFin())
                 .build();
     }
 
-    public static FestivalResponseDto createFestivalResponseDtoFromFestival(Festival f, List<OffreCovoiturageFestivalDto> offreCovoiturageFestivalDtos) {
+    public static FestivalResponseDto createFestivalResponseDtoFromFestival(Festival f, List<OffreCovoiturageFestivalDto> offreCovoiturageFestivalDtos, int nbPlaceOffreCovoiturages) {
 
         return FestivalResponseDto.builder()
                 .id(f.getId())
@@ -87,6 +91,7 @@ public class FestivalResponseDto {
                 .nomDomainePrincipal(f.getSousDomaine().getDomainePrincipal().getNom())
                 .dateDebut(f.getDateDebut())
                 .dateFin(f.getDateFin())
+                .NombrePlaceOffreCovoiturage(nbPlaceOffreCovoiturages)
                 .build();
     }
 

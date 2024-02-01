@@ -42,7 +42,12 @@ public class FestivalService {
                 sousDomaine,
                 domainePrincipal,
                 pageable)
-                .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
+                .map(f -> {
+                    int nbPlaceOffreCovoiturage = f.getOffreCovoiturages()
+                            .stream()
+                            .reduce(0,(totalPlaces, element ) -> totalPlaces + element.getNombrePlaces(), Integer::sum);
+                    return createFestivalResponseDtoFromFestival(f, List.of(), nbPlaceOffreCovoiturage);
+                })
                 .toList();
     }
 
@@ -56,19 +61,34 @@ public class FestivalService {
     }
 
     public Iterable<FestivalResponseDto> getAllFestivalPerPage(Pageable pageable) {
-        return festivalRepository.findAll(pageable).map(festival -> createFestivalResponseDtoFromFestival(festival, List.of()));
+        return festivalRepository.findAll(pageable).map(festival -> {
+            int nbPlaceOffreCovoiturage = festival.getOffreCovoiturages()
+                    .stream()
+                    .reduce(0,(totalPlaces, element ) -> totalPlaces + element.getNombrePlaces(), Integer::sum);
+            return createFestivalResponseDtoFromFestival(festival, List.of(),nbPlaceOffreCovoiturage);
+        });
     }
 
     public Iterable<FestivalResponseDto> getAllFestivalByCommune(String communecodeInsee) {
         return festivalRepository.findAllByCommuneCodeInsee(communecodeInsee)
-                .stream().map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
+                .stream().map(f -> {
+                    int nbPlaceOffreCovoiturage = f.getOffreCovoiturages()
+                            .stream()
+                            .reduce(0,(totalPlaces, element ) -> totalPlaces + element.getNombrePlaces(), Integer::sum);
+                    return createFestivalResponseDtoFromFestival(f, List.of(),nbPlaceOffreCovoiturage);
+                })
                 .toList();
     }
 
     public Iterable<FestivalResponseDto> getAllFestivalByDateDebut(String dateDebut) {
 
             return festivalRepository.findAllByDateDebut(new Date(dateDebut))
-                    .stream().map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
+                    .stream().map(f -> {
+                        int nbPlaceOffreCovoiturage = f.getOffreCovoiturages()
+                                .stream()
+                                .reduce(0,(totalPlaces, element ) -> totalPlaces + element.getNombrePlaces(), Integer::sum);
+                        return createFestivalResponseDtoFromFestival(f, List.of(),nbPlaceOffreCovoiturage);
+                    })
                     .toList();
     }
 
@@ -79,21 +99,38 @@ public class FestivalService {
     public FestivalResponseDto getOneFestival(Long id){
         Festival festival = this.festivalRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Festival not found"));
+        int nbPlaceOffreCovoiturage = festival.getOffreCovoiturages()
+                .stream()
+                .reduce(0,(totalPlaces, element ) -> totalPlaces + element.getNombrePlaces(), Integer::sum);
 
-        return  createFestivalResponseDtoFromFestival(festival, createOffreCovoiturageFestivalDtos(festival.getOffreCovoiturages()) );
+        return  createFestivalResponseDtoFromFestival(
+                festival,
+                createOffreCovoiturageFestivalDtos(festival.getOffreCovoiturages()),
+                nbPlaceOffreCovoiturage
+        );
     }
 
     public List<FestivalResponseDto> getAllFestivalsByName(String nom){
         return this.festivalRepository.findAllByNomContainingIgnoreCase(nom)
                 .stream()
-                .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
+                .map(f -> {
+                    int nbPlaceOffreCovoiturage = f.getOffreCovoiturages()
+                            .stream()
+                            .reduce(0,(totalPlaces, element ) -> totalPlaces + element.getNombrePlaces(), Integer::sum);
+                    return createFestivalResponseDtoFromFestival(f, List.of(),nbPlaceOffreCovoiturage);
+                })
                 .toList();
     }
 
     public List<FestivalResponseDto> getAllFestivalsByDomaine(String domaine){
         return this.festivalRepository.findAllBySousDomaineDomainePrincipalNomContainingIgnoreCase(domaine)
                 .stream()
-                .map(f -> createFestivalResponseDtoFromFestival(f, List.of()))
+                .map(f -> {
+                    int nbPlaceOffreCovoiturage = f.getOffreCovoiturages()
+                            .stream()
+                            .reduce(0,(totalPlaces, element ) -> totalPlaces + element.getNombrePlaces(), Integer::sum);
+                    return createFestivalResponseDtoFromFestival(f, List.of(),nbPlaceOffreCovoiturage);
+                })
                 .toList();
     }
 }
