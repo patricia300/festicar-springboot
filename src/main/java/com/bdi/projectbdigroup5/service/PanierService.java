@@ -72,24 +72,9 @@ public class PanierService {
     public Panier updatePanierStatusToPayed(Long id){
         //Chercher panier
         Panier panier = panierRepository.findById(id).orElseThrow(() -> new NotFoundException("Panier avec l'ID "+ id +" non trouvé"));
-        // Verifier element panier
-        panier.getArticles().forEach(article -> {
-            int nbPlace = getNbPlace(article.getPointPassageCovoiturage());
-            int nbPass = getNbPass(article.getPointPassageCovoiturage());
 
-            Festival festival =   article.getPointPassageCovoiturage().getOffreCovoiturage().getFestival();
-            OffreCovoiturage offreCovoiturage =  article.getPointPassageCovoiturage().getOffreCovoiturage();
-
-            verifierNombrePlace(nbPlace, article.getQuantite(),offreCovoiturage.getId());
-            verifierNombrePass(nbPass, article.getQuantite(), festival.getId());
-
-            // Réduire nb de place et pass
-            offreCovoiturage.setNombrePlaces((nbPlace - article.getQuantite()));
-            festival.setNombrePass((nbPass - article.getQuantite()));
-
-            offreCovoiturageRepository.save(offreCovoiturage);
-            festivalRepository.save(festival);
-        });
+        // Verifier element panier et
+        panier.getArticles().forEach(this::verifierEtReduireNombrePlace);
 
         // Modifier status panier
         panier.setStatut(StatutPanier.PAYER);
@@ -134,5 +119,58 @@ public class PanierService {
                 .orElseThrow(() -> new NotFoundException(
                         "Festivalier avec l'email '" + email + "' non trouvé")
                 );
+    }
+
+    public PanierResponseDto updatePanierStatutPatchPaid(PanierPartielPaiementRequestDto panierRequestPaimentPartielDto) {
+        Festivalier festivalier = this.festivalierRepository.findById(panierRequestPaimentPartielDto.getEmailFestivalier())
+                .orElseThrow(() -> new NotFoundException("Festivalier avec l'email " + panierRequestPaimentPartielDto.getEmailFestivalier() + " non trouvé"));
+        //copier panier
+        Panier panierPayed = new Panier();
+        panierPayed.setStatut(StatutPanier.PAYER);
+        panierPayed.setFestivalier(festivalier);
+        this.panierRepository.save(panierPayed);
+
+        // Verifier element panier
+        List<ArticleResponseDto> articles = panierRequestPaimentPartielDto.getArticles().stream().map(id -> {
+            Article article = this.articleRepository.findById(id).orElseThrow(
+                    () -> new NotFoundException("Article avec l'ID " + id+ " non trouvé"));
+
+           verifierEtReduireNombrePlace(article);
+
+            article.setPanier(panierPayed);
+            this.articleRepository.save(article);
+            return ArticleResponseDto.builder()
+                    .id(article.getId())
+                    .quantite(article.getQuantite())
+                    .festival(createFestivalResponseDtoFromArticle(article))
+                    .build();
+        }).toList();
+
+        return PanierResponseDto.builder()
+                .articles(articles)
+                .panier(panierPayed)
+                .build();
+    }
+
+    public void verifierEtReduireNombrePlace(Article article) {
+        int nbPlace = getNbPlace(article.getPointPassageCovoiturage());
+        int nbPass = getNbPass(article.getPointPassageCovoiturage());
+
+        Festival festival =   article.getPointPassageCovoiturage().getOffreCovoiturage().getFestival();
+        OffreCovoiturage offreCovoiturage =  article.getPointPassageCovoiturage().getOffreCovoiturage();
+
+        verifierNombrePlace(nbPlace, article.getQuantite(),offreCovoiturage.getId());
+        verifierNombrePass(nbPass, article.getQuantite(), festival.getId());
+
+        reduireNombrePlace(offreCovoiturage, festival, article, nbPlace, nbPass);
+
+    }
+
+    public void reduireNombrePlace(OffreCovoiturage offreCovoiturage, Festival festival, Article article, int nbPlace, int nbPass) {
+        offreCovoiturage.setNombrePlaces((nbPlace - article.getQuantite()));
+        festival.setNombrePass((nbPass - article.getQuantite()));
+
+        offreCovoiturageRepository.save(offreCovoiturage);
+        festivalRepository.save(festival);
     }
 }

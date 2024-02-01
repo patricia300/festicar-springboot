@@ -1,6 +1,7 @@
 package com.bdi.projectbdigroup5.controller;
 
 import com.bdi.projectbdigroup5.dto.ErreurPaiementPanierResponseDto;
+import com.bdi.projectbdigroup5.dto.PanierPartielPaiementRequestDto;
 import com.bdi.projectbdigroup5.dto.PanierRequestBodyDto;
 import com.bdi.projectbdigroup5.dto.PanierResponseDto;
 import com.bdi.projectbdigroup5.exception.NombrePassFestivalInsuffisantException;
@@ -14,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -95,6 +98,11 @@ public class PanierController {
                     quantiteZeroException.getClassType()
                     ));
         }
+        catch (NotFoundException notFoundException) {
+            return ResponseEntity
+                    .of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, notFoundException.getMessage()))
+                    .build();
+        }
     }
 
     @GetMapping("/panier")
@@ -109,5 +117,40 @@ public class PanierController {
                     .build();
         }
 
+    }
+
+    @PutMapping("/panier/payer/partiel")
+    public ResponseEntity<? extends Object> payerPanierPartiel(@RequestBody PanierPartielPaiementRequestDto panierPartielPaiementRequestDto)
+    {
+        try {
+             return ResponseEntity.ok(this.panierService.updatePanierStatutPatchPaid(panierPartielPaiementRequestDto));
+        }
+        catch (NombrePassFestivalInsuffisantException nombrePassFestivalInsuffisantException) {
+            return ResponseEntity.badRequest().body(new ErreurPaiementPanierResponseDto(
+                    nombrePassFestivalInsuffisantException.getIdFestival(),
+                    nombrePassFestivalInsuffisantException.getNbPassDisponible(),
+                    ErreurPaiementClass.FESTIVAL
+            ));
+        }
+        catch (NombrePlaceCovoiturageInsuffisantException nombrePlaceCovoiturageInsuffisantException)
+        {
+            return ResponseEntity.badRequest().body(new ErreurPaiementPanierResponseDto(
+                    nombrePlaceCovoiturageInsuffisantException.getIdOffreCovoiturage(),
+                    nombrePlaceCovoiturageInsuffisantException.getNbPlaceDisponible(),
+                    ErreurPaiementClass.OFFRE_COVOITURAGE
+            ));
+        }
+        catch (QuantiteZeroException quantiteZeroException) {
+            return ResponseEntity.badRequest().body(new ErreurPaiementPanierResponseDto(
+                    quantiteZeroException.getId(),
+                    0,
+                    quantiteZeroException.getClassType()
+            ));
+        }
+        catch (NotFoundException notFoundException) {
+            return ResponseEntity
+                    .of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, notFoundException.getMessage()))
+                    .build();
+        }
     }
 }
