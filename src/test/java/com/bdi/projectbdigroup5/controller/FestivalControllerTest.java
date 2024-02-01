@@ -37,7 +37,8 @@ class FestivalControllerTest {
 
     @Test
     void getAllFestivalsByName() throws Exception {
-        mockMvc.perform(get("/festivals/by-nom?nom=vagamondes"))
+        mockMvc.perform(get("/festivals/by-nom")
+                        .param("nom", "vagamondes"))
                 .andExpect(status().isOk());
 
     }

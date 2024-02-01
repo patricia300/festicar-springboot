@@ -4,7 +4,8 @@ import com.bdi.projectbdigroup5.dto.*;
 import com.bdi.projectbdigroup5.exception.NotFoundException;
 import com.bdi.projectbdigroup5.model.*;
 import com.bdi.projectbdigroup5.repository.*;
-import lombok.AllArgsConstructor;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,15 +14,26 @@ import static com.bdi.projectbdigroup5.dto.FestivalResponseDto.createFestivalRes
 import static com.bdi.projectbdigroup5.service.ArticleService.*;
 
 @Service
-@AllArgsConstructor
 public class PanierService {
+    @Autowired
     private PanierRepository panierRepository;
+
+    @Autowired
     private FestivalierRepository festivalierRepository;
+
+    @Autowired
     private ArticleRepository articleRepository;
+
+    @Autowired
     private FestivalRepository festivalRepository;
+
+    @Autowired
     private OffreCovoiturageRepository offreCovoiturageRepository;
+
+    @Autowired
     private ArticleService articleService;
 
+    @Transactional
     public Iterable<PanierResponseDto> getPanierByFestivalierEmail(String email) {
         Festivalier festivalier = getFestivalier(email);
         return this.panierRepository.findAllByFestivalierEmail(festivalier.getEmail()).stream().map(panier -> {
@@ -69,6 +81,7 @@ public class PanierService {
                .build();
     }
 
+    @Transactional
     public Panier updatePanierStatusToPayed(Long id){
         //Chercher panier
         Panier panier = panierRepository.findById(id).orElseThrow(() -> new NotFoundException("Panier avec l'ID "+ id +" non trouvé"));
@@ -82,6 +95,7 @@ public class PanierService {
         return panier;
     }
 
+    @Transactional
     public PanierResponseDto getCurrentPanier(String email)
     {
         Festivalier festivalier = getFestivalier(email);
