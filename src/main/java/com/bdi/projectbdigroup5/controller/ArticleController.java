@@ -6,15 +6,14 @@ import com.bdi.projectbdigroup5.exception.NombrePassFestivalInsuffisantException
 import com.bdi.projectbdigroup5.exception.NombrePlaceCovoiturageInsuffisantException;
 import com.bdi.projectbdigroup5.exception.NotFoundException;
 import com.bdi.projectbdigroup5.exception.QuantiteZeroException;
+import com.bdi.projectbdigroup5.model.Article;
 import com.bdi.projectbdigroup5.model.ErreurPaiementClass;
 import com.bdi.projectbdigroup5.service.ArticleService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -87,6 +86,18 @@ public class ArticleController {
                     0,
                     quantiteZeroException.getClassType()
             ));
+        }
+    }
+
+    @DeleteMapping("/article/{id}")
+    public ResponseEntity<Article> deleteArticle(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(this.articleService.deleteArticle(id));
+        } catch (NotFoundException e) {
+                return ResponseEntity
+                        .of(ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage()))
+                        .build();
+
         }
     }
 }

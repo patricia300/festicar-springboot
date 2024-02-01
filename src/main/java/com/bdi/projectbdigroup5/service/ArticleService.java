@@ -44,6 +44,13 @@ public class ArticleService {
         return this.articleRepository.save(newArticle);
     }
 
+    public Article deleteArticle(Long id) {
+        Article article = this.articleRepository.findById(id).orElseThrow(() ->
+                new NotFoundException("Article avec l'Id "+ id +" non trouvé"));
+        this.articleRepository.delete(article);
+        return  article;
+    }
+
     public Iterable<Article> saveAllArticle(List<ArticleRequestBodyDto> articleRequestBodyDtos) {
         return articleRequestBodyDtos.stream().map(this::saveArticle).toList();
     }
