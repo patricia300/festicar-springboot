@@ -5,8 +5,4 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.CrudRepository;
 
 @Repository
-public interface DepartementRepository extends CrudRepository<Departement, String>{
-    
-
-    Iterable<Departement> findByNom(String nom);
-}
+public interface DepartementRepository extends CrudRepository<Departement, String> { }

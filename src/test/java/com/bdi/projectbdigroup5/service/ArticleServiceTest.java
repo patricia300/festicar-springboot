@@ -2,7 +2,6 @@ package com.bdi.projectbdigroup5.service;
 
 import com.bdi.projectbdigroup5.InitData;
 import com.bdi.projectbdigroup5.dto.ArticleRequestBodyDto;
-import com.bdi.projectbdigroup5.dto.ErreurPaiementPanierResponseDto;
 import com.bdi.projectbdigroup5.model.Article;
 import com.bdi.projectbdigroup5.model.Panier;
 import com.bdi.projectbdigroup5.model.StatutPanier;
@@ -14,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,7 +37,7 @@ class ArticleServiceTest {
     }
 
     @Test
-    void saveArticle() {
+    void ArticleService_saveArticle() {
         ArticleRequestBodyDto a = ArticleRequestBodyDto.builder().quantite(1).idPointPassage(1L).build();
         Article article = this.articleService.saveArticle(a);
 
@@ -48,7 +46,7 @@ class ArticleServiceTest {
     }
 
     @Test
-    void deleteArticle() {
+    void ArticleService_deleteArticle() {
         Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
         Article a1 = initData.createArticleTest(1, panier, 1L, 2);
         Article a2 = initData.createArticleTest(1, panier, 2L, 2);
@@ -63,7 +61,7 @@ class ArticleServiceTest {
     }
 
     @Test
-    void saveAllArticle() {
+    void ArticleService_saveAllArticle() {
         ArticleRequestBodyDto a1 = ArticleRequestBodyDto.builder().quantite(1).idPointPassage(1L).build();
         ArticleRequestBodyDto a2 = ArticleRequestBodyDto.builder().quantite(1).idPointPassage(2L).build();
         ArticleRequestBodyDto a3 = ArticleRequestBodyDto.builder().quantite(1).idPointPassage(3L).build();
@@ -77,4 +75,6 @@ class ArticleServiceTest {
         assertEquals(3L, articles.get(2).getPointPassageCovoiturage().getId());
 
     }
+
+
 }
