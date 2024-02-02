@@ -1,5 +1,6 @@
 package com.bdi.projectbdigroup5.controller;
 
+import com.bdi.projectbdigroup5.dto.FestivalResponseDto;
 import com.bdi.projectbdigroup5.property.PageableProperties;
 import com.bdi.projectbdigroup5.model.OffreCovoiturage;
 import com.bdi.projectbdigroup5.service.OffreCovoiturageService;
@@ -25,6 +26,11 @@ public class OffreCovoiturageController {
         Pageable offreCovoituragePage =  pageableProperties.createPageable(numeroPage, taillePage,"dateOffre", tri);
 
         return this.offreCovoiturageService.getAllOffreCovoiturages(offreCovoituragePage);
+    }
+
+    @GetMapping("/offre-covoiturage/plus-proche")
+    public FestivalResponseDto getOffreCovoituragePlusProche(@RequestParam String communeCodeInsee, @RequestParam Long idFestival){
+        return this.offreCovoiturageService.getOffreCovoituragePlusProche(communeCodeInsee, idFestival);
     }
 
 

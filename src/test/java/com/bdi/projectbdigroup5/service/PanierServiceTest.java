@@ -2,6 +2,7 @@ package com.bdi.projectbdigroup5.service;
 
 import com.bdi.projectbdigroup5.InitData;
 import com.bdi.projectbdigroup5.dto.ArticleRequestBodyDto;
+import com.bdi.projectbdigroup5.dto.PanierPartielPaiementRequestDto;
 import com.bdi.projectbdigroup5.dto.PanierRequestBodyDto;
 import com.bdi.projectbdigroup5.dto.PanierResponseDto;
 
@@ -70,22 +71,11 @@ class PanierServiceTest {
 
     @Test
     void PanierService_GetCurrentPanier_ReturnsPanierResponseDto(){
-        ArticleRequestBodyDto a1 = ArticleRequestBodyDto.builder()
-                .idPointPassage(1L)
-                .quantite(1)
-                .build();
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        Article a1 = initData.createArticleTest(1, panier, 1L, 2);
+        Article a2 = initData.createArticleTest(1, panier, 2L,2);
 
-        ArticleRequestBodyDto a2 = ArticleRequestBodyDto.builder()
-                .idPointPassage(2L)
-                .quantite(1)
-                .build();
 
-        PanierRequestBodyDto requestBodyDto = PanierRequestBodyDto.builder()
-                .emailFestivalier(EMAIL_FESTIVALIER)
-                .articles(List.of(a1,a2))
-                .build();
-
-        this.panierService.savePanierFestivalier(requestBodyDto);
         PanierResponseDto panierResponseDto = this.panierService.getCurrentPanier(EMAIL_FESTIVALIER);
 
         assertNotNull(panierResponseDto);
@@ -94,22 +84,14 @@ class PanierServiceTest {
 
     @Test
     void PanierService_GetPanierByFestivalierEmail_ReturnsIterablePanierResponseDto(){
-        ArticleRequestBodyDto a1 = ArticleRequestBodyDto.builder()
-                .idPointPassage(1L)
-                .quantite(1)
-                .build();
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        Article a1 = initData.createArticleTest(1, panier, 1L, 2);
+        Article a2 = initData.createArticleTest(1, panier, 2L,2);
 
-        ArticleRequestBodyDto a2 = ArticleRequestBodyDto.builder()
-                .idPointPassage(2L)
-                .quantite(1)
-                .build();
+        Panier panierPayed = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.PAYER);
+        Article a3 = initData.createArticleTest(1, panier, 3L, 2);
+        Article a4 = initData.createArticleTest(1, panier, 4L,2);
 
-        PanierRequestBodyDto requestBodyDto = PanierRequestBodyDto.builder()
-                .emailFestivalier(EMAIL_FESTIVALIER)
-                .articles(List.of(a1,a2))
-                .build();
-
-        this.panierService.savePanierFestivalier(requestBodyDto);
         List<PanierResponseDto> panierResponseDto = (List<PanierResponseDto>) this.panierService.getPanierByFestivalierEmail(EMAIL_FESTIVALIER);
 
         assertNotNull(panierResponseDto);
@@ -118,14 +100,58 @@ class PanierServiceTest {
     }
 
     @Test
-    void PanierService_UpdatePanierStatusToPayed_ReturnsIterablePanierResponseDto(){
+    void PanierService_UpdatePanierStatusToPayed_ReturnsIterablePanierResponseDtoWithError(){
         Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
-        Article article = initData.createArticleTest(1, panier, 1L);
-        Article article1 = initData.createArticleTest(1, panier, 2L);
+        initData.createArticleTest(1, panier, 1L, 0);
+        initData.createArticleTest(1, panier, 2L);
 
-        Panier panierPayed = this.panierService.updatePanierStatusToPayed(panier.getId());
+        PanierResponseDto panierPayed = this.panierService.updatePanierStatusToPayed(panier.getId());
 
         assertNotNull(panierPayed);
-        assertEquals(StatutPanier.PAYER, panierPayed.getStatut());
+        assertNotNull(panierPayed.getArticlesNonDisponible());
+        assertNull(panierPayed.getArticles());
+        assertNull(panierPayed.getPanier());
+    }
+
+    @Test
+    void PanierService_UpdatePanierStatutPatchPaid_ReturnsIterablePanierResponseDtoWithError(){
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        Article a1 = initData.createArticleTest(1, panier, 1L, 0);
+        Article a2 = initData.createArticleTest(1, panier, 2L,3);
+
+        PanierPartielPaiementRequestDto p =  PanierPartielPaiementRequestDto
+                .builder()
+                .emailFestivalier(EMAIL_FESTIVALIER).articles(List.of(a1.getId(), a2.getId()))
+                .build();
+
+        PanierResponseDto panierPayed = this.panierService.updatePanierStatutPatchPaid(p);
+
+        assertNotNull(panierPayed);
+        assertNotNull(panierPayed.getArticlesNonDisponible());
+        assertNull(panierPayed.getArticles());
+        assertNull(panierPayed.getPanier());
+        assertEquals(1, panierPayed.getArticlesNonDisponible().size());
+    }
+
+
+    @Test
+    void PanierService_UpdatePanierStatutPatchPaid_ReturnsIterablePanierResponseDtoSucces(){
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        Article a1 = initData.createArticleTest(1, panier, 1L, 2);
+        Article a2 = initData.createArticleTest(1, panier, 2L,2);
+
+        PanierPartielPaiementRequestDto p =  PanierPartielPaiementRequestDto
+                .builder()
+                .emailFestivalier(EMAIL_FESTIVALIER)
+                .articles(List.of(a1.getId(), a2.getId()))
+                .build();
+
+        PanierResponseDto panierPayed = this.panierService.updatePanierStatutPatchPaid(p);
+
+        assertNotNull(panierPayed);
+        assertNull(panierPayed.getArticlesNonDisponible());
+        assertNotNull(panierPayed.getArticles());
+        assertNotNull(panierPayed.getPanier());
+        assertEquals(2, panierPayed.getArticles().size());
     }
 }
