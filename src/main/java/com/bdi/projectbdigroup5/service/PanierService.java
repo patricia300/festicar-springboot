@@ -96,9 +96,7 @@ public class PanierService {
 
         List<Optional<ErreurPaiementPanierResponseDto>> erreurPaiementPanierResponseDtosList = new ArrayList<>();
 
-        panier.getArticles().forEach(article -> {
-            verifierArticle(article, erreurPaiementPanierResponseDtosList);
-        });
+        panier.getArticles().forEach(article -> verifierArticle(article, erreurPaiementPanierResponseDtosList));
 
         if (erreurPaiementPanierResponseDtosList.isEmpty()) {
             List<ArticleResponseDto> articles = panier.getArticles().stream().map(article -> {
@@ -126,10 +124,15 @@ public class PanierService {
     }
 
     @Transactional
-    public PanierResponseDto getCurrentPanier(String email) {
+    public Optional<PanierResponseDto> getCurrentPanier(String email) {
         Festivalier festivalier = getFestivalier(email);
         Panier panier = this.panierRepository.findFirstByFestivalierEmailAndStatut(festivalier.getEmail(),
                 StatutPanier.EN_COURS);
+
+        if (panier == null) {
+            return Optional.empty();
+        }
+
         List<ArticleResponseDto> articleResponseDtos = panier.getArticles().stream()
                 .map(article -> ArticleResponseDto.builder()
                         .id(article.getId())
@@ -138,10 +141,10 @@ public class PanierService {
                         .build())
                 .toList();
 
-        return PanierResponseDto.builder()
+        return Optional.of(PanierResponseDto.builder()
                 .panier(panier)
                 .articles(articleResponseDtos)
-                .build();
+                .build());
 
     }
 

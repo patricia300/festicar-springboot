@@ -11,6 +11,8 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 
 @RestController
 public class PanierController {
@@ -56,7 +58,7 @@ public class PanierController {
     }
 
     @GetMapping("/panier")
-    public ResponseEntity<PanierResponseDto> getCurrentPanier(@RequestParam String email)
+    public ResponseEntity<Optional<PanierResponseDto>> getCurrentPanier(@RequestParam String email)
     {
         try {
             return ResponseEntity.ok(this.panierService.getCurrentPanier(email));
