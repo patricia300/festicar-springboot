@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import com.bdi.projectbdigroup5.model.Commune;
 import com.bdi.projectbdigroup5.repository.CommuneRepository;
 
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor

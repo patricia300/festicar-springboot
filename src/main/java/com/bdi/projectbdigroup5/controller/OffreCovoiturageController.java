@@ -1,6 +1,5 @@
 package com.bdi.projectbdigroup5.controller;
 
-import com.bdi.projectbdigroup5.dto.FestivalResponseDto;
 import com.bdi.projectbdigroup5.property.PageableProperties;
 import com.bdi.projectbdigroup5.model.OffreCovoiturage;
 import com.bdi.projectbdigroup5.service.OffreCovoiturageService;

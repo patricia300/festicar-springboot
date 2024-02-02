@@ -1,8 +1,6 @@
 package com.bdi.projectbdigroup5.repository;
 
 import com.bdi.projectbdigroup5.model.Commune;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
