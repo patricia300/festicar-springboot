@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -76,11 +77,19 @@ class PanierServiceTest {
         Article a2 = initData.createArticleTest(1, panier, 2L,2);
 
 
-        PanierResponseDto panierResponseDto = this.panierService.getCurrentPanier(EMAIL_FESTIVALIER);
+        Optional<PanierResponseDto> panierResponseDto = this.panierService.getCurrentPanier(EMAIL_FESTIVALIER);
 
-        assertNotNull(panierResponseDto);
-        assertEquals(StatutPanier.EN_COURS, panierResponseDto.getPanier().getStatut());
+        assertTrue(panierResponseDto.isPresent());
+        assertEquals(StatutPanier.EN_COURS, panierResponseDto.get().getPanier().getStatut());
     }
+
+    @Test
+    void PanierService_GetCurrentPanier_ReturnsPanierResponseDtoEmpty(){
+        Optional<PanierResponseDto> panierResponseDto = this.panierService.getCurrentPanier(EMAIL_FESTIVALIER);
+
+        assertTrue(panierResponseDto.isEmpty());
+    }
+
 
     @Test
     void PanierService_GetPanierByFestivalierEmail_ReturnsIterablePanierResponseDto(){
