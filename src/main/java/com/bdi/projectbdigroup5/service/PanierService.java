@@ -231,20 +231,36 @@ public class PanierService {
 
     public void verifierArticle(Article article,
             List<Optional<ErreurPaiementPanierResponseDto>> erreurPaiementPanierResponseDtosList) {
-        int nbPlace = getNbPlace(article.getPointPassageCovoiturage());
-        int nbPass = getNbPass(article.getPointPassageCovoiturage());
+        int nbPlaceDisponibleRestant = getNbPlace(article.getPointPassageCovoiturage());
+        int nbPassDisponibleRestant = getNbPass(article.getPointPassageCovoiturage());
 
         Optional<ErreurPaiementPanierResponseDto> erreurPaiementPanierResponseDtoOffreCovoiturage = verifierNombrePlaceOffreCovoiturage(
-                nbPlace, article.getQuantite(), article.getId());
+                nbPlaceDisponibleRestant, article.getQuantite(), article.getId());
+
         Optional<ErreurPaiementPanierResponseDto> erreurPaiementPanierResponseDtoFestival = verifierNombrePassFestival(
-                nbPass, article.getQuantite(), article.getId());
+                nbPassDisponibleRestant, article.getQuantite(), article.getId());
 
         if (erreurPaiementPanierResponseDtoFestival.isPresent()) {
             erreurPaiementPanierResponseDtosList.add(erreurPaiementPanierResponseDtoFestival);
+            if (nbPassDisponibleRestant > 0){
+                article.setQuantite(nbPassDisponibleRestant);
+                this.articleRepository.save(article);
+            }
+
+            if (nbPassDisponibleRestant == 0){
+                this.articleRepository.delete(article);
+            }
         }
 
         if (erreurPaiementPanierResponseDtoOffreCovoiturage.isPresent()) {
             erreurPaiementPanierResponseDtosList.add(erreurPaiementPanierResponseDtoOffreCovoiturage);
+            if (nbPlaceDisponibleRestant > 0) {
+                article.setQuantite(nbPlaceDisponibleRestant);
+                this.articleRepository.save(article);
+            }
+            if (nbPlaceDisponibleRestant == 0) {
+                this.articleRepository.delete(article);
+            }
         }
     }
 }
