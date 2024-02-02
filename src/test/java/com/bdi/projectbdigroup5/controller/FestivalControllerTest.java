@@ -1,7 +1,9 @@
 package com.bdi.projectbdigroup5.controller;
 
+import com.bdi.projectbdigroup5.InitData;
 import com.bdi.projectbdigroup5.property.PageableProperties;
 import com.bdi.projectbdigroup5.service.FestivalService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -18,13 +20,27 @@ class FestivalControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
+    private InitData initData;
+
+    @MockBean
     private FestivalService festivalService;
 
     @MockBean
     private PageableProperties pageableProperties;
 
+    @BeforeEach
+    public void init()
+    {
+        for (int i =0; i< 10; i++ ){
+            initData.createFestivalTest((long) i);
+        }
+    }
+
     @Test
     void getAllFestivals() throws Exception {
+        for (int i =0; i< 10; i++ ){
+            initData.createFestivalTest((long) i);
+        }
         mockMvc.perform(get("/festivals"))
                 .andExpect(status().isOk());
     }
