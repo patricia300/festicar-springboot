@@ -4,7 +4,10 @@ import com.bdi.projectbdigroup5.dto.*;
 import com.bdi.projectbdigroup5.exception.NotFoundException;
 import com.bdi.projectbdigroup5.model.*;
 import com.bdi.projectbdigroup5.repository.*;
-import jakarta.transaction.Transactional;
+
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -81,7 +84,7 @@ public class PanierService {
                .build();
     }
 
-    @Transactional
+    @Transactional(isolation = Isolation.SERIALIZABLE, propagation = Propagation.REQUIRED)
     public Panier updatePanierStatusToPayed(Long id){
         //Chercher panier
         Panier panier = panierRepository.findById(id).orElseThrow(() -> new NotFoundException("Panier avec l'ID "+ id +" non trouvé"));

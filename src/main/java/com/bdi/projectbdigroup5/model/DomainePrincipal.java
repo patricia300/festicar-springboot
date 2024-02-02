@@ -14,6 +14,6 @@ public class DomainePrincipal {
     @Id
     private String nom;
 
-    @OneToMany(mappedBy = "domainePrincipal", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "domainePrincipal", fetch = FetchType.EAGER)
     List<SousDomaine> sousDomaines;
 }

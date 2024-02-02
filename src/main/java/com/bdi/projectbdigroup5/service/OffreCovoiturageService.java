@@ -1,5 +1,6 @@
 package com.bdi.projectbdigroup5.service;
 
+import com.bdi.projectbdigroup5.exception.NotFoundException;
 import com.bdi.projectbdigroup5.model.OffreCovoiturage;
 import com.bdi.projectbdigroup5.repository.OffreCovoiturageRepository;
 import lombok.AllArgsConstructor;
@@ -18,5 +19,10 @@ public class OffreCovoiturageService {
 
     public Iterable<OffreCovoiturage> getAllOffreCovoiturages(Pageable pageable){
         return offreCovoiturageRepository.findAll(pageable);
+    }
+
+    public OffreCovoiturage findByID(Long id){
+        return offreCovoiturageRepository.findById(id).orElseThrow(() -> new NotFoundException(
+            "Offre Covoiturage non trouvé"));
     }
 }
