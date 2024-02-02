@@ -96,9 +96,7 @@ public class PanierService {
 
         List<Optional<ErreurPaiementPanierResponseDto>> erreurPaiementPanierResponseDtosList = new ArrayList<>();
 
-        panier.getArticles().forEach(article -> {
-            verifierArticle(article, erreurPaiementPanierResponseDtosList);
-        });
+        panier.getArticles().forEach(article -> verifierArticle(article, erreurPaiementPanierResponseDtosList));
 
         if (erreurPaiementPanierResponseDtosList.isEmpty()) {
             List<ArticleResponseDto> articles = panier.getArticles().stream().map(article -> {
