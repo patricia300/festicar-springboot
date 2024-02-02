@@ -8,7 +8,11 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name="offre_covoiturages")
+@Table(name="offre_covoiturages", indexes = {
+    @Index(name = "offreCovoiturageDateOffreIndex", columnList = "dateOffre"),
+    @Index(name = "offreCovoiturageFestivalIndex", columnList = "id_festival" ),
+    @Index(name = "offreCovoiturageCovoitureurIndex", columnList = "email_covoitureur" )
+})
 public class OffreCovoiturage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

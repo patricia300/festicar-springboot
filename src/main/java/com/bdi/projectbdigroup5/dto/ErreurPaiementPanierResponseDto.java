@@ -9,6 +9,7 @@ public class ErreurPaiementPanierResponseDto {
     private int nbPassDisponible;
     private ErreurPaiementClass classType;
     private String message;
+
     public ErreurPaiementPanierResponseDto(Long id, int nbPassDisponible, ErreurPaiementClass classType)
     {
         this.id = id;

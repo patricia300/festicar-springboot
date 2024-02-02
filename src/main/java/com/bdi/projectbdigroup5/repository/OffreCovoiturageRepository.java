@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OffreCovoiturageRepository extends CrudRepository<OffreCovoiturage, Long> , PagingAndSortingRepository<OffreCovoiturage, Long> {
 
-    public Page<OffreCovoiturage> findAll(Pageable pageable);
+    Page<OffreCovoiturage> findAll(Pageable pageable);
 }
