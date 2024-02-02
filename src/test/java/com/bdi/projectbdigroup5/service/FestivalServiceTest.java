@@ -33,7 +33,7 @@ class FestivalServiceTest {
 
     @BeforeEach
     void setUp() {
-        for (int i = 0; i< 100; i++)
+        for (int i = 0; i< 50; i++)
         {
             initData.createOffreCovoiturageTest();
         }
@@ -44,7 +44,7 @@ class FestivalServiceTest {
     }
 
     @Test
-    void createFestival() {
+    void FestivalService_createFestival() {
 
         Festival festival = new Festival();
         festival.setOrganisateur(initData.createOrganisateurTest());
@@ -66,7 +66,7 @@ class FestivalServiceTest {
     }
 
     @Test
-    void getAllFestivalPerPage() {
+    void FestivalService_getAllFestivalPerPage() {
         Pageable pageable = pageableProperties.createPageable(0, 20);
         List<FestivalResponseDto> festivals = this.festivalService.getAllFestivalPerPage(pageable);
 
@@ -82,7 +82,7 @@ class FestivalServiceTest {
     }
 
     @Test
-    void getAllFestivalByCommune() {
+    void FestivalService_getAllFestivalByCommune() {
         String codeInsee = "38109";
         initData.createFestivalTest(codeInsee);
         initData.createFestivalTest(codeInsee);
@@ -96,7 +96,7 @@ class FestivalServiceTest {
     }
 
     @Test
-    void getAllFestivalByDateDebut() {
+    void FestivalService_getAllFestivalByDateDebut() {
         String date = "2024/07/08";
 
         List<FestivalResponseDto> festivalResponseDtos = this.festivalService.getAllFestivalByDateDebut(date);
@@ -107,7 +107,7 @@ class FestivalServiceTest {
     }
 
     @Test
-    void getOneFestival() {
+    void FestivalService_getOneFestival() {
         FestivalResponseDto festival = this.festivalService.getOneFestival(1L);
 
         assertNotNull(festival);
@@ -116,7 +116,7 @@ class FestivalServiceTest {
     }
 
     @Test
-    void getAllFestivalsByName() {
+    void FestivalService_getAllFestivalsByName() {
         List<FestivalResponseDto> festivals = this.festivalService.getAllFestivalsByName("GRIMALDINES");
 
         assertNotNull(festivals);
@@ -125,7 +125,7 @@ class FestivalServiceTest {
     }
 
     @Test
-    void getAllFestivalsByDomaine() {
+    void FestivalService_getAllFestivalsByDomaine() {
         initData.createFestivalWithNomDomaineTest("france malagasy", "jazz");
         initData.createFestivalWithNomDomaineTest("musique lorem", "actuelle malagasy");
         List<FestivalResponseDto> festivals = this.festivalService.getAllFestivalsByDomaine("maLagAsy");
@@ -144,7 +144,7 @@ class FestivalServiceTest {
     }
 
     @Test
-    void findById() {
+    void FestivalService_findById() {
         Festival festival = this.festivalService.findById(1L);
 
         assertNotNull(festival);
