@@ -191,7 +191,6 @@ public class InitData {
     }
 
     public DomainePrincipal createDomainePrincipalTest(String nomDomaine){
-        Faker faker = initFaker();
         DomainePrincipal domainePrincipal = new DomainePrincipal();
         domainePrincipal.setNom(nomDomaine);
         return domainePrincipalRepository.save(domainePrincipal);
@@ -206,7 +205,6 @@ public class InitData {
     }
 
     public SousDomaine createSousDomaineTest(String sousDomaineNom, String domainePrincipal){
-        Faker faker = initFaker();
         SousDomaine sousDomaine = new SousDomaine();
         sousDomaine.setNom(sousDomaineNom);
         sousDomaine.setDomainePrincipal(createDomainePrincipalTest(domainePrincipal));

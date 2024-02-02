@@ -2,7 +2,6 @@ package com.bdi.projectbdigroup5.service;
 
 import com.bdi.projectbdigroup5.InitData;
 import com.bdi.projectbdigroup5.dto.ArticleRequestBodyDto;
-import com.bdi.projectbdigroup5.dto.ErreurPaiementPanierResponseDto;
 import com.bdi.projectbdigroup5.model.Article;
 import com.bdi.projectbdigroup5.model.Panier;
 import com.bdi.projectbdigroup5.model.StatutPanier;
@@ -14,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
