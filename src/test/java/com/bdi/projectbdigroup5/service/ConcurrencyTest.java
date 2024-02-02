@@ -9,18 +9,15 @@ import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.bdi.projectbdigroup5.ProjectBdiGroup5Application;
 import com.bdi.projectbdigroup5.dto.ArticleRequestBodyDto;
 import com.bdi.projectbdigroup5.dto.PanierRequestBodyDto;
 import com.bdi.projectbdigroup5.dto.PanierResponseDto;
@@ -35,9 +32,11 @@ import com.bdi.projectbdigroup5.model.Festivalier;
 import com.bdi.projectbdigroup5.model.LieuCovoiturage;
 import com.bdi.projectbdigroup5.model.OffreCovoiturage;
 import com.bdi.projectbdigroup5.model.Organisateur;
+import com.bdi.projectbdigroup5.model.Panier;
 import com.bdi.projectbdigroup5.model.PointPassageCovoiturage;
 import com.bdi.projectbdigroup5.model.Region;
 import com.bdi.projectbdigroup5.model.SousDomaine;
+import com.bdi.projectbdigroup5.model.StatutPanier;
 import com.bdi.projectbdigroup5.model.TypeLieuCovoiturage;
 import com.github.javafaker.Address;
 import com.github.javafaker.Faker;
@@ -46,7 +45,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 
-import lombok.AllArgsConstructor;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -60,9 +58,6 @@ public class ConcurrencyTest {
 
     @Autowired
     private OffreCovoiturageService offreCovoiturageService;
-    
-    @Autowired
-    private ArticleService articleService;
 
     @Autowired
     private LieuCovoiturageService lieuCovoiturageService;
@@ -73,6 +68,28 @@ public class ConcurrencyTest {
     @Autowired
     private FestivalierService festivalierService;
 
+    @Autowired
+    private RegionService regionService;
+
+    @Autowired
+    private DepartementService departementService;
+
+    @Autowired
+    private OrganisateurService organisateurService;
+
+    @Autowired
+    private CovoitureurService covoitureurService;
+
+    @Autowired
+    private CommuneService communeService;
+
+    @Autowired
+    private DomainePrincipalService domainePrincipalService;
+
+    @Autowired
+    private SousDomaineService sousDomaineService;
+
+    private static Logger log = Logger.getLogger("ConcurrencyTest.class");
 
     public Festivalier getFestivalier(){
         Faker faker=new Faker(new Locale("fr"));
@@ -92,7 +109,8 @@ public class ConcurrencyTest {
         }catch(ParseException e){
             System.out.println(e.getMessage());
         }
-        return festivalier;
+
+        return festivalierService.createFestivalier(festivalier);
     }
 
     public Covoitureur getCovoitureur(){
@@ -112,7 +130,7 @@ public class ConcurrencyTest {
             System.out.println(e.getMessage());
         }
 
-        return covoitureur;
+        return covoitureurService.createCovoitureur(covoitureur);
     }
 
     public Organisateur getOrganisateur(){
@@ -129,334 +147,231 @@ public class ConcurrencyTest {
         }catch(ParseException e){
             System.out.println(e.getMessage());
         }
-        return organisateur;
-    }
-
-    public Festival getFestival(){
-        Region region = new Region();
-        region.setNom("Occitanie");
-        
-        Departement departement=new Departement();
-        departement.setRegion(region);
-        departement.setNumero("31");
-        departement.setNom("Haute-Garonne");
-
-        Commune commune = new Commune();
-        commune.setDepartement(departement);
-        commune.setCodeInsee("31555");
-        commune.setCodePostal("31300");
-        commune.setLatitude(Float.parseFloat("43.5963814303"));
-        commune.setLongitude(Float.parseFloat("1.43167293364"));
-        commune.setNom("TOULOUSE");
-
-        DomainePrincipal domainePrincipal =new DomainePrincipal();
-        domainePrincipal.setNom("Musiques actuelles");
-        
-        SousDomaine sousDomaine = new SousDomaine();
-        sousDomaine.setDomainePrincipal(domainePrincipal);
-        sousDomaine.setNom("Musiques traditionnelles et du monde");
-
-
-        Festival festival = new Festival();
-
-        festival.setCommune(commune);
-        festival.setSousDomaine(sousDomaine);
-        festival.setDateDebut(new Date("13/06/2024"));
-        festival.setDateFin(new Date("16/06/2024"));
-        festival.setNom("¡ RIO LOCO ! GARONNE, LE FESTIVAL");
-        festival.setNombrePass(40);
-        festival.setTarifPass(Float.parseFloat("9"));
-        festival.setSiteWeb("www.rio-loco.org");
-        festival.setOrganisateur(getOrganisateur());
-
-        return festiva;
-    }
-
-    public  LieuCovoiturage getLieuCovoiturageA(){
-
-        Region region = new Region();
-        region.setNom("Nouvelle-Aquitaine");
-        
-        Departement departement=new Departement();
-        departement.setRegion(region);
-        departement.setNumero("86");
-        departement.setNom("Vienne");
-
-        Commune commune = new Commune();
-        commune.setDepartement(departement);
-        commune.setCodeInsee("86194");
-        commune.setCodePostal("86000");
-        commune.setLatitude(Float.parseFloat("46.5839207726"));
-        commune.setLongitude(Float.parseFloat("0.359947653003"));
-        commune.setNom("POITIERS");        
-
-        LieuCovoiturage lieuCovoiturage = new LieuCovoiturage();
-        
-        lieuCovoiturage.setAdresse("A10 Sortie 29 Poitiers Nord");
-        lieuCovoiturage.setLatitude(Float.parseFloat("46.620867"));
-        lieuCovoiturage.setLongitude(Float.parseFloat("0.343598"));
-        lieuCovoiturage.setNom("Parking de covoiturage de Poitiers Nord");
-        lieuCovoiturage.setType(TypeLieuCovoiturage.AIRE_COVOITURAGE);
-
-
-        return lieuCovoiturageService.createLieuCovoiturage(lieuCovoiturage);
-    }
-
-    public  LieuCovoiturage getLieuCovoiturageB(){
-
-        Region region = new Region();
-        region.setNom("Pays de la Loire");
-        
-        Departement departement=new Departement();
-        departement.setRegion(region);
-        departement.setNumero("49");
-        departement.setNom("Maine-et-Loire");
-
-        Commune commune = new Commune();
-        commune.setDepartement(departement);
-        commune.setCodeInsee("49248");
-        commune.setCodePostal("49520");
-        commune.setLatitude(Float.parseFloat("47.7629344972"));
-        commune.setLongitude(Float.parseFloat("-1.19300189799"));
-        commune.setNom("LA PREVIERE");        
-
-        LieuCovoiturage lieuCovoiturage = new LieuCovoiturage();
-        
-        lieuCovoiturage.setAdresse("giratoire D775-D771 (Pouancé)");
-        lieuCovoiturage.setLatitude(Float.parseFloat("47.746999"));
-        lieuCovoiturage.setLongitude(Float.parseFloat("-1.157561"));
-        lieuCovoiturage.setNom("Aire de covoiturage de La Pidaie");
-        lieuCovoiturage.setType(TypeLieuCovoiturage.AIRE_COVOITURAGE);
-
-
-        return lieuCovoiturageService.createLieuCovoiturage(lieuCovoiturage);
-    }
-
-    public PointPassageCovoiturage getPointPassageCovoiturageA(){
-        PointPassageCovoiturage pointPassageCovoiturageA = new PointPassageCovoiturage();
-        pointPassageCovoiturageA.setLieuCovoiturage(getLieuCovoiturageA());
-        pointPassageCovoiturageA.setPrix(Float.parseFloat("35"));
-        pointPassageCovoiturageA.setDifferenceHeurePassage(2);
-
-        return pointPassageCovoiturageA;
-    }
-
-    public PointPassageCovoiturage getPointPassageCovoiturageB(){
-        PointPassageCovoiturage pointPassageCovoiturageB = new PointPassageCovoiturage();
-        pointPassageCovoiturageB.setLieuCovoiturage(getLieuCovoiturageB());
-        pointPassageCovoiturageB.setPrix(Float.parseFloat("20"));
-        pointPassageCovoiturageB.setDifferenceHeurePassage(1);
-
-        return pointPassageCovoiturageB;
-    }
-
-    public OffreCovoiturage getOffreCovoiturage(){
-
-        OffreCovoiturage offreCovoiturage = new OffreCovoiturage();
-        Covoitureur covoitureur = getCovoitureur();
-
-        offreCovoiturage.setCovoitureur(covoitureur);
-        offreCovoiturage.setDateOffre(new Date("13/06/2024"));
-        offreCovoiturage.setModeleVoiture("2020,Land Rover,Range Rover Velar");
-        offreCovoiturage.setNombrePlaces(3);
-        offreCovoiturage.setFestival(getFestival());
-
-        PointPassageCovoiturage pointPassageCovoiturageA = getPointPassageCovoiturageA();
-        pointPassageCovoiturageA.setOffreCovoiturage(offreCovoiturage);
-        pointPassageCovoiturageService.createPointPassageCovoiturage(pointPassageCovoiturageA);
-
-        PointPassageCovoiturage pointPassageCovoiturageB = getPointPassageCovoiturageB();
-        pointPassageCovoiturageA.setOffreCovoiturage(offreCovoiturage);
-        pointPassageCovoiturageService.createPointPassageCovoiturage(pointPassageCovoiturageB);
-
-        offreCovoiturageService.createOffreCovoiturage(offreCovoiturage);
-
-        return offreCovoiturage;
-    }
-    
-    public PanierResponseDto getPanierA(){
-        
-        
-        Festivalier festivalier = getFestivalier();
-        festivalierService.createFestivalier(festivalier);
-
-        OffreCovoiturage offreCovoiturage = getOffreCovoiturage();
-        
-        ArticleRequestBodyDto article = new ArticleRequestBodyDto(offreCovoiturage.getPointPassageCovoiturages().get(0).getId(),1);
-        
-        List<ArticleRequestBodyDto> articles = new ArrayList<>();
-        articles.add(article);
-
-        PanierRequestBodyDto panier = new PanierRequestBodyDto(festivalier.getEmail(),articles);
-        PanierResponseDto panierResponse = panierService.savePanierFestivalier(panier);
-        
-        return panierResponse;
-    }
-
-    public PanierResponseDto getPanierB(){
-        
-        Festivalier festivalier = getFestivalier();
-        festivalierService.createFestivalier(festivalier);
-
-        OffreCovoiturage offreCovoiturage = getOffreCovoiturage();
-        
-        ArticleRequestBodyDto article = new ArticleRequestBodyDto(offreCovoiturage.getPointPassageCovoiturages().get(1).getId(),1);
-        
-        List<ArticleRequestBodyDto> articles = new ArrayList<>();
-        articles.add(article);
-
-        PanierRequestBodyDto panier = new PanierRequestBodyDto(festivalier.getEmail(),articles);
-        
-        PanierResponseDto panierResponse = panierService.savePanierFestivalier(panier);
-        
-        return panierResponse;
-    }
-
-    public PanierResponseDto getPanierC(){
-        
-        
-        Festivalier festivalier = getFestivalier();
-        festivalierService.createFestivalier(festivalier);
-
-        OffreCovoiturage offreCovoiturage = getOffreCovoiturage();
-        
-        ArticleRequestBodyDto article = new ArticleRequestBodyDto(offreCovoiturage.getPointPassageCovoiturages().get(0).getId(),1);
-        
-        List<ArticleRequestBodyDto> articles = new ArrayList<>();
-        articles.add(article);
-
-        PanierRequestBodyDto panier = new PanierRequestBodyDto(festivalier.getEmail(),articles);
-        
-        PanierResponseDto panierResponse = panierService.savePanierFestivalier(panier);
-        
-        return panierResponse;
-    }
-
-    public PanierResponseDto getPanierD(){
-        
-        
-        Festivalier festivalier = getFestivalier();
-        festivalierService.createFestivalier(festivalier);
-
-        OffreCovoiturage offreCovoiturage = getOffreCovoiturage();
-        
-        ArticleRequestBodyDto article = new ArticleRequestBodyDto(offreCovoiturage.getPointPassageCovoiturages().get(1).getId(),1);
-        
-        List<ArticleRequestBodyDto> articles = new ArrayList<>();
-        articles.add(article);
-
-        PanierRequestBodyDto panier = new PanierRequestBodyDto(festivalier.getEmail(),articles);
-        
-        PanierResponseDto panierResponse = panierService.savePanierFestivalier(panier);
-        
-        return panierResponse;
+        return organisateurService.createOrganisateur(organisateur);
     }
 
 
     @Test
     public void testConcurrentPanierPayment(){
+        log.info("I'm starting");
+
+       //festival
+       Region regionFestival = new Region();
+       regionFestival.setNom("Occitanie");
+       regionFestival=regionService.createRegion(regionFestival);
+
+       Departement departementFestival=new Departement();
+       departementFestival.setRegion(regionFestival);
+       departementFestival.setNumero("31");
+       departementFestival.setNom("Haute-Garonne");
+       departementFestival=departementService.createDepartement(departementFestival);
+
+       Commune communeFestival = new Commune();
+       communeFestival.setDepartement(departementFestival);
+       communeFestival.setCodeInsee("31555");
+       communeFestival.setCodePostal("31300");
+       communeFestival.setLatitude(Float.parseFloat("43.5963814303"));
+       communeFestival.setLongitude(Float.parseFloat("1.43167293364"));
+       communeFestival.setNom("TOULOUSE");
+       communeFestival = communeService.createCommune(communeFestival);
+
+       DomainePrincipal domainePrincipal =new DomainePrincipal();
+       domainePrincipal.setNom("Musiques actuelles");
+       domainePrincipal=domainePrincipalService.createDomainePrincipal(domainePrincipal);
+   
+       SousDomaine sousDomaine = new SousDomaine();
+       sousDomaine.setDomainePrincipal(domainePrincipal);
+       sousDomaine.setNom("Musiques traditionnelles et du monde");
+       sousDomaine = sousDomaineService.createSousDomaine(sousDomaine);
+
+       Festival festival = new Festival();
+
+       festival.setCommune(communeFestival);
+       festival.setSousDomaine(sousDomaine);
+       festival.setDateDebut(new Date("13/06/2024"));
+       festival.setDateFin(new Date("16/06/2024"));
+       festival.setNom("¡ RIO LOCO ! GARONNE, LE FESTIVAL");
+       festival.setNombrePass(40);
+       festival.setTarifPass(Float.parseFloat("9"));
+       festival.setSiteWeb("www.rio-loco.org");
+       festival.setOrganisateur(getOrganisateur());
+
+       festival= festivalService.createFestival(festival);
+
+       //lieuCovoiturage A
+
+       Region regionLieuCovoiturageA = new Region();
+       regionLieuCovoiturageA.setNom("Nouvelle-Aquitaine");
+       regionLieuCovoiturageA=regionService.createRegion(regionLieuCovoiturageA);
+       
+       Departement departementLieuCovoiturageA=new Departement();
+       departementLieuCovoiturageA.setRegion(regionLieuCovoiturageA);
+       departementLieuCovoiturageA.setNumero("86");
+       departementLieuCovoiturageA.setNom("Vienne");
+       departementLieuCovoiturageA=departementService.createDepartement(departementLieuCovoiturageA);
+
+       Commune communeLieuCovoiturageA = new Commune();
+       communeLieuCovoiturageA.setDepartement(departementLieuCovoiturageA);
+       communeLieuCovoiturageA.setCodeInsee("86194");
+       communeLieuCovoiturageA.setCodePostal("86000");
+       communeLieuCovoiturageA.setLatitude(Float.parseFloat("46.5839207726"));
+       communeLieuCovoiturageA.setLongitude(Float.parseFloat("0.359947653003"));
+       communeLieuCovoiturageA.setNom("POITIERS");        
+       communeLieuCovoiturageA = communeService.createCommune(communeLieuCovoiturageA);
+
+       LieuCovoiturage lieuCovoiturageA = new LieuCovoiturage();
+       
+       lieuCovoiturageA.setCommune(communeLieuCovoiturageA);
+       lieuCovoiturageA.setAdresse("A10 Sortie 29 Poitiers Nord");
+       lieuCovoiturageA.setLatitude(Float.parseFloat("46.620867"));
+       lieuCovoiturageA.setLongitude(Float.parseFloat("0.343598"));
+       lieuCovoiturageA.setNom("Parking de covoiturage de Poitiers Nord");
+       lieuCovoiturageA.setType(TypeLieuCovoiturage.AIRE_COVOITURAGE);
 
 
+       lieuCovoiturageA = lieuCovoiturageService.createLieuCovoiturage(lieuCovoiturageA);
+
+       //lieuCovoiturage B
 
 
-        PanierResponseDto panierA = getPanierA();
-        PanierResponseDto panierB = getPanierB();
-        PanierResponseDto panierC = getPanierC();
-        PanierResponseDto panierD = getPanierD();
+       Region regionLieuCovoiturageB = new Region();
+       regionLieuCovoiturageB.setNom("Pays de la Loire");
+       regionLieuCovoiturageB=regionService.createRegion(regionLieuCovoiturageB);
 
-        Festival festival = festivalService.findById(panierA.getArticles().get(0).getFestival().getId());
+       
+       Departement departementLieuCovoiturageB=new Departement();
+       departementLieuCovoiturageB.setRegion(regionLieuCovoiturageB);
+       departementLieuCovoiturageB.setNumero("49");
+       departementLieuCovoiturageB.setNom("Maine-et-Loire");
+       departementLieuCovoiturageB=departementService.createDepartement(departementLieuCovoiturageB);
 
-        OffreCovoiturage offreCovoiturage = articleService.findByID(panierA.getArticles().get(0).getId()).getPointPassageCovoiturage().getOffreCovoiturage();
 
-        int nombrePass = festival.getNombrePass();
-        int nombrePlaces = offreCovoiturage.getNombrePlaces();
+       Commune communeLieuCovoiturageB = new Commune();
+       communeLieuCovoiturageB.setDepartement(departementLieuCovoiturageB);
+       communeLieuCovoiturageB.setCodeInsee("49248");
+       communeLieuCovoiturageB.setCodePostal("49520");
+       communeLieuCovoiturageB.setLatitude(Float.parseFloat("47.7629344972"));
+       communeLieuCovoiturageB.setLongitude(Float.parseFloat("-1.19300189799"));
+       communeLieuCovoiturageB.setNom("LA PREVIERE");        
+       communeLieuCovoiturageB = communeService.createCommune(communeLieuCovoiturageB);
 
-        Callable<String> savepanierA = () ->{
-            try{
-                panierService.updatePanierStatusToPayed(panierA.getPanier().getId());
-                return "PanierA enregistré";
 
-            }catch(NombrePassFestivalInsuffisantException | NombrePlaceCovoiturageInsuffisantException e){
-                fail("Nombre de place insufisant : " + e.getMessage());
-                return "PanierA non enregistré : Nombre de place insufisant";
-            }catch(Exception e){
-                fail("Erreur non attendue : " + e.getMessage());
-                return "PanierA non enregistré : erreur non attentdue";
-            }
-        };
+       LieuCovoiturage lieuCovoiturageB = new LieuCovoiturage();
+       
+       lieuCovoiturageB.setCommune(communeLieuCovoiturageB);
+       lieuCovoiturageB.setAdresse("giratoire D775-D771 (Pouancé)");
+       lieuCovoiturageB.setLatitude(Float.parseFloat("47.746999"));
+       lieuCovoiturageB.setLongitude(Float.parseFloat("-1.157561"));
+       lieuCovoiturageB.setNom("Aire de covoiturage de La Pidaie");
+       lieuCovoiturageB.setType(TypeLieuCovoiturage.AIRE_COVOITURAGE);
 
-        Callable<String> savepanierB = () ->{
-            try{
-                panierService.updatePanierStatusToPayed(panierB.getPanier().getId());
-                return "PanierA enregistré";
 
-            }catch(NombrePassFestivalInsuffisantException | NombrePlaceCovoiturageInsuffisantException e){
-                fail("Nombre de place insufisant : " + e.getMessage());
-                return "PanierA non enregistré : Nombre de place insufisant";
-            }catch(Exception e){
-                fail("Erreur non attendue : " + e.getMessage());
-                return "PanierA non enregistré : erreur non attentdue";
-            }
-        };
+       lieuCovoiturageB = lieuCovoiturageService.createLieuCovoiturage(lieuCovoiturageB);
 
-        Callable<String> savepanierC = () ->{
-            try{
-                panierService.updatePanierStatusToPayed(panierC.getPanier().getId());
-                return "PanierA enregistré";
+       //offreCovoiturage
 
-            }catch(NombrePassFestivalInsuffisantException | NombrePlaceCovoiturageInsuffisantException e){
-                fail("Nombre de place insufisant : " + e.getMessage());
-                return "PanierA non enregistré : Nombre de place insufisant";
-            }catch(Exception e){
-                fail("Erreur non attendue : " + e.getMessage());
-                return "PanierA non enregistré : erreur non attentdue";
-            }
-        };
+       OffreCovoiturage offreCovoiturage = new OffreCovoiturage();
+       Covoitureur covoitureur = getCovoitureur();
 
-        Callable<String> savepanierD = () ->{
-            try{
-                panierService.updatePanierStatusToPayed(panierD.getPanier().getId());
-                return "PanierA enregistré";
+       offreCovoiturage.setCovoitureur(covoitureur);
+       offreCovoiturage.setDateOffre(new Date("13/06/2024"));
+       offreCovoiturage.setModeleVoiture("2020,Land Rover,Range Rover Velar");
+       offreCovoiturage.setNombrePlaces(3);
+       offreCovoiturage.setFestival(festival);
 
-            }catch(NombrePassFestivalInsuffisantException | NombrePlaceCovoiturageInsuffisantException e){
-                fail("Nombre de place insufisant : " + e.getMessage());
-                return "PanierA non enregistré : Nombre de place insufisant";
-            }catch(Exception e){
-                fail("Erreur non attendue : " + e.getMessage());
-                return "PanierA non enregistré : erreur non attentdue";
-            }
-        };
-        
-        List<Callable<String>> callableTasks = new ArrayList<>();
+       offreCovoiturage = offreCovoiturageService.createOffreCovoiturage(offreCovoiturage);
 
-        callableTasks.add(savepanierD);
-        callableTasks.add(savepanierC);
-        callableTasks.add(savepanierB);
-        callableTasks.add(savepanierA);
+       List<PointPassageCovoiturage> pointPassages = new ArrayList<>();
 
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
+       PointPassageCovoiturage pointPassageCovoiturageA = new PointPassageCovoiturage();
+       pointPassageCovoiturageA.setLieuCovoiturage(lieuCovoiturageA);
+       pointPassageCovoiturageA.setPrix(Float.parseFloat("35"));
+       pointPassageCovoiturageA.setDifferenceHeurePassage(2);
+       pointPassageCovoiturageA.setOffreCovoiturage(offreCovoiturage);
+       
+       pointPassages.add(pointPassageCovoiturageService.createPointPassageCovoiturage(pointPassageCovoiturageA));
+
+       PointPassageCovoiturage pointPassageCovoiturageB = new PointPassageCovoiturage();
+       pointPassageCovoiturageB.setLieuCovoiturage(lieuCovoiturageB);
+       pointPassageCovoiturageB.setPrix(Float.parseFloat("20"));
+       pointPassageCovoiturageB.setDifferenceHeurePassage(1);
+       pointPassageCovoiturageB.setOffreCovoiturage(offreCovoiturage);
+
+       pointPassages.add(pointPassageCovoiturageService.createPointPassageCovoiturage(pointPassageCovoiturageB));
+
+       List<PanierResponseDto> paniers = new ArrayList<>();
+
+       ArticleRequestBodyDto article;
+       List<ArticleRequestBodyDto> articles = new ArrayList<>();
+
+       for(int i=0; i<2; i++){
+           Festivalier festivalier = getFestivalier();
+
+           article = new ArticleRequestBodyDto(pointPassages.get(i%2).getId(),1);
+           articles.add(article);
+           PanierRequestBodyDto panier = new PanierRequestBodyDto(festivalier.getEmail(),articles);
+           PanierResponseDto panierResponse = panierService.savePanierFestivalier(panier);
+
+           paniers.add(panierResponse);
+           articles.clear();
+       }
+
+       int nombrePass = festival.getNombrePass();
+       int nombrePlaces = offreCovoiturage.getNombrePlaces();
+
+       log.info("nombre de place est " + nombrePlaces);
+       log.info("nombre de pass est " + nombrePass);
+       
+       List<Callable<String>> callableTasks = new ArrayList<>();
+       List<Panier> panierValides = new ArrayList<>();
+
+
+       paniers.forEach(p ->{
+           callableTasks.add(() ->{
+               try{
+                   
+                   Panier panier = panierService.updatePanierStatusToPayed(p.getPanier().getId());
+                   if (panier.getStatut() == StatutPanier.PAYER) {
+                    panierValides.add(panier);
+                   }
+                   return "PanierA enregistré";
+   
+               }catch(NombrePassFestivalInsuffisantException | NombrePlaceCovoiturageInsuffisantException e){
+                   fail("Nombre de place insufisant : " + e.getMessage());
+                   log.warning("Nombre de place insufisant : " + e.getMessage());
+                   return "PanierA non enregistré : Nombre de place insufisant";
+               }catch(Exception e){
+                   fail("Erreur non attendue : " + e.getMessage());
+                   log.warning("Erreur non attendue : " + e.getMessage());
+                   return "PanierA non enregistré : erreur non attentdue";
+               }
+           });
+       });
+
+       
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
 
         try{
             executorService.invokeAll(callableTasks);
         }catch(InterruptedException e){
             System.out.println(e.getMessage());
+            log.warning(e.getMessage());
         }
 
         executorService.shutdown();
-        try {
-            if (!executorService.awaitTermination(5000, TimeUnit.MILLISECONDS)) {
-                executorService.shutdownNow(); } 
-        } catch (InterruptedException e) {
-            executorService.shutdownNow();
-        }
+        // try {
+        //     if (!executorService.awaitTermination(5000, TimeUnit.MILLISECONDS)) {
+        //         executorService.shutdownNow(); } 
+        // } catch (InterruptedException e) {
+        //     executorService.shutdownNow();
+        // }
 
+        int nombrePanierValide = panierValides.size();
+        int nombrePassActuel = festivalService.findById(festival.getId()).getNombrePass();
+        int nombrePlacesActuel = offreCovoiturageService.findByID(offreCovoiturage.getId()).getNombrePlaces();
 
-        festival = festivalService.findById(panierA.getArticles().get(0).getFestival().getId());
-
-        offreCovoiturage = articleService.findByID(panierA.getArticles().get(0).getId()).getPointPassageCovoiturage().getOffreCovoiturage();
-
-        assertEquals(nombrePass-nombrePlaces, festival.getNombrePass(), "Le nombre de pass disponible doit etre mis à jour");
-        assertEquals(0, offreCovoiturage.getNombrePlaces(), "Le nombre de place disponible doit etre mis a jour");
+        assertEquals(nombrePass-nombrePanierValide, nombrePassActuel, "Le nombre de pass disponible doit etre mis à jour");
+        assertEquals(nombrePlaces-nombrePanierValide,nombrePlacesActuel, "Le nombre de place disponible doit etre mis a jour");
     }
     
 }
