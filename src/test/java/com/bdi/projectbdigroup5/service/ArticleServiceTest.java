@@ -77,4 +77,6 @@ class ArticleServiceTest {
         assertEquals(3L, articles.get(2).getPointPassageCovoiturage().getId());
 
     }
+
+
 }
