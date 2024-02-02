@@ -18,15 +18,8 @@ public class RegionService {
         return regionRepository.save(region);
     }
 
-    public Iterable<Region> createRegions(Iterable<Region> regions) {
-        return regionRepository.saveAll(regions);
-    }
-
     public Optional<Region> findById(String nom){
         return regionRepository.findById(nom);
     }
 
-    public Iterable<Region> findAllRegion() {
-        return regionRepository.findAll();
-    }
 }

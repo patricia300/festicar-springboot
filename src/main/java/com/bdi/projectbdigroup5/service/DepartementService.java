@@ -18,16 +18,8 @@ public class DepartementService {
         return departementRepository.save(departement);
     }
 
-    public Iterable<Departement> createDepartements(Iterable<Departement> departements){
-        return departementRepository.saveAll(departements);
-    }
-
     public Optional<Departement> findById(String numero){
         return departementRepository.findById(numero);
-    }
-
-    public Iterable<Departement> findByNom(String nom){
-        return departementRepository.findByNom(nom);
     }
 
     public Iterable<Departement> findAll() {

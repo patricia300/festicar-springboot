@@ -10,6 +10,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CovoitureurRepository extends CrudRepository<Covoitureur, String>, PagingAndSortingRepository<Covoitureur, String> {
-
     Page<Covoitureur> findAll(Pageable pageable);
 }

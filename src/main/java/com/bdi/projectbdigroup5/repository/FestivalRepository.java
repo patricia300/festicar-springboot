@@ -15,14 +15,7 @@ public interface FestivalRepository extends CrudRepository<Festival, Long>, Pagi
 
     Page<Festival> findAll(Pageable pageable);
 
-    Page<Festival> findAllByCommuneNom(String commune, Pageable pageable);
-
     List<Festival> findAllByCommuneCodeInsee(String commune);
-
-    Page<Festival> findAllByDateDebutOrDateFin(Date dateDebut, Date dateFin, Pageable pageable);
-
-
-    Page<Festival> findAllByDateDebut(Date dateDebut, Pageable pageable);
 
     List<Festival> findAllByDateDebut(Date dateDebut);
 

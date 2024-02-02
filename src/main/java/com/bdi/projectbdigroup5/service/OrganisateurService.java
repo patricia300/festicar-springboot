@@ -24,13 +24,4 @@ public class OrganisateurService {
     public Iterable<Organisateur> createOrganisateurs(Iterable<Organisateur> organisateurs) {
         return organisateurRepository.saveAll(organisateurs);
     }
-
-    public Organisateur organisateurAleatoire() {
-        Long count = organisateurRepository.count();
-        int nombrePageAleatoire = (int) (Math.random() * count);
-        Pageable pageAleatoire = PageRequest.of(nombrePageAleatoire, 1);
-        Page<Organisateur> organisateurPage = organisateurRepository.findAll(pageAleatoire);
-
-        return organisateurPage.getContent().get(0);
-    }
 }

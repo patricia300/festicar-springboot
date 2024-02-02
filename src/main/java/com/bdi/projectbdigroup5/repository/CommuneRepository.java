@@ -10,8 +10,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommuneRepository extends CrudRepository<Commune, String> , PagingAndSortingRepository<Commune, String> {
-    @Query("SELECT c.nom FROM Commune c")
-    Page<String> findAllCommuneNom(Pageable pageable);
 
     @Query("SELECT c.nom FROM Commune c")
     Iterable<String> findAllCommuneNom();

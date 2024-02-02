@@ -10,6 +10,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrganisateurRepository extends CrudRepository<Organisateur, String>, PagingAndSortingRepository<Organisateur, String> {
-
     Page<Organisateur> findAll(Pageable pageable);
 }

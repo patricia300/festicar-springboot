@@ -26,15 +26,6 @@ public class OffreCovoiturageService {
     @Autowired
     private OffreCovoiturageRepository offreCovoiturageRepository;
 
-    @Autowired
-    private CommuneRepository communeRepository;
-
-    @Autowired
-    private PointPassageCovoiturageRepository pointPassageCovoiturageRepository;
-
-    @Autowired
-    private FestivalRepository festivalRepository;
-
     public OffreCovoiturage createOffreCovoiturage(OffreCovoiturage offreCovoiturage) {
         return offreCovoiturageRepository.save(offreCovoiturage);
     }
@@ -46,37 +37,5 @@ public class OffreCovoiturageService {
     public OffreCovoiturage findByID(Long id) {
         return offreCovoiturageRepository.findById(id).orElseThrow(() -> new NotFoundException(
                 "Offre Covoiturage non trouvé"));
-    }
-
-    // IMPORTANT : doesn't work
-    public FestivalResponseDto getOffreCovoituragePlusProche(String communeCodeInsee, Long idFestival) {
-        Optional<Commune> commune = communeRepository.findById(communeCodeInsee);
-        Optional<Festival> festival = festivalRepository.findById(idFestival);
-
-        List<PointPassageCovoiturage> pointPassageCovoiturages = this.pointPassageCovoiturageRepository
-                .findAllByOffreCovoiturageFestivalIdAndLieuCovoiturageCommuneCodeInseeOrLieuCovoiturageCommuneDepartementNumeroOrLieuCovoiturageCommuneDepartementRegionNom(
-                        idFestival,
-                        commune.get().getCodeInsee(),
-                        commune.get().getDepartement().getNumero(),
-                        commune.get().getDepartement().getRegion().getNom());
-
-        List<OffreCovoiturage> offreCovoiturages = pointPassageCovoiturages
-                .stream()
-                .map(o -> {
-                    OffreCovoiturage offreCovoiturage = o.getOffreCovoiturage();
-                    offreCovoiturage.setPointPassageCovoiturages(pointPassageCovoiturages);
-                    return offreCovoiturage;
-                })
-                .toList();
-
-        int nbPlaceOffreCovoiturage = festival.get().getOffreCovoiturages()
-                .stream()
-                .reduce(0, (totalPlaces, element) -> totalPlaces + element.getNombrePlaces(), Integer::sum);
-
-        return createFestivalResponseDtoFromFestival(
-                festival.get(),
-                createOffreCovoiturageFestivalDtos(offreCovoiturages),
-                nbPlaceOffreCovoiturage);
-
     }
 }

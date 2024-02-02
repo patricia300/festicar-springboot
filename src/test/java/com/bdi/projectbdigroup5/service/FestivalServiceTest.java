@@ -33,7 +33,7 @@ class FestivalServiceTest {
 
     @BeforeEach
     void setUp() {
-        for (int i = 0; i< 300; i++)
+        for (int i = 0; i< 100; i++)
         {
             initData.createOffreCovoiturageTest();
         }

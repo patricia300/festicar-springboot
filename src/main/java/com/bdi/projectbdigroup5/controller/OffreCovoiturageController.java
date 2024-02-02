@@ -28,10 +28,4 @@ public class OffreCovoiturageController {
         return this.offreCovoiturageService.getAllOffreCovoiturages(offreCovoituragePage);
     }
 
-    @GetMapping("/offre-covoiturage/plus-proche")
-    public FestivalResponseDto getOffreCovoituragePlusProche(@RequestParam String communeCodeInsee, @RequestParam Long idFestival){
-        return this.offreCovoiturageService.getOffreCovoituragePlusProche(communeCodeInsee, idFestival);
-    }
-
-
 }

@@ -18,10 +18,6 @@ public class FestivalierService {
         return festivalierRepository.save(festivalier);
     }
 
-    public Festivalier updateFestivalier(Festivalier festivalier){
-        return festivalierRepository.save(festivalier);
-    }
-
     public Iterable<Festivalier> createFestivaliers(Iterable<Festivalier> festivaliers){
         return festivalierRepository.saveAll(festivaliers);
     }
@@ -33,15 +29,5 @@ public class FestivalierService {
     public Optional<Festivalier> findByToken(String token){
         return festivalierRepository.findByToken(token);
     }
-
-    public Festivalier festivalierAleatoire(){
-        Long count = festivalierRepository.count();
-        int nombrePageAleatoire = (int)(Math.random() * count);
-        Pageable pageAleatoire = PageRequest.of(nombrePageAleatoire, 1);
-        Page<Festivalier> festivalierPage = festivalierRepository.findAll(pageAleatoire );
-
-        return festivalierPage.getContent().get(0);
-    }   
-
 
 }
