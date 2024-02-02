@@ -73,8 +73,8 @@ class PanierServiceTest {
     @Test
     void PanierService_GetCurrentPanier_ReturnsPanierResponseDto(){
         Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
-        Article a1 = initData.createArticleTest(1, panier, 1L, 2);
-        Article a2 = initData.createArticleTest(1, panier, 2L,2);
+        initData.createArticleTest(1, panier, 1L, 2);
+        initData.createArticleTest(1, panier, 2L,2);
 
 
         PanierResponseDto panierResponseDto = this.panierService.getCurrentPanier(EMAIL_FESTIVALIER);
@@ -86,12 +86,12 @@ class PanierServiceTest {
     @Test
     void PanierService_GetPanierByFestivalierEmail_ReturnsIterablePanierResponseDto(){
         Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
-        Article a1 = initData.createArticleTest(1, panier, 1L, 2);
-        Article a2 = initData.createArticleTest(1, panier, 2L,2);
+        initData.createArticleTest(1, panier, 1L, 2);
+        initData.createArticleTest(1, panier, 2L,2);
 
-        Panier panierPayed = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.PAYER);
-        Article a3 = initData.createArticleTest(1, panier, 3L, 2);
-        Article a4 = initData.createArticleTest(1, panier, 4L,2);
+        initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.PAYER);
+        initData.createArticleTest(1, panier, 3L, 2);
+        initData.createArticleTest(1, panier, 4L,2);
 
         List<PanierResponseDto> panierResponseDto = (List<PanierResponseDto>) this.panierService.getPanierByFestivalierEmail(EMAIL_FESTIVALIER);
 
@@ -165,6 +165,7 @@ class PanierServiceTest {
         this.panierService.verifierArticle(a1, listErreurPaiement);
 
         assertNotNull(listErreurPaiement);
+        assertTrue(listErreurPaiement.get(0).isPresent());
         assertEquals(ErreurPaiementClass.OFFRE_COVOITURAGE,listErreurPaiement.get(0).get().getClassType());
         assertEquals(2, a1.getQuantite());
     }
@@ -179,6 +180,7 @@ class PanierServiceTest {
         Optional<Article> articleDeleted = articleRepository.findById(a1.getId());
 
         assertNotNull(listErreurPaiement);
+        assertTrue(listErreurPaiement.get(0).isPresent());
         assertEquals(ErreurPaiementClass.OFFRE_COVOITURAGE,listErreurPaiement.get(0).get().getClassType());
         assertTrue(articleDeleted.isEmpty());
     }
