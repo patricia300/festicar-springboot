@@ -9,8 +9,6 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 
 import java.util.Date;
@@ -51,13 +49,13 @@ public class FestivalService {
                 .toList();
     }
 
-    public List<FestivalResponseDto> getAllFestivalPerPage(Pageable pageable) {
+    public Iterable<FestivalResponseDto> getAllFestivalPerPage(Pageable pageable) {
         return festivalRepository.findAll(pageable).map(festival -> {
             int nbPlaceOffreCovoiturage = festival.getOffreCovoiturages()
                     .stream()
                     .reduce(0,(totalPlaces, element ) -> totalPlaces + element.getNombrePlaces(), Integer::sum);
             return createFestivalResponseDtoFromFestival(festival, List.of(),nbPlaceOffreCovoiturage);
-        }).toList();
+        });
     }
 
     public List<FestivalResponseDto> getAllFestivalByCommune(String communecodeInsee) {
