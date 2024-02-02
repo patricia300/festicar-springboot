@@ -68,17 +68,28 @@ class FestivalServiceTest {
     @Test
     void FestivalService_getAllFestivalPerPage() {
         Pageable pageable = pageableProperties.createPageable(0, 20);
-        List<FestivalResponseDto> festivals = this.festivalService.getAllFestivalPerPage(pageable);
+        Iterable<FestivalResponseDto> festivals = this.festivalService.getAllFestivalPerPage(pageable);
 
         Pageable pageable1 = pageableProperties.createPageable(0, 40);
-        List<FestivalResponseDto> festivals1 = this.festivalService.getAllFestivalPerPage(pageable1);
+        Iterable<FestivalResponseDto> festivals1 = this.festivalService.getAllFestivalPerPage(pageable1);
 
+        int countFestivals = 0;
+        for (FestivalResponseDto f: festivals) {
+            assertNotNull(f);
+            assertTrue(f.getOffreCovoiturages().isEmpty());
+            countFestivals++;
+        }
 
-        assertEquals(20,festivals.size());
-        assertTrue(festivals.get(0).getOffreCovoiturages().isEmpty());
+        assertEquals(20, countFestivals);
 
-        assertEquals(40,festivals1.size());
-        assertTrue(festivals1.get(9).getOffreCovoiturages().isEmpty());
+        int countFestivals1 = 0;
+        for (FestivalResponseDto f: festivals1) {
+            assertNotNull(f);
+            assertTrue(f.getOffreCovoiturages().isEmpty());
+            countFestivals1++;
+        }
+
+        assertEquals(40, countFestivals1);
     }
 
     @Test
