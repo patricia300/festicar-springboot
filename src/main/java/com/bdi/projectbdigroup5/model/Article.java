@@ -7,7 +7,10 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "articles")
+@Table(name = "articles", indexes = {
+    @Index(name = "articlesPanierIndex", columnList = "id_panier"),
+    @Index(name = "articlesPointPassageCovoiturageIndex", columnList = "id_point_passage_covoiturage")
+})
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

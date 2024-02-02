@@ -5,7 +5,9 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "lieu_covoiturages")
+@Table(name = "lieu_covoiturages", indexes = {
+    @Index(name = "lieuCovoiturageCommuneIndex", columnList = "code_insee_commune")
+})
 public class LieuCovoiturage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
