@@ -274,21 +274,6 @@ public class InitData {
         return festivalRepository.save(festival);
     }
 
-    public Festival createFestivalTest(Long id){
-        Festival festival = new Festival();
-        festival.setOrganisateur(createOrganisateurTest());
-        festival.setCommune(createCommuneTest());
-        festival.setId(id);
-        festival.setSiteWeb("www.les-grimaldines.com");
-        festival.setSousDomaine(createSousDomaineTest());
-        festival.setNombrePass(84);
-        festival.setTarifPass(12.0F);
-        festival.setNom("LES GRIMALDINES");
-        festival.setDateDebut(new Date("2024/07/08"));
-        festival.setDateFin(new Date("2024/08/01"));
-        return festivalRepository.save(festival);
-    }
-
     public Article createArticleTest(int qte, Panier panier, Long idPointPassage){
         Article article = new Article();
         article.setPanier(panier);
