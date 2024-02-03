@@ -92,6 +92,19 @@ public class InitData {
         return communeRepository.save(commune);
     }
 
+    public Commune createCommuneTest(String codeInsee){
+        Faker faker = initFaker();
+        Commune commune = new Commune();
+        Departement departement = createDepartementTest();
+        commune.setCodeInsee(codeInsee);
+        commune.setCodePostal(faker.address().zipCode());
+        commune.setNom(faker.address().cityName());
+        commune.setLatitude(65.688642F);
+        commune.setLongitude(5.00024F);
+        commune.setDepartement(departement);
+        return communeRepository.save(commune);
+    }
+
     public LieuCovoiturage createLieuCovoiturageTest(){
             Faker faker = initFaker();
             LieuCovoiturage lieuCovoiturage = new LieuCovoiturage();
@@ -142,6 +155,20 @@ public class InitData {
         return offreCovoiturageRepository.save(offreCovoiturage);
     }
 
+    public OffreCovoiturage createOffreCovoiturageTest(Long idFestival) {
+        Faker faker = initFaker();
+        OffreCovoiturage offreCovoiturage = new OffreCovoiturage();
+        offreCovoiturage.setId(faker.random().nextLong());
+        offreCovoiturage.setModeleVoiture(faker.cat().breed());
+        offreCovoiturage.setDateOffre(new Date("2024/06/05"));
+        offreCovoiturage.setNombrePlaces(faker.number().numberBetween(1, 3));
+        offreCovoiturage.setHeureDepart(new Date("2024/06/05 10:00"));
+        offreCovoiturage.setHeureArrive(new Date("2024/06/05 20:00"));
+        offreCovoiturage.setCovoitureur(createCovoitureurTest());
+        offreCovoiturage.setFestival(createFestivalTest(idFestival));
+        return offreCovoiturageRepository.save(offreCovoiturage);
+    }
+
     public OffreCovoiturage createOffreCovoiturageTest(int qte) {
         Faker faker = initFaker();
         OffreCovoiturage offreCovoiturage = new OffreCovoiturage();
@@ -163,6 +190,12 @@ public class InitData {
         return domainePrincipalRepository.save(domainePrincipal);
     }
 
+    public DomainePrincipal createDomainePrincipalTest(String nomDomaine){
+        DomainePrincipal domainePrincipal = new DomainePrincipal();
+        domainePrincipal.setNom(nomDomaine);
+        return domainePrincipalRepository.save(domainePrincipal);
+    }
+
     public SousDomaine createSousDomaineTest(){
         Faker faker = initFaker();
         SousDomaine sousDomaine = new SousDomaine();
@@ -171,11 +204,51 @@ public class InitData {
         return sousDomaineRepository.save(sousDomaine);
     }
 
+    public SousDomaine createSousDomaineTest(String sousDomaineNom, String domainePrincipal){
+        SousDomaine sousDomaine = new SousDomaine();
+        sousDomaine.setNom(sousDomaineNom);
+        sousDomaine.setDomainePrincipal(createDomainePrincipalTest(domainePrincipal));
+        return sousDomaineRepository.save(sousDomaine);
+    }
+
     public Festival createFestivalTest(){
+        Faker faker = initFaker();
         Festival festival = new Festival();
         festival.setOrganisateur(createOrganisateurTest());
         festival.setCommune(createCommuneTest());
-        festival.setId(1776L);
+        festival.setId(faker.number().numberBetween(1L, 200L));
+        festival.setSiteWeb("www.les-grimaldines.com");
+        festival.setSousDomaine(createSousDomaineTest());
+        festival.setNombrePass(84);
+        festival.setTarifPass(12.0F);
+        festival.setNom("LES GRIMALDINES");
+        festival.setDateDebut(new Date("2024/07/08"));
+        festival.setDateFin(new Date("2024/08/01"));
+        return festivalRepository.save(festival);
+    }
+
+    public Festival createFestivalWithNomDomaineTest(String sousDomaine, String domainePrincipal){
+        Faker faker = initFaker();
+        Festival festival = new Festival();
+        festival.setOrganisateur(createOrganisateurTest());
+        festival.setCommune(createCommuneTest());
+        festival.setId(faker.number().numberBetween(1L, 200L));
+        festival.setSiteWeb("www.les-grimaldines.com");
+        festival.setSousDomaine(createSousDomaineTest(sousDomaine, domainePrincipal));
+        festival.setNombrePass(84);
+        festival.setTarifPass(12.0F);
+        festival.setNom("LES GRIMALDINES");
+        festival.setDateDebut(new Date("2024/07/08"));
+        festival.setDateFin(new Date("2024/08/01"));
+        return festivalRepository.save(festival);
+    }
+
+    public Festival createFestivalTest(String codeInsee){
+        Faker faker = initFaker();
+        Festival festival = new Festival();
+        festival.setOrganisateur(createOrganisateurTest());
+        festival.setCommune(createCommuneTest(codeInsee));
+        festival.setId(faker.number().numberBetween(1L, 200L));
         festival.setSiteWeb("www.les-grimaldines.com");
         festival.setSousDomaine(createSousDomaineTest());
         festival.setNombrePass(84);

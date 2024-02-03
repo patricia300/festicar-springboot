@@ -9,8 +9,6 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 
 
 import java.util.Date;
@@ -51,15 +49,6 @@ public class FestivalService {
                 .toList();
     }
 
-    public Festival festivalAleatoire() {
-        Long count = festivalRepository.count();
-        int nombrePageAleatoire = (int) (Math.random() * count);
-        Pageable pageAleatoire = PageRequest.of(nombrePageAleatoire, 1);
-        Page<Festival> festivalPage = festivalRepository.findAll(pageAleatoire);
-
-        return festivalPage.getContent().get(0);
-    }
-
     public Iterable<FestivalResponseDto> getAllFestivalPerPage(Pageable pageable) {
         return festivalRepository.findAll(pageable).map(festival -> {
             int nbPlaceOffreCovoiturage = festival.getOffreCovoiturages()
@@ -69,7 +58,7 @@ public class FestivalService {
         });
     }
 
-    public Iterable<FestivalResponseDto> getAllFestivalByCommune(String communecodeInsee) {
+    public List<FestivalResponseDto> getAllFestivalByCommune(String communecodeInsee) {
         return festivalRepository.findAllByCommuneCodeInsee(communecodeInsee)
                 .stream().map(f -> {
                     int nbPlaceOffreCovoiturage = f.getOffreCovoiturages()
@@ -80,7 +69,7 @@ public class FestivalService {
                 .toList();
     }
 
-    public Iterable<FestivalResponseDto> getAllFestivalByDateDebut(String dateDebut) {
+    public List<FestivalResponseDto> getAllFestivalByDateDebut(String dateDebut) {
 
             return festivalRepository.findAllByDateDebut(new Date(dateDebut))
                     .stream().map(f -> {
@@ -90,10 +79,6 @@ public class FestivalService {
                         return createFestivalResponseDtoFromFestival(f, List.of(),nbPlaceOffreCovoiturage);
                     })
                     .toList();
-    }
-
-    public Iterable<Festival> createFestivals(Iterable<Festival> festivals) {
-        return festivalRepository.saveAll(festivals);
     }
 
     public FestivalResponseDto getOneFestival(Long id){
@@ -123,7 +108,7 @@ public class FestivalService {
     }
 
     public List<FestivalResponseDto> getAllFestivalsByDomaine(String domaine){
-        return this.festivalRepository.findAllBySousDomaineDomainePrincipalNomContainingIgnoreCase(domaine)
+        return this.festivalRepository.findAllBySousDomaineDomainePrincipalNomContainingIgnoreCaseOrSousDomaineNomContainingIgnoreCase(domaine, domaine)
                 .stream()
                 .map(f -> {
                     int nbPlaceOffreCovoiturage = f.getOffreCovoiturages()

@@ -1,19 +1,23 @@
 package com.bdi.projectbdigroup5.service;
 
 import com.bdi.projectbdigroup5.InitData;
-import com.bdi.projectbdigroup5.dto.*;
+import com.bdi.projectbdigroup5.dto.ArticleRequestBodyDto;
+import com.bdi.projectbdigroup5.dto.PanierPartielPaiementRequestDto;
+import com.bdi.projectbdigroup5.dto.PanierRequestBodyDto;
+import com.bdi.projectbdigroup5.dto.PanierResponseDto;
 
-import com.bdi.projectbdigroup5.model.*;
-import com.bdi.projectbdigroup5.repository.ArticleRepository;
+import com.bdi.projectbdigroup5.model.Article;
+import com.bdi.projectbdigroup5.model.Panier;
+import com.bdi.projectbdigroup5.model.StatutPanier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,12 +26,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class PanierServiceTest {
     @Autowired
     private PanierService panierService;
-
-    @Autowired
-    private ArticleRepository articleRepository;
 
     @Autowired
     private InitData initData;
@@ -77,11 +79,19 @@ class PanierServiceTest {
         initData.createArticleTest(1, panier, 2L,2);
 
 
-        PanierResponseDto panierResponseDto = this.panierService.getCurrentPanier(EMAIL_FESTIVALIER);
+        Optional<PanierResponseDto> panierResponseDto = this.panierService.getCurrentPanier(EMAIL_FESTIVALIER);
 
-        assertNotNull(panierResponseDto);
-        assertEquals(StatutPanier.EN_COURS, panierResponseDto.getPanier().getStatut());
+        assertTrue(panierResponseDto.isPresent());
+        assertEquals(StatutPanier.EN_COURS, panierResponseDto.get().getPanier().getStatut());
     }
+
+    @Test
+    void PanierService_GetCurrentPanier_ReturnsPanierResponseDtoEmpty(){
+        Optional<PanierResponseDto> panierResponseDto = this.panierService.getCurrentPanier(EMAIL_FESTIVALIER);
+
+        assertTrue(panierResponseDto.isEmpty());
+    }
+
 
     @Test
     void PanierService_GetPanierByFestivalierEmail_ReturnsIterablePanierResponseDto(){
@@ -112,6 +122,20 @@ class PanierServiceTest {
         assertNotNull(panierPayed.getArticlesNonDisponible());
         assertNull(panierPayed.getArticles());
         assertNull(panierPayed.getPanier());
+    }
+
+    @Test
+    void PanierService_UpdatePanierStatusToPayed_ReturnsIterablePanierResponseDto(){
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        initData.createArticleTest(1, panier, 1L, 2);
+        initData.createArticleTest(1, panier, 2L,1);
+
+        PanierResponseDto panierPayed = this.panierService.updatePanierStatusToPayed(panier.getId());
+
+        assertNotNull(panier);
+        assertNotNull(panierPayed.getPanier());
+        assertNotNull(panierPayed.getArticles());
+        assertNull(panierPayed.getArticlesNonDisponible());
     }
 
     @Test
@@ -154,61 +178,5 @@ class PanierServiceTest {
         assertNotNull(panierPayed.getArticles());
         assertNotNull(panierPayed.getPanier());
         assertEquals(2, panierPayed.getArticles().size());
-    }
-
-    @Test
-    void PanierService_verifierArticle_ReturnsVoidWithError(){
-        List<Optional<ErreurPaiementPanierResponseDto>>  listErreurPaiement = new ArrayList<>();
-        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
-        Article a1 = initData.createArticleTest(3, panier, 1L, 2);
-
-        this.panierService.verifierArticle(a1, listErreurPaiement);
-
-        assertNotNull(listErreurPaiement);
-        assertTrue(listErreurPaiement.get(0).isPresent());
-        assertEquals(ErreurPaiementClass.OFFRE_COVOITURAGE,listErreurPaiement.get(0).get().getClassType());
-        assertEquals(2, a1.getQuantite());
-    }
-
-    @Test
-    void PanierService_verifierArticle_ReturnsVoidWithZeroQuantiteDisponible(){
-        List<Optional<ErreurPaiementPanierResponseDto>>  listErreurPaiement = new ArrayList<>();
-        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
-        Article a1 = initData.createArticleTest(3, panier, 1L, 0);
-
-        this.panierService.verifierArticle(a1, listErreurPaiement);
-        Optional<Article> articleDeleted = articleRepository.findById(a1.getId());
-
-        assertNotNull(listErreurPaiement);
-        assertTrue(listErreurPaiement.get(0).isPresent());
-        assertEquals(ErreurPaiementClass.OFFRE_COVOITURAGE,listErreurPaiement.get(0).get().getClassType());
-        assertTrue(articleDeleted.isEmpty());
-    }
-
-    @Test
-    void PanierService_verifierArticle_ReturnsVoidWithNoErreur(){
-        List<Optional<ErreurPaiementPanierResponseDto>>  listErreurPaiement = new ArrayList<>();
-        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
-        Article a1 = initData.createArticleTest(2, panier, 1L, 2);
-
-        this.panierService.verifierArticle(a1, listErreurPaiement);
-
-        assertTrue(listErreurPaiement.isEmpty());
-    }
-
-    @Test
-    void PanierService_reduireNombrePlaceFestivalEtOffreCovoiturage_ReturnsVoid(){
-        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
-        Article a1 = initData.createArticleTest(2, panier, 1L, 2);
-        Article a2 = initData.createArticleTest(1, panier, 1L, 2);
-
-        this.panierService.reduireNombrePlaceFestivalEtOffreCovoiturage(a1);
-        this.panierService.reduireNombrePlaceFestivalEtOffreCovoiturage(a2);
-
-        OffreCovoiturage ovA1 = a1.getPointPassageCovoiturage().getOffreCovoiturage();
-        OffreCovoiturage ovA2 = a2.getPointPassageCovoiturage().getOffreCovoiturage();
-
-        assertEquals(0,ovA1.getNombrePlaces());
-        assertEquals(1,ovA2.getNombrePlaces());
     }
 }

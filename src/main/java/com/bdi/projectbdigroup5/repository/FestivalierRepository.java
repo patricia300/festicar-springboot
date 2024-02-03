@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FestivalierRepository extends CrudRepository <Festivalier, String>, PagingAndSortingRepository<Festivalier, String> {
-
     Page<Festivalier> findAll(Pageable pageable);
 
     Optional<Festivalier> findByToken(String token);

@@ -102,15 +102,15 @@ public class PanierService {
             List<ArticleResponseDto> articles = panier.getArticles().stream().map(article -> {
                 reduireNombrePlaceFestivalEtOffreCovoiturage(article);
 
-                panier.setStatut(StatutPanier.PAYER);
-                this.panierRepository.save(panier);
-
                 return ArticleResponseDto.builder()
                         .id(article.getId())
                         .quantite(article.getQuantite())
                         .festival(createFestivalResponseDtoFromArticle(article))
                         .build();
             }).toList();
+
+            panier.setStatut(StatutPanier.PAYER);
+            this.panierRepository.save(panier);
 
             return PanierResponseDto.builder()
                     .articles(articles)
@@ -124,10 +124,15 @@ public class PanierService {
     }
 
     @Transactional
-    public PanierResponseDto getCurrentPanier(String email) {
+    public Optional<PanierResponseDto> getCurrentPanier(String email) {
         Festivalier festivalier = getFestivalier(email);
         Panier panier = this.panierRepository.findFirstByFestivalierEmailAndStatut(festivalier.getEmail(),
                 StatutPanier.EN_COURS);
+
+        if (panier == null) {
+            return Optional.empty();
+        }
+
         List<ArticleResponseDto> articleResponseDtos = panier.getArticles().stream()
                 .map(article -> ArticleResponseDto.builder()
                         .id(article.getId())
@@ -136,10 +141,10 @@ public class PanierService {
                         .build())
                 .toList();
 
-        return PanierResponseDto.builder()
+        return Optional.of(PanierResponseDto.builder()
                 .panier(panier)
                 .articles(articleResponseDtos)
-                .build();
+                .build());
 
     }
 
@@ -229,34 +234,32 @@ public class PanierService {
 
     public void verifierArticle(Article article,
             List<Optional<ErreurPaiementPanierResponseDto>> erreurPaiementPanierResponseDtosList) {
-        int nbPlaceDisponibleRestant = getNbPlace(article.getPointPassageCovoiturage());
-        int nbPassDisponibleRestant = getNbPass(article.getPointPassageCovoiturage());
+        int nbPlace = getNbPlace(article.getPointPassageCovoiturage());
+        int nbPass = getNbPass(article.getPointPassageCovoiturage());
 
         Optional<ErreurPaiementPanierResponseDto> erreurPaiementPanierResponseDtoOffreCovoiturage = verifierNombrePlaceOffreCovoiturage(
-                nbPlaceDisponibleRestant, article.getQuantite(), article.getId());
-
+                nbPlace, article.getQuantite(), article.getId());
         Optional<ErreurPaiementPanierResponseDto> erreurPaiementPanierResponseDtoFestival = verifierNombrePassFestival(
-                nbPassDisponibleRestant, article.getQuantite(), article.getId());
+                nbPass, article.getQuantite(), article.getId());
 
         if (erreurPaiementPanierResponseDtoFestival.isPresent()) {
             erreurPaiementPanierResponseDtosList.add(erreurPaiementPanierResponseDtoFestival);
-            if (nbPassDisponibleRestant > 0){
-                article.setQuantite(nbPassDisponibleRestant);
+            if(nbPass > 0) {
+                article.setQuantite(nbPass);
                 this.articleRepository.save(article);
             }
-
-            if (nbPassDisponibleRestant == 0){
+            if (nbPass == 0) {
                 this.articleRepository.delete(article);
             }
         }
 
         if (erreurPaiementPanierResponseDtoOffreCovoiturage.isPresent()) {
             erreurPaiementPanierResponseDtosList.add(erreurPaiementPanierResponseDtoOffreCovoiturage);
-            if (nbPlaceDisponibleRestant > 0) {
-                article.setQuantite(nbPlaceDisponibleRestant);
+            if(nbPlace > 0) {
+                article.setQuantite(nbPlace);
                 this.articleRepository.save(article);
             }
-            if (nbPlaceDisponibleRestant == 0) {
+            if (nbPlace == 0) {
                 this.articleRepository.delete(article);
             }
         }

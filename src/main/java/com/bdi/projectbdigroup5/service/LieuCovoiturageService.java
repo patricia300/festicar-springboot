@@ -18,15 +18,8 @@ public class LieuCovoiturageService {
         return lieuCovoiturageRepository.save(lieuCovoiturage);
     }
 
-    public Iterable<LieuCovoiturage> createLieuCovoiturages(Iterable<LieuCovoiturage> lieux) {
-        return lieuCovoiturageRepository.saveAll(lieux);
-    }
-
     public Optional<LieuCovoiturage> findById(Long id) {
         return lieuCovoiturageRepository.findById(id);
     }
 
-    public Iterable<LieuCovoiturage> findByNom(String nom) {
-        return lieuCovoiturageRepository.findByNom(nom);
-    }
 }

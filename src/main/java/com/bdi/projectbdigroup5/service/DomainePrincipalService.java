@@ -18,10 +18,6 @@ public class DomainePrincipalService {
         return domainePrincipalRepository.save(domaine);
     }
 
-    public Iterable<DomainePrincipal> createDomainePrincipals(Iterable<DomainePrincipal> domaines) {
-        return domainePrincipalRepository.saveAll(domaines);
-    }
-
     public Iterable<DomainePrincipal> findAllDomainePrincipal() {
         return domainePrincipalRepository.findAll();
     }

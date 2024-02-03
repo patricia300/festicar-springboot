@@ -5,7 +5,4 @@ import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.CrudRepository;
 
 @Repository
-public interface LieuCovoiturageRepository extends CrudRepository<LieuCovoiturage, Long>{
-   
-    Iterable<LieuCovoiturage> findByNom(String nom);
-}
+public interface LieuCovoiturageRepository extends CrudRepository<LieuCovoiturage, Long> { }
