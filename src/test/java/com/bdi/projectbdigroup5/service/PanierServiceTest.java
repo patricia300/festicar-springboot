@@ -123,6 +123,20 @@ class PanierServiceTest {
     }
 
     @Test
+    void PanierService_UpdatePanierStatusToPayed_ReturnsIterablePanierResponseDto(){
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        initData.createArticleTest(1, panier, 1L, 2);
+        initData.createArticleTest(1, panier, 2L,1);
+
+        PanierResponseDto panierPayed = this.panierService.updatePanierStatusToPayed(panier.getId());
+
+        assertNotNull(panier);
+        assertNotNull(panierPayed.getPanier());
+        assertNotNull(panierPayed.getArticles());
+        assertNull(panierPayed.getArticlesNonDisponible());
+    }
+
+    @Test
     void PanierService_UpdatePanierStatutPatchPaid_ReturnsIterablePanierResponseDtoWithError(){
         Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
         Article a1 = initData.createArticleTest(1, panier, 1L, 0);

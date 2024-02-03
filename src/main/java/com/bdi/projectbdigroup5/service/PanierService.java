@@ -102,15 +102,15 @@ public class PanierService {
             List<ArticleResponseDto> articles = panier.getArticles().stream().map(article -> {
                 reduireNombrePlaceFestivalEtOffreCovoiturage(article);
 
-                panier.setStatut(StatutPanier.PAYER);
-                this.panierRepository.save(panier);
-
                 return ArticleResponseDto.builder()
                         .id(article.getId())
                         .quantite(article.getQuantite())
                         .festival(createFestivalResponseDtoFromArticle(article))
                         .build();
             }).toList();
+
+            panier.setStatut(StatutPanier.PAYER);
+            this.panierRepository.save(panier);
 
             return PanierResponseDto.builder()
                     .articles(articles)
