@@ -191,7 +191,7 @@ class PanierServiceTest {
 
         panierService.verifierArticle(a, errors);
 
-       assertNotNull(errors);
+       assertTrue(errors.get(0).isPresent());
        assertEquals(1, errors.get(0).get().getNbPassDisponible());
        assertEquals(ErreurPaiementClass.OFFRE_COVOITURAGE, errors.get(0).get().getClassType());
        assertEquals(1, a.getQuantite());
@@ -207,7 +207,7 @@ class PanierServiceTest {
         panierService.verifierArticle(a, errors);
         Optional<Article> aDeleted = this.articleRepository.findById(a.getId());
 
-        assertNotNull(errors);
+        assertTrue(errors.get(0).isPresent());
         assertEquals(0, errors.get(0).get().getNbPassDisponible());
         assertEquals(ErreurPaiementClass.OFFRE_COVOITURAGE, errors.get(0).get().getClassType());
         assertTrue(aDeleted.isEmpty());
@@ -221,7 +221,7 @@ class PanierServiceTest {
 
         panierService.verifierArticle(a, errors);
 
-        assertNotNull(errors);
+        assertTrue(errors.get(0).isPresent());
         assertEquals(84, errors.get(0).get().getNbPassDisponible());
         assertEquals(ErreurPaiementClass.FESTIVAL, errors.get(0).get().getClassType());
         assertEquals(84, a.getQuantite());
