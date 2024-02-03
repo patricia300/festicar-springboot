@@ -20,8 +20,6 @@ class FestivalResponseDtoTest {
     @Autowired
     private InitData initData;
 
-    private final String EMAIL_FESTIVALIER = "mohamed.rey@gmail.com";
-
     @Test
     void FestivalResponseDto_CreateFestivalResponseDtoFromArticle_ReturnListOffreCovoiturageFestivalDto() {
         OffreCovoiturage o1 = initData.createOffreCovoiturageTest();
@@ -60,6 +58,7 @@ class FestivalResponseDtoTest {
 
     @Test
     void FestivalResponseDto_CreateOffreCovoiturageFestivalDtos_ReturnFestivalResponseDto() {
+        String EMAIL_FESTIVALIER = "mohamed.rey@gmail.com";
         Panier panier = initData.createPanierTest(1L,EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
 
 
