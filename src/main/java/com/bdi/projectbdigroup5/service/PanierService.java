@@ -244,10 +244,24 @@ public class PanierService {
 
         if (erreurPaiementPanierResponseDtoFestival.isPresent()) {
             erreurPaiementPanierResponseDtosList.add(erreurPaiementPanierResponseDtoFestival);
+            if(nbPass > 0) {
+                article.setQuantite(nbPass);
+                this.articleRepository.save(article);
+            }
+            if (nbPass == 0) {
+                this.articleRepository.delete(article);
+            }
         }
 
         if (erreurPaiementPanierResponseDtoOffreCovoiturage.isPresent()) {
             erreurPaiementPanierResponseDtosList.add(erreurPaiementPanierResponseDtoOffreCovoiturage);
+            if(nbPlace > 0) {
+                article.setQuantite(nbPlace);
+                this.articleRepository.save(article);
+            }
+            if (nbPlace == 0) {
+                this.articleRepository.delete(article);
+            }
         }
     }
 }
