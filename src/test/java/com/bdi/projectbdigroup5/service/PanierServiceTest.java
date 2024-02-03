@@ -1,14 +1,13 @@
 package com.bdi.projectbdigroup5.service;
 
 import com.bdi.projectbdigroup5.InitData;
-import com.bdi.projectbdigroup5.dto.ArticleRequestBodyDto;
-import com.bdi.projectbdigroup5.dto.PanierPartielPaiementRequestDto;
-import com.bdi.projectbdigroup5.dto.PanierRequestBodyDto;
-import com.bdi.projectbdigroup5.dto.PanierResponseDto;
+import com.bdi.projectbdigroup5.dto.*;
 
 import com.bdi.projectbdigroup5.model.Article;
+import com.bdi.projectbdigroup5.model.ErreurPaiementClass;
 import com.bdi.projectbdigroup5.model.Panier;
 import com.bdi.projectbdigroup5.model.StatutPanier;
+import com.bdi.projectbdigroup5.repository.ArticleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,6 +30,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class PanierServiceTest {
     @Autowired
     private PanierService panierService;
+
+    @Autowired
+    private ArticleRepository articleRepository;
 
     @Autowired
     private InitData initData;
@@ -178,5 +181,60 @@ class PanierServiceTest {
         assertNotNull(panierPayed.getArticles());
         assertNotNull(panierPayed.getPanier());
         assertEquals(2, panierPayed.getArticles().size());
+    }
+
+    @Test
+    void PanierService_verifierArticle_ReturnVoidWithErrorNotSuffisantOffreCovoiturage() {
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        Article a = initData.createArticleTest(2, panier, 1L, 1);
+        List<Optional<ErreurPaiementPanierResponseDto>> errors = new ArrayList<>();
+
+        panierService.verifierArticle(a, errors);
+
+       assertTrue(errors.get(0).isPresent());
+       assertEquals(1, errors.get(0).get().getNbPassDisponible());
+       assertEquals(ErreurPaiementClass.OFFRE_COVOITURAGE, errors.get(0).get().getClassType());
+       assertEquals(1, a.getQuantite());
+
+    }
+
+    @Test
+    void PanierService_verifierArticle_ReturnVoidWithErrorNotSuffisantZeroOffreCovoiturage() {
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        Article a = initData.createArticleTest(2, panier, 1L, 0);
+        List<Optional<ErreurPaiementPanierResponseDto>> errors = new ArrayList<>();
+
+        panierService.verifierArticle(a, errors);
+        Optional<Article> aDeleted = this.articleRepository.findById(a.getId());
+
+        assertTrue(errors.get(0).isPresent());
+        assertEquals(0, errors.get(0).get().getNbPassDisponible());
+        assertEquals(ErreurPaiementClass.OFFRE_COVOITURAGE, errors.get(0).get().getClassType());
+        assertTrue(aDeleted.isEmpty());
+    }
+
+    @Test
+    void PanierService_verifierArticle_ReturnVoidWithErrorNotSuffisantFestival() {
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        Article a = initData.createArticleTest(87, panier, 1L, 90);
+        List<Optional<ErreurPaiementPanierResponseDto>> errors = new ArrayList<>();
+
+        panierService.verifierArticle(a, errors);
+
+        assertTrue(errors.get(0).isPresent());
+        assertEquals(84, errors.get(0).get().getNbPassDisponible());
+        assertEquals(ErreurPaiementClass.FESTIVAL, errors.get(0).get().getClassType());
+        assertEquals(84, a.getQuantite());
+    }
+
+    @Test
+    void PanierService_verifierArticle_ReturnVoidWithoutError() {
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        Article a = initData.createArticleTest(1, panier, 1L, 2);
+        List<Optional<ErreurPaiementPanierResponseDto>> errors = new ArrayList<>();
+
+        panierService.verifierArticle(a, errors);
+
+        assertTrue(errors.isEmpty());
     }
 }

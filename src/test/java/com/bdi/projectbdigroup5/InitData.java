@@ -183,6 +183,20 @@ public class InitData {
         return offreCovoiturageRepository.save(offreCovoiturage);
     }
 
+    public OffreCovoiturage createOffreCovoiturageTest(Long idFestival, int qte) {
+        Faker faker = initFaker();
+        OffreCovoiturage offreCovoiturage = new OffreCovoiturage();
+        offreCovoiturage.setId(faker.random().nextLong());
+        offreCovoiturage.setModeleVoiture(faker.cat().breed());
+        offreCovoiturage.setDateOffre(new Date("2024/06/05"));
+        offreCovoiturage.setNombrePlaces(qte);
+        offreCovoiturage.setHeureDepart(new Date("2024/06/05 10:00"));
+        offreCovoiturage.setHeureArrive(new Date("2024/06/05 20:00"));
+        offreCovoiturage.setCovoitureur(createCovoitureurTest());
+        offreCovoiturage.setFestival(createFestivalTest(idFestival));
+        return offreCovoiturageRepository.save(offreCovoiturage);
+    }
+
     public DomainePrincipal createDomainePrincipalTest(){
         Faker faker = initFaker();
         DomainePrincipal domainePrincipal = new DomainePrincipal();

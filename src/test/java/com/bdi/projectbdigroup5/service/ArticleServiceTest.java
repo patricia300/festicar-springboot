@@ -2,14 +2,14 @@ package com.bdi.projectbdigroup5.service;
 
 import com.bdi.projectbdigroup5.InitData;
 import com.bdi.projectbdigroup5.dto.ArticleRequestBodyDto;
-import com.bdi.projectbdigroup5.model.Article;
-import com.bdi.projectbdigroup5.model.Panier;
-import com.bdi.projectbdigroup5.model.StatutPanier;
+import com.bdi.projectbdigroup5.dto.ErreurPaiementPanierResponseDto;
+import com.bdi.projectbdigroup5.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class ArticleServiceTest {
     @Autowired
     private ArticleService articleService;
@@ -37,7 +38,7 @@ class ArticleServiceTest {
     }
 
     @Test
-    void ArticleService_saveArticle() {
+    void ArticleService_saveArticle_ReturnsArticle() {
         ArticleRequestBodyDto a = ArticleRequestBodyDto.builder().quantite(1).idPointPassage(1L).build();
         Article article = this.articleService.saveArticle(a);
 
@@ -46,7 +47,7 @@ class ArticleServiceTest {
     }
 
     @Test
-    void ArticleService_deleteArticle() {
+    void ArticleService_deleteArticle_ReturnsArticle() {
         Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
         Article a1 = initData.createArticleTest(1, panier, 1L, 2);
         Article a2 = initData.createArticleTest(1, panier, 2L, 2);
@@ -61,7 +62,7 @@ class ArticleServiceTest {
     }
 
     @Test
-    void ArticleService_saveAllArticle() {
+    void ArticleService_saveAllArticle_ReturnsListArticles() {
         ArticleRequestBodyDto a1 = ArticleRequestBodyDto.builder().quantite(1).idPointPassage(1L).build();
         ArticleRequestBodyDto a2 = ArticleRequestBodyDto.builder().quantite(1).idPointPassage(2L).build();
         ArticleRequestBodyDto a3 = ArticleRequestBodyDto.builder().quantite(1).idPointPassage(3L).build();
@@ -73,8 +74,68 @@ class ArticleServiceTest {
         assertEquals(1L, articles.get(0).getPointPassageCovoiturage().getId());
         assertEquals(2L, articles.get(1).getPointPassageCovoiturage().getId());
         assertEquals(3L, articles.get(2).getPointPassageCovoiturage().getId());
+    }
 
+    @Test
+    void ArticleService_GetNbPlace_ReturnIntNombrePlace(){
+        PointPassageCovoiturage p1 = initData.createPointPassageCovoiturageTest(5L,3);
+
+        int nbPlace = ArticleService.getNbPlace(p1);
+
+        assertEquals(3,nbPlace);
     }
 
 
+    @Test
+    void ArticleService_GetNbPlace_ReturnIntNombrePass(){
+        PointPassageCovoiturage p1 = initData.createPointPassageCovoiturageTest(5L,3);
+
+        int nbPass = ArticleService.getNbPass(p1);
+
+        assertEquals(84,nbPass);
+    }
+
+    @Test
+    void ArticleService_verifierNombrePlaceOffreCovoiturage_ReturnOptionalErreurPaiementPanierResponseDto(){
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        Article a = initData.createArticleTest(1, panier, 1L, 0);
+
+        Optional<ErreurPaiementPanierResponseDto> erreurPaiementPanierResponseDto = ArticleService.verifierNombrePlaceOffreCovoiturage(0,1,a.getId());
+
+       assertTrue(erreurPaiementPanierResponseDto.isPresent());
+       assertEquals(0,erreurPaiementPanierResponseDto.get().getNbPassDisponible());
+       assertEquals(ErreurPaiementClass.OFFRE_COVOITURAGE,erreurPaiementPanierResponseDto.get().getClassType() );
+    }
+
+    @Test
+    void ArticleService_verifierNombrePlaceOffreCovoiturage_ReturnOptionalErreurPaiementPanierResponseDtoEmpty(){
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        Article a = initData.createArticleTest(1, panier, 1L, 3);
+
+        Optional<ErreurPaiementPanierResponseDto> erreurPaiementPanierResponseDto = ArticleService.verifierNombrePlaceOffreCovoiturage(3,1,a.getId());
+
+        assertTrue(erreurPaiementPanierResponseDto.isEmpty());
+    }
+
+    @Test
+    void ArticleService_verifierNombrePassFestival_ReturnOptionalErreurPaiementPanierResponseDto(){
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        Article a = initData.createArticleTest(1, panier, 1L, 0);
+
+        Optional<ErreurPaiementPanierResponseDto> erreurPaiementPanierResponseDto = ArticleService.verifierNombrePassFestival(1,2,a.getId());
+
+        assertTrue(erreurPaiementPanierResponseDto.isPresent());
+        assertEquals(1,erreurPaiementPanierResponseDto.get().getNbPassDisponible());
+        assertEquals(ErreurPaiementClass.FESTIVAL,erreurPaiementPanierResponseDto.get().getClassType() );
+    }
+
+    @Test
+    void ArticleService_verifierNombrePassFestival_ReturnOptionalErreurPaiementPanierResponseDtoEmpty(){
+        Panier panier = initData.createPanierTest(1L, EMAIL_FESTIVALIER, StatutPanier.EN_COURS);
+        Article a = initData.createArticleTest(1, panier, 1L, 3);
+
+        Optional<ErreurPaiementPanierResponseDto> erreurPaiementPanierResponseDto = ArticleService.verifierNombrePassFestival(3,1,a.getId());
+
+        assertTrue(erreurPaiementPanierResponseDto.isEmpty());
+    }
 }
